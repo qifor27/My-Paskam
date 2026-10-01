@@ -1,0 +1,89 @@
+// Skema Sprint 0: hanya entitas yang tidak menunggu open question.
+// Entitas modul (laporan_kerja, unit, operator, dll.) ditambahkan di sprint
+// masing-masing setelah business rule disetujui. Lihat docs/database.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// URL koneksi ada di prisma.config.ts (Prisma 7).
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN // Owner
+  PENGAWAS
+}
+
+enum AuditResult {
+  SUCCESS
+  FAILURE
+}
+
+model User {
+  id               String    @id @db.Uuid
+  role             Role
+  name             String
+  // Owner: email/username + password
+  email            String?   @unique
+  username         String?   @unique
+  passwordHash     String?   @map("password_hash")
+  // Pengawas: kode + PIN
+  kodePengawas     String?   @unique @map("kode_pengawas")
+  pinHash          String?   @map("pin_hash")
+  isActive         Boolean   @default(true) @map("is_active")
+  // Brute-force protection; ambang lockout menunggu Q17.
+  failedLoginCount Int       @default(0) @map("failed_login_count")
+  lockedUntil      DateTime? @map("locked_until") @db.Timestamptz(3)
+  createdById      String?   @map("created_by") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  createdBy    User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers User[]     @relation("UserCreatedBy")
+  sessions     Session[]
+  auditLogs    AuditLog[]
+
+  @@map("user")
+}
+
+model Session {
+  // SHA-256 dari token sesi; token mentah hanya ada di cookie httpOnly.
+  id        String   @id
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  userAgent String?  @map("user_agent")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model AuditLog {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String?     @map("user_id") @db.Uuid
+  action    String
+  // Tidak boleh berisi password/PIN/token (PRD §26).
+  detail    Json?
+  result    AuditResult
+  errorId   String?     @map("error_id")
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([action, createdAt])
+  @@index([userId, createdAt])
+  @@map("audit_log")
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("setting")
+}

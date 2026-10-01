@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/*
+ * Design token My PASKAM — lihat docs/design-system.md.
+ * Biru = identitas/struktur, oranye = aksi. Kontras teks putih di atas
+ * brand/action memenuhi WCAG AA (>= 4.5:1).
+ */
+@theme {
+  --color-brand-50: #eef3fb;
+  --color-brand-100: #d7e2f4;
+  --color-brand-500: #2f62b8;
+  --color-brand-600: #1e4fa3;
+  --color-brand-700: #1a4489;
+  --color-brand-800: #163a75;
+  --color-brand-900: #102a55;
+
+  --color-action-500: #d9480f;
+  --color-action-600: #c2410c;
+  --color-action-700: #9a3412;
+
+  --color-danger-600: #c53030;
+  --color-danger-700: #9b2c2c;
+  --color-success-600: #15803d;
+  --color-warning-600: #b45309;
+
+  --color-surface: #ffffff;
+  --color-canvas: #f4f6fa;
+  --color-border: #d5dbe5;
+  --color-ink: #0f172a;
+  --color-ink-muted: #475569;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-control: 0.5rem;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}

@@ -1,0 +1,69 @@
+# Product Backlog
+
+> Diturunkan dari PRD §37 + usulan di `docs/prd-analysis.md` §5.
+> Format: `US-<sprint>.<n>`. Centang `[x]` saat memenuhi Definition of Done, lalu tautkan dokumen fiturnya.
+> ⛔ = diblokir open question (lihat `docs/prd-analysis.md` §3).
+
+## Sprint 0 — Foundation
+- [x] US-0.1 Inisialisasi repo, Next.js + TypeScript + Tailwind + shadcn/ui + Lucide
+- [x] US-0.2 Design token (biru/oranye), komponen Button lengkap 6 state (PRD §8)
+- [ ] US-0.3 Setup PostgreSQL + Prisma + migrasi awal — skema & migrasi siap; tinggal diterapkan saat Docker berjalan
+- [ ] US-0.4 Arsitektur auth (session) — ADR-002
+- [ ] US-0.5 CI: typecheck, lint, test, build — `npm run check` lulus lokal; workflow GitHub belum pernah jalan (belum ada remote)
+- [x] US-0.6 Fondasi error handling: kategori error, error ID, logger tanpa data sensitif (PRD §21, §26)
+- [x] US-0.7 Fondasi offline: client UUID + status sync (ADR-004). Kolom idempotency dibuat bersama tabel modul di Sprint 3
+- [x] US-0.8 Pindahkan `prd.md` → `docs/PRD.md`
+
+## Sprint 1 — Authentication
+- [ ] US-1.1 Login Owner (email/username + password)
+- [ ] US-1.2 Login Pengawas (Kode + PIN) ⛔ Q17
+- [ ] US-1.3 Halaman `/login` dengan toggle PENGAWAS / OWNER
+- [ ] US-1.4 Session + expiry handling ⛔ Q18
+- [ ] US-1.5 Manajemen Pengawas: tambah, edit, aktif/nonaktif, reset PIN
+- [ ] US-1.6 Permission foundation (server-side) ⛔ Q16
+- [ ] US-1.7 Rate limit + brute-force protection
+- [ ] US-1.8 Audit log dasar
+
+## Sprint 2 — Dashboard
+- [ ] US-2.1 Dashboard Owner
+- [ ] US-2.2 Dashboard Pengawas (shortcut 4 modul)
+- [ ] US-2.3 Navigasi mobile
+- [ ] US-2.4 Loading/empty/error state dashboard
+
+## Sprint 3 — Laporan Kerja
+- [ ] US-3.1 Master data Unit & Operator ⛔ Q3, Q4
+- [ ] US-3.2 Form Laporan Kerja ⛔ Q5
+- [ ] US-3.3 Upload foto (kamera/galeri, kompresi, preview, progress, retry) ⛔ Q7
+- [ ] US-3.4 Status & approval ⛔ Q1, Q2
+- [ ] US-3.5 Draft offline (IndexedDB)
+- [ ] US-3.6 List & detail ⛔ Q6
+
+## Sprint 4 — Order Spare Part
+- [ ] US-4.1 Form + foto ⛔ Q9
+- [ ] US-4.2 Status flow ⛔ Q8
+- [ ] US-4.3 List & detail
+
+## Sprint 5 — Planning Job
+- [ ] US-5.1 Form planning ⛔ Q10, Q12
+- [ ] US-5.2 List & status ⛔ Q11
+
+## Sprint 6 — Laporan Data
+- [ ] US-6.1 Filter tanggal/unit/Pengawas/status ⛔ Q13
+- [ ] US-6.2 Export PDF ⛔ Q15
+- [ ] US-6.3 PIN gate (opsional) ⛔ Q14
+- [ ] US-6.4 Storage Monitoring (read-only) ⛔ Q20
+
+## Sprint 7 — PWA & Offline
+- [ ] US-7.1 Manifest + installability
+- [ ] US-7.2 Service worker + offline cache
+- [ ] US-7.3 Sync queue + upload queue + retry
+- [ ] US-7.4 Indikator status jaringan & status sync
+- [ ] US-7.5 Proteksi duplikat (server-side)
+
+## Sprint 8 — Production Hardening
+- [ ] US-8.1 Security & authorization review
+- [ ] US-8.2 Upload security
+- [ ] US-8.3 Error monitoring ⛔ Q23
+- [ ] US-8.4 Photo Cleanup + retention status + re-auth ⛔ Q21
+- [ ] US-8.5 Performance, aksesibilitas, review PWA
+- [ ] US-8.6 Backup & deployment produksi ⛔ Q24
