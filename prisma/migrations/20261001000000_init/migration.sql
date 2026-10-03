@@ -18,8 +18,7 @@ CREATE TABLE "user" (
     "kode_pengawas" TEXT,
     "pin_hash" TEXT,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "failed_login_count" INTEGER NOT NULL DEFAULT 0,
-    "locked_until" TIMESTAMPTZ(3),
+    "last_login_at" TIMESTAMPTZ(3),
     "created_by" UUID,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
@@ -58,6 +57,16 @@ CREATE TABLE "setting" (
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "setting_pkey" PRIMARY KEY ("key")
+);
+
+-- CreateTable
+CREATE TABLE "rate_limit" (
+    "key" TEXT NOT NULL,
+    "count" INTEGER NOT NULL,
+    "window_start" TIMESTAMPTZ(3) NOT NULL,
+    "locked_until" TIMESTAMPTZ(3),
+
+    CONSTRAINT "rate_limit_pkey" PRIMARY KEY ("key")
 );
 
 -- CreateIndex

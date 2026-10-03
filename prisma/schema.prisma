@@ -23,23 +23,21 @@ enum AuditResult {
 }
 
 model User {
-  id               String    @id @db.Uuid
-  role             Role
-  name             String
+  id           String    @id @db.Uuid
+  role         Role
+  name         String
   // Owner: email/username + password
-  email            String?   @unique
-  username         String?   @unique
-  passwordHash     String?   @map("password_hash")
+  email        String?   @unique
+  username     String?   @unique
+  passwordHash String?   @map("password_hash")
   // Pengawas: kode + PIN
-  kodePengawas     String?   @unique @map("kode_pengawas")
-  pinHash          String?   @map("pin_hash")
-  isActive         Boolean   @default(true) @map("is_active")
-  // Brute-force protection; ambang lockout menunggu Q17.
-  failedLoginCount Int       @default(0) @map("failed_login_count")
-  lockedUntil      DateTime? @map("locked_until") @db.Timestamptz(3)
-  createdById      String?   @map("created_by") @db.Uuid
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  kodePengawas String?   @unique @map("kode_pengawas")
+  pinHash      String?   @map("pin_hash")
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(3)
+  createdById  String?   @map("created_by") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   createdBy    User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
   createdUsers User[]     @relation("UserCreatedBy")
@@ -86,4 +84,16 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@map("setting")
+}
+
+// Brute-force protection (PRD §10). Key: "login:id:<identifier>" atau
+// "login:ip:<ip>". Dipisah dari tabel user agar identifier yang tidak
+// terdaftar juga dibatasi (mencegah enumerasi).
+model RateLimit {
+  key         String    @id
+  count       Int
+  windowStart DateTime  @map("window_start") @db.Timestamptz(3)
+  lockedUntil DateTime? @map("locked_until") @db.Timestamptz(3)
+
+  @@map("rate_limit")
 }
