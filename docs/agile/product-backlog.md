@@ -7,22 +7,23 @@
 ## Sprint 0 — Foundation
 - [x] US-0.1 Inisialisasi repo, Next.js + TypeScript + Tailwind + shadcn/ui + Lucide
 - [x] US-0.2 Design token (biru/oranye), komponen Button lengkap 6 state (PRD §8)
-- [ ] US-0.3 Setup PostgreSQL + Prisma + migrasi awal — skema & migrasi siap; tinggal diterapkan saat Docker berjalan
-- [ ] US-0.4 Arsitektur auth (session) — ADR-002
+- [x] US-0.3 Setup PostgreSQL + Prisma + migrasi awal (diterapkan 2026-10-03)
+- [x] US-0.4 Arsitektur auth (session) — ADR-002 (diimplementasikan, status ADR masih PROPOSED)
 - [ ] US-0.5 CI: typecheck, lint, test, build — `npm run check` lulus lokal; workflow GitHub belum pernah jalan (belum ada remote)
 - [x] US-0.6 Fondasi error handling: kategori error, error ID, logger tanpa data sensitif (PRD §21, §26)
 - [x] US-0.7 Fondasi offline: client UUID + status sync (ADR-004). Kolom idempotency dibuat bersama tabel modul di Sprint 3
 - [x] US-0.8 Pindahkan `prd.md` → `docs/PRD.md`
 
 ## Sprint 1 — Authentication
-- [ ] US-1.1 Login Owner (email/username + password)
-- [ ] US-1.2 Login Pengawas (Kode + PIN) ⛔ Q17
-- [ ] US-1.3 Halaman `/login` dengan toggle PENGAWAS / OWNER
-- [ ] US-1.4 Session + expiry handling ⛔ Q18
-- [ ] US-1.5 Manajemen Pengawas: tambah, edit, aktif/nonaktif, reset PIN
-- [ ] US-1.6 Permission foundation (server-side) ⛔ Q16
-- [ ] US-1.7 Rate limit + brute-force protection
-- [ ] US-1.8 Audit log dasar
+> Dokumen: [authentication.md](../features/authentication.md), [pengawas-management.md](../features/pengawas-management.md)
+- [x] US-1.1 Login Owner (email/username + password)
+- [x] US-1.2 Login Pengawas (Kode + PIN) — parameter PIN SEMENTARA, menunggu Q17
+- [x] US-1.3 Halaman `/login` dengan toggle PENGAWAS / OWNER
+- [x] US-1.4 Session + expiry handling — durasi SEMENTARA, menunggu Q18
+- [x] US-1.5 Manajemen Pengawas: tambah, edit, aktif/nonaktif, reset PIN — format kode/PIN menunggu Q26, Q27
+- [x] US-1.6 Permission foundation (server-side) — aturan visibilitas data (Q16) ditambahkan di Sprint 3
+- [x] US-1.7 Rate limit + brute-force protection
+- [x] US-1.8 Audit log dasar
 
 ## Sprint 2 — Dashboard
 - [ ] US-2.1 Dashboard Owner

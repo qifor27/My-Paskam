@@ -8,6 +8,12 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Halaman `/login` dengan pilihan PENGAWAS/OWNER: login Pengawas (Kode + PIN) dan Owner (email/username + password) (Sprint 1, US-1.1–1.3).
+- Sesi login aman + pesan "Sesi Anda telah berakhir" + tombol keluar (Sprint 1, US-1.4).
+- Manajemen Pengawas untuk Owner: daftar, tambah, ubah, reset PIN, aktif/nonaktif (Sprint 1, US-1.5).
+- Permission server-side `pengawas:manage` (Sprint 1, US-1.6).
+- Perintah `npm run owner:create` untuk membuat akun Owner pertama (Sprint 1).
+- Komponen Input, Field, Alert, ErrorAlert, PageHeader, AccessDenied (Sprint 1).
 - Analisis PRD: gap, open questions, risiko, dan usulan roadmap (`docs/prd-analysis.md`).
 - Kerangka dokumentasi: `CLAUDE.md`, `docs/` (architecture, database, design-system, security), `docs/agile/` (backlog, sprint, decisions), template dokumentasi fitur.
 - Proyek Next.js 16 + TypeScript + Tailwind 4 + ESLint + Vitest, dengan perintah `npm run check` (Sprint 0, US-0.1).
@@ -21,6 +27,11 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - `prd.md` dipindah ke `docs/PRD.md` (US-0.8).
 
 ### Fixed
+- Pesan validasi bawaan Zod kini berbahasa Indonesia; field yang tidak terkirim menampilkan "Wajib diisi" (Sprint 1).
 
 ### Security
+- Password & PIN di-hash scrypt; token sesi disimpan sebagai SHA-256 (Sprint 1, ADR-008).
+- Penguncian login setelah percobaan gagal berulang, termasuk untuk kode/email yang tidak terdaftar (Sprint 1, US-1.7, ADR-009).
+- Audit log untuk login, logout, dan semua perubahan akun Pengawas (Sprint 1, US-1.8).
+- Nonaktifkan akun / reset PIN langsung mencabut semua sesi Pengawas tersebut (Sprint 1).
 - Logger menyensor otomatis password, PIN, token, session, dan cookie (US-0.6).

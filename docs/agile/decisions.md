@@ -34,7 +34,7 @@
 
 ### ADR-002: Platform data, storage, dan auth
 - Tanggal: 2026-10-01
-- Status: PROPOSED
+- Status: PROPOSED — bagian auth custom session **sudah diimplementasikan di Sprint 1** agar pekerjaan tidak tertahan; bisa diganti jika ditolak
 - Menjawab: S4, Q23
 - Konteks: PRD menyebut PostgreSQL + Prisma, Supabase Storage, dan "secure session-based auth".
 - Usulan: Supabase Postgres sebagai DB (via Prisma), Supabase Storage dengan bucket privat, dan **custom session auth** di server Next.js (cookie httpOnly, session disimpan di DB) agar login Kode + PIN dan audit log sepenuhnya terkendali. Akses foto melalui signed URL berumur pendek yang dibuat server setelah cek otorisasi.
@@ -64,3 +64,24 @@
 - Status: ACCEPTED (turunan langsung PRD §20–§26)
 - Keputusan: `AppError` + 9 kategori (`src/lib/errors`). Server mengembalikan `PublicError` (kategori, pesan Indonesia, `errorId` format `ERR-XXXXXX`, `retryable`, `fieldErrors`) tanpa stack trace. Detail teknis dicatat lewat `logger` (JSON per baris) yang otomatis menyensor key sensitif (password, pin, token, session, cookie, dll.).
 - Konsekuensi: Semua route handler/server action wajib membungkus error dengan `toPublicError`.
+
+### ADR-007: Parameter autentikasi sementara
+- Tanggal: 2026-10-03
+- Status: PROPOSED (sementara, menunggu Q17 & Q18)
+- Konteks: Sprint 1 dijalankan sebelum Owner menjawab kebijakan PIN dan durasi sesi.
+- Keputusan sementara: PIN 6 digit angka; kunci 15 menit setelah 5 gagal per kode/email atau 30 gagal per IP dalam window 15 menit; sesi Owner 12 jam, Pengawas 7 hari (tetap, tidak diperpanjang otomatis).
+- Konsekuensi: Semua nilai ada di `src/lib/auth/config.ts`, sehingga perubahan tidak menyentuh logika. Jika panjang PIN berubah, PIN yang sudah ada tetap valid sampai direset.
+
+### ADR-008: Hashing password & PIN dengan scrypt bawaan Node
+- Tanggal: 2026-10-03
+- Status: ACCEPTED
+- Konteks: PRD §10 mewajibkan hash; PRD §34 melarang dependency tanpa alasan.
+- Keputusan: `node:crypto` scrypt N=2^15, r=8, p=3 (setara rekomendasi OWASP, ±0,5 dtk dan 32 MB per hash). Format string menyimpan parameter, jadi parameter bisa dinaikkan nanti tanpa membatalkan hash lama. Saat akun tidak ditemukan tetap dilakukan verifikasi dummy agar waktu respons sama (anti-enumerasi).
+- Konsekuensi: Tidak perlu modul native (argon2/bcrypt). Login sengaja ±0,5 dtk.
+
+### ADR-009: Rate limit login di PostgreSQL
+- Tanggal: 2026-10-03
+- Status: ACCEPTED
+- Konteks: Rate limit di memori tidak berlaku di banyak instance/serverless; hosting belum diputuskan (Q23).
+- Keputusan: Tabel `rate_limit` (fixed window) dengan key per identifier (`login:id:<mode>:<identifier>`) dan per IP. Identifier yang tidak terdaftar juga dihitung.
+- Konsekuensi: Satu query tambahan per login. IP diambil dari `x-forwarded-for`, yang hanya bisa dipercaya di belakang proxy yang menimpanya; perlu ditinjau saat hosting dipilih.

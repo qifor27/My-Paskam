@@ -29,6 +29,27 @@
 
 ---
 
+## Sprint 1 — Authentication (mulai 2026-10-03)
+
+**Goal:** Owner dan Pengawas bisa masuk dengan aman; Owner bisa mengelola akun Pengawas.
+**Story:** US-1.1 – US-1.8 (+ penutupan US-0.3, US-0.4)
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-03 | US-0.3 | Docker aktif; migrasi init (direvisi: `rate_limit`, `last_login_at`) diterapkan | `database.md` |
+| 2026-10-03 | US-1.1–1.4, 1.6–1.8 | Login Owner/Pengawas, sesi cookie + DB, permission, rate limit DB, audit log, CLI `owner:create` | `features/authentication.md`, `security.md`, `architecture.md`, ADR-007/008/009 |
+| 2026-10-03 | US-1.5 | Halaman daftar/tambah/detail Pengawas, reset PIN, aktif/nonaktif | `features/pengawas-management.md`, `design-system.md` |
+| 2026-10-03 | — | Komponen Input, Field, Alert, ErrorAlert, PageHeader, AccessDenied; hook `useServerAction` | `design-system.md` |
+| 2026-10-03 | — | E2E 21 skenario terhadap server production + PostgreSQL: semua lulus. Temuan: pesan Zod bahasa Inggris → diperbaiki | `security.md` |
+
+### Hambatan / catatan
+- Parameter PIN, lockout, dan durasi sesi masih SEMENTARA (ADR-007), menunggu Q17/Q18.
+- Pertanyaan baru: Q26 (format Kode Pengawas), Q27 (PIN dibuat Owner atau sistem).
+- Belum diuji visual di perangkat nyata; CI GitHub belum berjalan (belum ada remote).
+
+---
+
 ## Sprint 0 — Foundation (mulai 2026-10-01)
 
 **Goal:** Fondasi repo, design system, DB, arsitektur auth, CI, error & offline foundation.
@@ -48,5 +69,4 @@
 
 ### Hambatan
 - Registry npm sangat lambat (install 6–9 menit).
-- Docker Desktop tidak berjalan, jadi migrasi belum diterapkan ke DB lokal.
-- US-0.4 menunggu persetujuan ADR-002; Sprint 1 menunggu Q16–Q18.
+- Docker Desktop tidak berjalan saat itu (teratasi di Sprint 1).

@@ -54,6 +54,7 @@ Lihat PRD §31. Checklist yang sama ada di `docs/features/_TEMPLATE.md`.
 docker compose up -d          # PostgreSQL lokal (butuh Docker berjalan)
 cp .env.example .env
 npm run db:migrate            # terapkan migrasi + generate Prisma client
+npm run owner:create          # buat akun Owner (tidak ada registrasi publik)
 npm run db:generate           # generate client saja (output: src/generated/prisma)
 npm run dev                   # http://localhost:3000, referensi UI di /dev/ui
 npm run check                 # typecheck + lint + test + build — wajib lulus sebelum task selesai
@@ -61,4 +62,6 @@ npm test -- src/lib/sync      # jalankan test tertentu
 ```
 
 Stack terpasang: Next.js 16 (App Router, Turbopack), React 19, TypeScript 6, Tailwind 4 (token di `src/app/globals.css`), Prisma 7 + `@prisma/adapter-pg`, Zod 4, Vitest 5, Lucide.
+Pola mutasi: server action di `actions.ts` per route, dibungkus `runAction` + `requirePermission` + `parseForm` + `audit` (lihat `docs/architecture.md`). Form client memakai `useServerAction`.
+Parameter auth sementara (PIN, lockout, durasi sesi) hanya di `src/lib/auth/config.ts`.
 Catatan Prisma 7: URL DB ada di `prisma.config.ts`, bukan di `schema.prisma`; import client dari `@/generated/prisma/client`, dan akses DB hanya lewat `src/lib/db.ts` (server-only).

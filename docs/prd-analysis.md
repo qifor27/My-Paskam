@@ -67,6 +67,10 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q18. Durasi sesi** Owner dan Pengawas? Apakah Pengawas tetap login berhari-hari di HP lapangan?
 - **Q19. Offline + sesi:** jika sesi habis saat offline, apakah draft tetap bisa dibuat? (Disarankan: ya, sync menunggu login ulang.)
 
+### Manajemen Pengawas (muncul di Sprint 1)
+- **Q26. Format Kode Pengawas:** diketik Owner (saat ini: 3–20 karakter, huruf/angka/-) atau dibuat otomatis berurutan (SPV001, SPV002, …)?
+- **Q27. PIN awal/reset:** diketik Owner (saat ini) atau dibuat acak oleh sistem dan ditampilkan sekali? Apakah Pengawas wajib mengganti PIN saat pertama login?
+
 ### Storage (Sprint 6/8)
 - **Q20.** Kapasitas total storage diambil dari mana? (API Supabase tidak menyediakan kuota paket. Disarankan: dikonfigurasi Owner di Settings.)
 - **Q21. Re-authentication cleanup:** cukup password Owner, atau perlu 2FA di masa depan?

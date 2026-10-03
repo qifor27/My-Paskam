@@ -44,9 +44,18 @@ prisma.config.ts         # URL DB + lokasi migrasi
 src/
   app/                   # route Next.js (App Router)
     globals.css          # design token Tailwind (@theme)
+    login/               # halaman + server action login/logout
+    (app)/               # area setelah login; layout memanggil requireUser()
+      pengawas/          # manajemen Pengawas (Owner)
     dev/ui/              # referensi komponen, 404 di produksi
-  components/ui/         # komponen dasar (shadcn-style)
+  components/            # komponen aplikasi (ErrorAlert, PageHeader, ...)
+    ui/                  # komponen dasar (shadcn-style)
+  hooks/                 # hook client (useServerAction)
   lib/
+    action.ts            # runAction + parseForm untuk server action
+    audit.ts             # tulis audit_log
+    auth/                # config, password (scrypt), session, permissions, rate limit, validasi
+    request.ts           # IP & user agent dari header
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
     errors/              # AppError, kategori, pesan user, toPublicError
@@ -55,7 +64,19 @@ src/
 docs/                    # dokumentasi (lihat CLAUDE.md)
 ```
 
+scripts/
+  create-owner.ts        # CLI pembuatan akun Owner (npm run owner:create)
+
 Konvensi: test berada di samping kode (`*.test.ts`). Alias import `@/` → `src/`.
+
+## Pola Server Action
+Setiap mutasi = server action di `actions.ts` milik route-nya:
+`runAction(name, fn)` → di dalamnya `requirePermission()` → `parseForm(schema)` → logika → `audit()` → return data.
+Hasil selalu `ActionResult` (`{ ok: true, data } | { ok: false, error: PublicError }`); action tidak pernah melempar error ke client. Di client, `useServerAction` mengubah kegagalan transport menjadi error `NETWORK`.
+
+## Alur Autentikasi
+`/login` → `login()` → cek `rate_limit` → cari user → `verifySecret` (scrypt) → `createSession` (cookie + baris `session`) → `/`.
+Setiap halaman di `(app)/` memanggil `requireUser()`; sesi tidak valid → `/login?sesi=berakhir`.
 
 ## Alur Data Offline (PRD §19, §25)
 `DRAFT → PENDING_SYNC → SYNCING → SYNCED`, gagal → `SYNC_FAILED → RETRY`.
@@ -72,3 +93,4 @@ Setiap record membawa UUID client + idempotency key (ADR-004).
 | prisma, @prisma/client, @prisma/adapter-pg | ORM PostgreSQL (PRD §35). Dipasang di 7.10.0 karena tag `latest` npm menunjuk ke 8.0 RC | Sprint 0 |
 | server-only | Mencegah kode DB masuk bundle browser | Sprint 0 |
 | typescript, eslint, eslint-config-next, vitest | Typecheck, lint, test (PRD §31) | Sprint 0 |
+| tsx (dev) | Menjalankan script TypeScript (`scripts/create-owner.ts`) | Sprint 1 |
