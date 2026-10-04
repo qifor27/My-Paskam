@@ -36,6 +36,9 @@ Touch target ≥ 44–48 px, input besar, primary action mudah dijangkau satu ta
 ## Glassmorphism (PRD §6)
 Hanya untuk: login card, floating nav tertentu, overlay/modal, small highlight. Tidak boleh bertumpuk.
 
+## Tanggal & waktu
+Selalu lewat `formatDateTime()` di `src/lib/format.ts` (zona waktu eksplisit, ADR-011). Jangan memanggil `Intl.DateTimeFormat`/`toLocaleString` langsung di komponen.
+
 ## Pola Feedback (PRD §22)
 | Pola | Kapan |
 |---|---|
@@ -57,6 +60,17 @@ Gradient berlebihan, card bertumpuk, emoji sebagai icon, glow/neon, gradient tex
 | ErrorAlert | `src/components/error-alert.tsx` | Menampilkan `PublicError` + kode laporan; tombol COBA LAGI hanya jika `retryable` | Sprint 1 |
 | PageHeader | `src/components/page-header.tsx` | Judul + tombol kembali + aksi | Sprint 1 |
 | AccessDenied | `src/components/access-denied.tsx` | Pesan error otorisasi PRD §21 | Sprint 1 |
+| EmptyState | `src/components/empty-state.tsx` | Icon + judul + penjelasan + aksi (PRD §28) | Sprint 2 |
+| BottomNav / SideNav | `src/components/app-nav.tsx` | Navigasi per role dari `src/lib/navigation.ts`; aktif = garis + bobot + warna | Sprint 2 |
+| NavIcon | `src/components/nav-icon.tsx` | Satu-satunya pemetaan icon modul (PRD §5) | Sprint 2 |
+| NetworkBanner | `src/components/network-status.tsx` | Banner offline + hook `useOnline()` | Sprint 2 |
+| ErrorScreen | `src/components/error-screen.tsx` | Isi halaman error (dipakai `error.tsx` root & `(app)`) | Sprint 2 |
+| ModulePlaceholder | `src/components/module-placeholder.tsx` | Halaman modul yang belum dibangun (sementara) | Sprint 2 |
+
+### Layout aplikasi
+- **Mobile:** header biru 56 px (sticky) + konten + bottom nav 64 px (fixed, `bg-surface/90 backdrop-blur`, satu-satunya glass di area aplikasi). Konten diberi `pb-28` agar tidak tertutup bottom nav.
+- **Desktop ≥ md:** sidebar `brand-800` 240 px (sticky), item aktif berlatar putih. Konten maks. `max-w-3xl`.
+- Dashboard memakai **daftar** (icon dalam kotak `brand-50` + judul + deskripsi + chevron), bukan grid kartu widget.
 
 ### Pola form
 - Pakai `useServerAction` (`src/hooks/use-server-action.ts`) dengan `onSubmit`, **bukan** prop `action`, agar React tidak mereset isian saat gagal (PRD §23).

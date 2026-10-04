@@ -26,10 +26,11 @@
 - [x] US-1.8 Audit log dasar
 
 ## Sprint 2 — Dashboard
-- [ ] US-2.1 Dashboard Owner
-- [ ] US-2.2 Dashboard Pengawas (shortcut 4 modul)
-- [ ] US-2.3 Navigasi mobile
-- [ ] US-2.4 Loading/empty/error state dashboard
+> Dokumen: [dashboard-navigation.md](../features/dashboard-navigation.md)
+- [x] US-2.1 Dashboard Owner
+- [x] US-2.2 Dashboard Pengawas (shortcut modul; Laporan Data sementara hanya Owner, Q13)
+- [x] US-2.3 Navigasi mobile (bottom nav) + desktop (sidebar)
+- [x] US-2.4 Loading/empty/error state (termasuk error boundary root/layout/halaman dan 404)
 
 ## Sprint 3 — Laporan Kerja
 - [ ] US-3.1 Master data Unit & Operator ⛔ Q3, Q4

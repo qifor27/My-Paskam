@@ -85,3 +85,15 @@
 - Konteks: Rate limit di memori tidak berlaku di banyak instance/serverless; hosting belum diputuskan (Q23).
 - Keputusan: Tabel `rate_limit` (fixed window) dengan key per identifier (`login:id:<mode>:<identifier>`) dan per IP. Identifier yang tidak terdaftar juga dihitung.
 - Konsekuensi: Satu query tambahan per login. IP diambil dari `x-forwarded-for`, yang hanya bisa dipercaya di belakang proxy yang menimpanya; perlu ditinjau saat hosting dipilih.
+
+### ADR-010: Akses Laporan Data sementara hanya untuk Owner
+- Tanggal: 2026-10-04
+- Status: PROPOSED (sementara, menunggu Q13)
+- Konteks: Navigasi Sprint 2 butuh keputusan siapa yang melihat Laporan Data.
+- Keputusan sementara: `laporan-data:access` hanya SUPER_ADMIN (prinsip least privilege). Dibuka untuk Pengawas cukup dengan menambah role di `src/lib/auth/permissions.ts`.
+
+### ADR-011: Zona waktu tampilan eksplisit
+- Tanggal: 2026-10-04
+- Status: PROPOSED (nilai menunggu Q22)
+- Konteks: `Intl.DateTimeFormat` tanpa `timeZone` memakai zona server; di hosting umumnya UTC sehingga jam meleset 7–9 jam (ditemukan di daftar Pengawas).
+- Keputusan: Semua format tanggal lewat `src/lib/format.ts` dengan `APP_TIME_ZONE` (env, default sementara `Asia/Jakarta`). DB tetap UTC (`timestamptz`).

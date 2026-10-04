@@ -19,7 +19,8 @@
 ## Otorisasi
 - Semua cek dilakukan di server, bukan hanya di UI.
 - Implementasi: `src/lib/auth/permissions.ts` (`can(role, permission)`), `requireUser()` untuk halaman, `requirePermission()` untuk server action.
-- Izin saat ini: `pengawas:manage` → SUPER_ADMIN.
+- Izin saat ini: `pengawas:manage` → SUPER_ADMIN; `laporan-kerja:access`, `spare-part:access`, `planning-job:access` → SUPER_ADMIN, PENGAWAS; `laporan-data:access` → SUPER_ADMIN (SEMENTARA, ADR-010).
+- Menu disembunyikan sesuai izin **dan** setiap halaman tetap memeriksa izin di server (diuji E2E).
 - Matriks akses per modul ditulis di setiap `docs/features/<modul>.md`.
 - Visibilitas data antar-Pengawas ⛔ Q16.
 

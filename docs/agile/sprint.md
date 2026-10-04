@@ -29,6 +29,27 @@
 
 ---
 
+## Sprint 2 — Dashboard (2026-10-04)
+
+**Goal:** Navigasi dan dashboard per role, dengan state loading/empty/error lengkap.
+**Story:** US-2.1 – US-2.4
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-04 | US-2.3 | Navigasi per role (`navigation.ts`), bottom nav mobile + sidebar desktop, izin per modul | `features/dashboard-navigation.md`, `security.md`, `design-system.md` |
+| 2026-10-04 | US-2.1, 2.2 | Dashboard Owner & Pengawas (daftar shortcut, jumlah Pengawas aktif), placeholder 4 modul | `features/dashboard-navigation.md`, ADR-010 |
+| 2026-10-04 | US-2.4 | `loading.tsx`, `error.tsx` (root & `(app)`), `global-error.tsx`, `not-found.tsx`, `EmptyState`, `NetworkBanner` | `architecture.md`, `design-system.md` |
+| 2026-10-04 | — | Temuan visual: jam "terakhir masuk" bergantung zona server → `formatDateTime` + `APP_TIME_ZONE` | ADR-011 |
+| 2026-10-04 | — | Temuan uji DB mati: error di layout jatuh ke `global-error` tanpa styling → tambah `app/error.tsx` | `architecture.md` |
+| 2026-10-04 | — | Verifikasi visual pertama dengan Firefox headless (termasuk halaman login Sprint 1) + E2E 22 cek rute | `features/dashboard-navigation.md` |
+
+### Catatan
+- Laporan Data untuk Pengawas dan zona waktu masih SEMENTARA (Q13, Q22).
+- Belum diuji di perangkat nyata; CI GitHub belum berjalan.
+
+---
+
 ## Sprint 1 — Authentication (mulai 2026-10-03)
 
 **Goal:** Owner dan Pengawas bisa masuk dengan aman; Owner bisa mengelola akun Pengawas.

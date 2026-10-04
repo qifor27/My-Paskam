@@ -25,7 +25,7 @@ export function LogoutButton() {
         })
       }
       className={cn(
-        "flex size-11 items-center justify-center rounded-md hover:bg-brand-800",
+        "flex size-11 shrink-0 items-center justify-center rounded-md hover:bg-brand-900/40",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
         "disabled:opacity-60",
       )}

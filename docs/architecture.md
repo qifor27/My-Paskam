@@ -46,7 +46,13 @@ src/
     globals.css          # design token Tailwind (@theme)
     login/               # halaman + server action login/logout
     (app)/               # area setelah login; layout memanggil requireUser()
+      loading.tsx        # skeleton saat halaman dimuat
+      error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
+      laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul
+    error.tsx            # error di layout (mis. DB tidak terjangkau)
+    global-error.tsx     # error di root layout
+    not-found.tsx        # 404
     dev/ui/              # referensi komponen, 404 di produksi
   components/            # komponen aplikasi (ErrorAlert, PageHeader, ...)
     ui/                  # komponen dasar (shadcn-style)
@@ -56,6 +62,8 @@ src/
     audit.ts             # tulis audit_log
     auth/                # config, password (scrypt), session, permissions, rate limit, validasi
     request.ts           # IP & user agent dari header
+    navigation.ts        # daftar menu + filter per role (satu sumber untuk nav & dashboard)
+    format.ts            # format tanggal dengan zona waktu aplikasi
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
     errors/              # AppError, kategori, pesan user, toPublicError
@@ -73,6 +81,14 @@ Konvensi: test berada di samping kode (`*.test.ts`). Alias import `@/` → `src/
 Setiap mutasi = server action di `actions.ts` milik route-nya:
 `runAction(name, fn)` → di dalamnya `requirePermission()` → `parseForm(schema)` → logika → `audit()` → return data.
 Hasil selalu `ActionResult` (`{ ok: true, data } | { ok: false, error: PublicError }`); action tidak pernah melempar error ke client. Di client, `useServerAction` mengubah kegagalan transport menjadi error `NETWORK`.
+
+## Error Boundary
+| Lokasi error | Ditangkap oleh | Tampilan |
+|---|---|---|
+| Halaman di `(app)/` | `(app)/error.tsx` | Navigasi tetap ada |
+| Layout `(app)` (cek sesi, DB mati) | `app/error.tsx` | Header + pesan |
+| Root layout | `app/global-error.tsx` | Versi darurat |
+Kode laporan = `error.digest`, sama dengan yang tercetak di log server.
 
 ## Alur Autentikasi
 `/login` → `login()` → cek `rate_limit` → cari user → `verifySecret` (scrypt) → `createSession` (cookie + baris `session`) → `/`.

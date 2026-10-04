@@ -76,7 +76,7 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q21. Re-authentication cleanup:** cukup password Owner, atau perlu 2FA di masa depan?
 
 ### Umum
-- **Q22. Zona waktu** (WIB/WITA/WIT) dan format tanggal.
+- **Q22. Zona waktu** (WIB/WITA/WIT) dan format tanggal. *(Sementara: WIB lewat `APP_TIME_ZONE`, ADR-011.)*
 - **Q23. Hosting/deployment** (Vercel? VPS?) dan **tool monitoring** (Sentry?) karena §27 menundanya ke architecture phase.
 - **Q24. Backup database** dan target RPO/RTO, belum disebut sama sekali.
 - **Q25.** Daftar browser/perangkat minimum yang didukung (versi iOS Safari penting untuk PWA dan IndexedDB).

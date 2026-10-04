@@ -8,6 +8,10 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Dashboard Owner dan Pengawas dengan shortcut modul sesuai role (Sprint 2, US-2.1, US-2.2).
+- Navigasi bawah di HP dan sidebar di desktop; menu mengikuti izin role (Sprint 2, US-2.3).
+- Halaman loading, halaman error dengan kode laporan dan COBA LAGI, halaman 404, dan banner saat offline (Sprint 2, US-2.4).
+- Halaman sementara untuk modul Laporan Kerja, Order Spare Part, Planning Job, dan Laporan Data (Sprint 2).
 - Halaman `/login` dengan pilihan PENGAWAS/OWNER: login Pengawas (Kode + PIN) dan Owner (email/username + password) (Sprint 1, US-1.1–1.3).
 - Sesi login aman + pesan "Sesi Anda telah berakhir" + tombol keluar (Sprint 1, US-1.4).
 - Manajemen Pengawas untuk Owner: daftar, tambah, ubah, reset PIN, aktif/nonaktif (Sprint 1, US-1.5).
@@ -27,6 +31,8 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - `prd.md` dipindah ke `docs/PRD.md` (US-0.8).
 
 ### Fixed
+- Waktu "terakhir masuk" kini selalu ditampilkan dalam zona waktu aplikasi, bukan zona waktu server (Sprint 2).
+- Error saat database tidak terjangkau kini tampil dengan desain aplikasi, bukan halaman darurat polos (Sprint 2).
 - Pesan validasi bawaan Zod kini berbahasa Indonesia; field yang tidak terkirim menampilkan "Wajib diisi" (Sprint 1).
 
 ### Security

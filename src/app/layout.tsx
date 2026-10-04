@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Konten boleh sampai tepi layar iPhone; area aman diatur lewat env(safe-area-inset-*).
+  viewportFit: "cover",
   width: "device-width",
   initialScale: 1,
   themeColor: "#1e4fa3",

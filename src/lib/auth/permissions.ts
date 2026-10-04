@@ -4,6 +4,12 @@ import type { Role } from "@/generated/prisma/enums";
 // Visibilitas data antar-Pengawas (Q16) ditambahkan saat modul data dibuat.
 export const PERMISSIONS = {
   "pengawas:manage": ["SUPER_ADMIN"], // PRD §12
+  // Akses modul (PRD §13). Aturan per-record menyusul di sprint modul.
+  "laporan-kerja:access": ["SUPER_ADMIN", "PENGAWAS"],
+  "spare-part:access": ["SUPER_ADMIN", "PENGAWAS"],
+  "planning-job:access": ["SUPER_ADMIN", "PENGAWAS"],
+  // SEMENTARA (Q13): hanya Owner sampai diputuskan apakah Pengawas boleh melihat.
+  "laporan-data:access": ["SUPER_ADMIN"],
 } as const satisfies Record<string, readonly Role[]>;
 
 export type Permission = keyof typeof PERMISSIONS;

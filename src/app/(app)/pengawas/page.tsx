@@ -3,17 +3,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AccessDenied } from "@/components/access-denied";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
+import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Pengawas" };
-
-const dateFormat = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" });
 
 export default async function PengawasListPage({
   searchParams,
@@ -38,21 +38,21 @@ export default async function PengawasListPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <PageHeader title="Pengawas" backHref="/" action={list.length > 0 ? addButton : undefined} />
+      <PageHeader title="Pengawas" action={list.length > 0 ? addButton : undefined} />
 
       {dibuat ? <Alert tone="success">Akun Pengawas berhasil dibuat.</Alert> : null}
 
       {list.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-[var(--radius-control)] border border-dashed border-border bg-surface px-4 py-10 text-center">
-          <UserRound className="size-8 text-ink-muted" aria-hidden />
-          <div>
-            <p className="font-medium">Belum ada Pengawas</p>
-            <p className="text-sm text-ink-muted">Buat akun agar Pengawas bisa masuk dengan Kode dan PIN.</p>
-          </div>
-          <Link href="/pengawas/baru" className={buttonVariants()}>
-            <Plus aria-hidden /> TAMBAH PENGAWAS
-          </Link>
-        </div>
+        <EmptyState
+          icon={UserRound}
+          title="Belum ada Pengawas"
+          description="Buat akun agar Pengawas bisa masuk dengan Kode dan PIN."
+          action={
+            <Link href="/pengawas/baru" className={buttonVariants()}>
+              <Plus aria-hidden /> TAMBAH PENGAWAS
+            </Link>
+          }
+        />
       ) : (
         <ul className="divide-y divide-border overflow-hidden rounded-[var(--radius-control)] border border-border bg-surface">
           {list.map((p) => (
@@ -66,7 +66,7 @@ export default async function PengawasListPage({
                   <p className="text-sm text-ink-muted">
                     <code>{p.kodePengawas}</code>
                     {" · "}
-                    {p.lastLoginAt ? `Terakhir masuk ${dateFormat.format(p.lastLoginAt)}` : "Belum pernah masuk"}
+                    {p.lastLoginAt ? `Terakhir masuk ${formatDateTime(p.lastLoginAt)}` : "Belum pernah masuk"}
                   </p>
                 </div>
                 <span
