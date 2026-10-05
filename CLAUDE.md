@@ -64,6 +64,7 @@ npm test -- src/lib/sync      # jalankan test tertentu
 Stack terpasang: Next.js 16 (App Router, Turbopack), React 19, TypeScript 6, Tailwind 4 (token di `src/app/globals.css`), Prisma 7 + `@prisma/adapter-pg`, Zod 4, Vitest 5, Lucide.
 Pola mutasi: server action di `actions.ts` per route, dibungkus `runAction` + `requirePermission` + `parseForm` + `audit` (lihat `docs/architecture.md`). Form client memakai `useServerAction`.
 Menu & izin halaman: tambah modul di `src/lib/navigation.ts` + permission di `src/lib/auth/permissions.ts`. Format tanggal hanya lewat `src/lib/format.ts`.
+Modul data lapangan baru: ikuti langkah "Menambah modul data lapangan baru" di `docs/architecture.md` (registry foto `src/lib/photo/modules.ts`, akses `src/lib/records/access.ts`).
 Foto: upload lewat `POST /api/foto`, akses lewat `GET /api/foto/:id`, file via `storage()` (`src/lib/storage`, driver local → folder `storage/`). Draft offline: IndexedDB lewat `src/lib/draft-store.ts`. Hapus data bisnis = soft delete (`deleted_at`).
 Parameter auth sementara (PIN, lockout, durasi sesi) hanya di `src/lib/auth/config.ts`.
 Catatan Prisma 7: URL DB ada di `prisma.config.ts`, bukan di `schema.prisma`; import client dari `@/generated/prisma/client`, dan akses DB hanya lewat `src/lib/db.ts` (server-only).

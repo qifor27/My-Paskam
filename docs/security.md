@@ -24,9 +24,10 @@
 - Matriks akses per modul ditulis di setiap `docs/features/<modul>.md`.
 - **Laporan Kerja (ADR-014):** Pengawas hanya melihat & mengubah laporan miliknya (`supervisor_id`/`created_by` = user login, diisi server, tidak dari form); Owner melihat semua, tidak mengubah. Laporan orang lain → halaman "tidak ditemukan" tanpa data (status 200 karena streaming, ADR-015).
 - Izin baru: `laporan-kerja:create` (PENGAWAS), `laporan-kerja:view-all` (SUPER_ADMIN), `unit:manage` (SUPER_ADMIN).
+- **Order Spare Part (ADR-016):** aturan sama dengan Laporan Kerja; izin `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Aturan kepemilikan dipusatkan di `src/lib/records/access.ts`.
 
 ## Foto & Storage (ADR-015)
-- **Upload** `POST /api/foto`: wajib login + `laporan-kerja:create`; cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
+- **Upload** `POST /api/foto`: wajib login + izin buat sesuai modul (`module` = `LAPORAN_KERJA` / `ORDER_SPARE_PART`, registry `src/lib/photo/modules.ts`); cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
 - **Akses** `GET /api/foto/:id`: tidak ada URL publik. Setiap request dicek: foto milik laporan yang boleh dilihat user dan diunggah pembuat laporan; foto draft hanya pengunggah. Selain itu → 404 (keberadaan tidak terungkap). Header `Cache-Control: private`, `X-Content-Type-Options: nosniff`.
 - **Privasi**: kompresi di HP membuang EXIF (lokasi GPS, model HP).
 - **Storage key** dibuat server dari UUID dan divalidasi regex (anti path traversal). Driver `local` hanya untuk development; produksi memakai bucket privat (Supabase, menyusul Q23).
@@ -47,6 +48,7 @@ Implementasi: `src/lib/logger.ts`. Key dipecah per kata (camelCase/snake_case), 
 | PENGAWAS_CREATED / UPDATED (from→to) / ACTIVATED / DEACTIVATED / PIN_RESET | Sprint 1 |
 | LAPORAN_CREATED / UPDATED / DELETED (detail: laporanId, unit, tanggal, jumlah foto) | Sprint 3 |
 | UNIT_CREATED / UPDATED (from→to) / ACTIVATED / DEACTIVATED | Sprint 3 |
+| SPARE_PART_CREATED / UPDATED / DELETED (detail: sparePartId, unit, partName, jumlah foto) | Sprint 4 |
 
 Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis audit tidak menggagalkan aksi utama (dicatat di log aplikasi).
 | PHOTO_CLEANUP | Sprint 8 |
@@ -61,3 +63,4 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 | 2026-10-05 | Sprint 3 | File palsu, foto lintas Pengawas, edit laporan orang lain, Owner membuat laporan — semua ditolak | OK |
 | 2026-10-05 | Sprint 3 | `notFound()` di bawah `loading.tsx` = status 200 (UI tidak ditemukan, tanpa data) | Diterima (ADR-015) |
 | 2026-10-05 | Sprint 3 | Foto yatim (laporan tidak pernah disimpan) menumpuk di storage | Terbuka → Sprint 8 cleanup |
+| 2026-10-05 | Sprint 4 spare part (E2E 21 cek) | Foto tidak bisa dipakai lintas modul/record; Owner & Pengawas lain ditolak | OK |

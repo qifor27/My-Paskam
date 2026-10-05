@@ -29,6 +29,27 @@
 
 ---
 
+## Sprint 4 — Order Spare Part (2026-10-05)
+
+**Goal:** Pengawas mendokumentasikan spare part yang rusak beserta foto; Owner melihat semua.
+**Story:** US-4.1, US-4.3 (US-4.2 dibatalkan) + perubahan BBM dari Sprint 3
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-05 | — | Jawaban Owner: BBM = jumlah; HM 24, foto 6, operator teks dikonfirmasi; spare part tanpa status | ADR-016, ADR-014 |
+| 2026-10-05 | — | Migrasi: BBM DECIMAL(6,1) ≥ 0; tabel `order_spare_part` | `database.md` |
+| 2026-10-05 | — | BBM di form/detail/daftar menjadi input jumlah (`decimalField` bersama HM) | `features/laporan-kerja.md` |
+| 2026-10-05 | — | Generalisasi foto per modul (registry), akses kepemilikan bersama, komponen `FormAlerts`/`DeleteRecord`/`LocalDrafts` | `architecture.md`, `design-system.md`, `security.md` |
+| 2026-10-05 | US-4.1, 4.3 | Form, daftar per hari, detail, edit, hapus spare part | `features/order-spare-part.md` |
+| 2026-10-05 | — | Temuan uji interaktif: autosave tertunda menulis ulang draft setelah tersimpan (muncul di "Belum terkirim") → diperbaiki di kedua form | `features/laporan-kerja.md` |
+| 2026-10-05 | — | Verifikasi: 44 unit test; E2E S1 (21) + S2 (29) + S3 (34) + S4 (21) lulus; alur interaktif spare part 3× lulus | — |
+
+### Catatan
+- Belum dijawab: Q9 kolom jumlah/prioritas/nomor part; tafsiran visibilitas & foto wajib untuk spare part.
+
+---
+
 ## Sprint 3 — Laporan Kerja (2026-10-05)
 
 **Goal:** Pengawas mencatat laporan kerja lengkap dengan foto dari HP; Owner memantau semua.

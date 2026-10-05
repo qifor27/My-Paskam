@@ -123,12 +123,12 @@
 - Menjawab: Q1–Q7, Q16 (docs/prd-analysis.md)
 - Keputusan:
   - **Q1/Q2 Status & approval: tidak perlu.** Laporan tidak punya status bisnis maupun alur persetujuan; field `approved_by` dan `status` dari PRD §14 tidak dipakai. Status sinkron offline (PRD §25) tetap ada di sisi perangkat.
-  - **Q3 Operator: tidak perlu daftar.** *Tafsiran:* nama operator diketik bebas (teks), dengan saran dari nama yang pernah diketik Pengawas tersebut.
+  - **Q3 Operator: tidak perlu daftar.** Nama operator diketik bebas (teks), dengan saran dari nama yang pernah diketik Pengawas tersebut (dikonfirmasi 2026-10-05).
   - **Q4 Unit: bisa ditambah.** Unit = master data yang dikelola Owner (tambah, ubah nama, aktif/nonaktif). Awal: PASKAM 1–4, DUMP, TOWING.
-  - **Q5 HM = total jam kerja** (angka desimal, 1 angka di belakang koma). *Sementara:* 0–24 jam per laporan.
-  - **Q5 BBM (Solar): pilihan 1–6.** *Tafsiran:* nilai bulat 1 sampai 6 dipilih dengan tombol (satuan menunggu konfirmasi: liter/level/strip).
+  - **Q5 HM = total jam kerja** (angka desimal, 1 angka di belakang koma). 0–24 jam per laporan (dikonfirmasi Owner 2026-10-05).
+  - **Q5 BBM (Solar):** ~~pilihan 1–6~~ → **diubah 2026-10-05 (ADR-016): kolom jumlah (quantity)**.
   - **Q6 Edit/hapus: boleh.** Pengawas boleh mengedit dan menghapus laporan miliknya sendiri. Hapus = soft delete + audit log.
-  - **Q7 Foto: wajib.** Minimal 1 foto. *Sementara:* maksimal 6 foto per laporan.
+  - **Q7 Foto: wajib.** Minimal 1 foto, maksimal 6 foto per laporan (dikonfirmasi 2026-10-05).
   - **Q16 Visibilitas (usulan Owner + rekomendasi):** Pengawas tercatat otomatis dari akun yang login (`supervisor_id` = user login, tidak diisi manual). Owner melihat semua laporan; Pengawas hanya melihat laporannya sendiri. Laporan dibuat oleh Pengawas; Owner hanya melihat.
 - Konsekuensi: Permission baru `laporan-kerja:create` (PENGAWAS), `laporan-kerja:view-all` (SUPER_ADMIN), `unit:manage` (SUPER_ADMIN).
 
@@ -145,3 +145,16 @@
   - **Draft di HP:** IndexedDB (`paskam` → `laporan-drafts`), simpan otomatis ±0,6 dtk berisi isian + blob foto yang belum terunggah; dihapus setelah tersimpan di server. `navigator.storage.persist()` diminta agar tidak dihapus browser.
   - **Foto dilepas saat edit** dihapus (soft delete + file dihapus) ketika laporan disimpan.
 - Konsekuensi: Foto yatim (diunggah tapi laporan tak pernah disimpan) perlu dibersihkan berkala — dicatat untuk Sprint 8 (Storage Management). Halaman yang memakai `notFound()` di bawah `loading.tsx` mengembalikan status 200 dengan UI "tidak ditemukan" (perilaku streaming Next.js); tidak ada data yang bocor (diuji E2E).
+
+### ADR-016: BBM sebagai jumlah & aturan Order Spare Part (jawaban Owner 2026-10-05)
+- Tanggal: 2026-10-05
+- Status: ACCEPTED (butir *tafsiran* menunggu konfirmasi)
+- Menjawab: konfirmasi Sprint 3; Q8, Q9 (docs/prd-analysis.md)
+- Keputusan:
+  - **BBM (Solar) = jumlah (quantity)**, angka ≥ 0 dengan maks. 1 angka desimal, tanpa satuan tetap (menggantikan pilihan 1–6 di ADR-014).
+  - **HM maks. 24 jam, foto maks. 6, operator teks bebas** — dikonfirmasi.
+  - **Order Spare Part tidak memakai status.** Tujuannya **dokumentasi spare part yang rusak**, bukan alur pemesanan. Field `status` PRD §15 tidak dipakai.
+  - Field Order Spare Part: unit, nama spare part, deskripsi kerusakan, lokasi, foto, dicatat oleh (otomatis), waktu (otomatis) — sesuai PRD §15.
+  - *Tafsiran (disamakan dengan Laporan Kerja, ADR-014):* foto wajib 1–6; dibuat oleh Pengawas (nama tercatat otomatis); Pengawas hanya melihat miliknya, Owner melihat semua; Pengawas boleh mengubah/menghapus miliknya (soft delete).
+  - *Belum dijawab (Q9):* kolom jumlah, prioritas, atau nomor part — tidak dibuat dulu.
+- Konsekuensi: Izin baru `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Modul foto & draft digeneralisasi untuk dipakai dua modul.

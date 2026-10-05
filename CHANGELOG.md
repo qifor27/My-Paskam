@@ -8,6 +8,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Order Spare Part: dokumentasi spare part yang rusak (unit, nama spare part, deskripsi kerusakan, lokasi, foto) tanpa status order; Owner melihat semua catatan (Sprint 4, ADR-016).
 - Laporan Kerja: buat, lihat, ubah, hapus; tanggal, unit, operator, HM (total jam), BBM (Solar) 1–6, lokasi, deskripsi, dan foto wajib (Sprint 3, ADR-014).
 - Foto dari Kamera atau Galeri: dikompres di HP, diunggah per foto dengan progress, bisa dicoba lagi, dan dicoba ulang otomatis saat online (Sprint 3).
 - Laporan yang belum terkirim tersimpan otomatis di HP dan tampil di bagian "Belum terkirim" (Sprint 3).
@@ -38,6 +39,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Fondasi offline: client UUID dan status sinkronisasi (Sprint 0, US-0.7, ADR-004).
 
 ### Changed
+- BBM (Solar) di Laporan Kerja kini diisi sebagai jumlah (angka), bukan pilihan 1–6 (ADR-016).
 - Tombol utama kini biru (oranye menjadi aksen); label tombol memakai huruf biasa ("Simpan", "Coba lagi") (ADR-013).
 - Header biru di HP diganti tampilan terang; tombol Keluar pindah ke halaman Akun.
 - Teks status, pesan error, dan placeholder lebih kontras untuk dibaca di bawah matahari; warna peringatan kini kuning (ADR-012).
@@ -45,6 +47,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - `prd.md` dipindah ke `docs/PRD.md` (US-0.8).
 
 ### Fixed
+- Laporan/catatan yang baru tersimpan tidak lagi muncul kembali di "Belum terkirim" bila tombol Simpan ditekan tepat setelah foto selesai diunggah (Sprint 4).
 - Waktu "terakhir masuk" kini selalu ditampilkan dalam zona waktu aplikasi, bukan zona waktu server (Sprint 2).
 - Error saat database tidak terjangkau kini tampil dengan desain aplikasi, bukan halaman darurat polos (Sprint 2).
 - Pesan validasi bawaan Zod kini berbahasa Indonesia; field yang tidak terkirim menampilkan "Wajib diisi" (Sprint 1).

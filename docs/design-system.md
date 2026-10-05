@@ -112,6 +112,9 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 | ModulePlaceholder | `components/module-placeholder.tsx` | Sementara untuk modul/form yang belum dibangun. |
 | ChoiceChips | `components/ui/choice-chips.tsx` | Radio group berbentuk pill untuk opsi sedikit (unit, BBM 1–6, Hari ini/Kemarin). Terpilih = isian biru. `size="square"` 48 px untuk angka. |
 | Textarea | `components/ui/textarea.tsx` | Sama dengan Input, min. 112 px. |
+| FormAlerts | `components/form-alerts.tsx` | Banner form data lapangan: draft dipulihkan (Buang perubahan), koneksi putus ("tersimpan di HP" + Coba kirim lagi), sesi habis, error server. |
+| DeleteRecord | `components/delete-record.tsx` | Tombol hapus `danger-outline` → konfirmasi dua langkah inline. |
+| LocalDrafts | `components/local-drafts.tsx` | Bagian "Belum terkirim (n)" di daftar modul: draft dari IndexedDB + badge "Tersimpan di HP". |
 | PhotoGrid | `components/photo-grid.tsx` | Grid 3 kolom, overlay proses/progress %, overlay gagal + "Coba lagi", tanda terunggah, tombol hapus; tombol **Kamera** & **Galeri** terpisah; penghitung "n/6 foto". |
 
 ## 6. Layout

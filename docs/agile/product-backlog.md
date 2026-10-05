@@ -42,9 +42,10 @@
 - [x] US-3.6 List, detail, edit, hapus
 
 ## Sprint 4 — Order Spare Part
-- [ ] US-4.1 Form + foto ⛔ Q9
-- [ ] US-4.2 Status flow ⛔ Q8
-- [ ] US-4.3 List & detail
+> Dokumen: [order-spare-part.md](../features/order-spare-part.md) · Aturan: ADR-016
+- [x] US-4.1 Form + foto (dokumentasi spare part rusak)
+- [x] ~~US-4.2 Status flow~~ — dibatalkan: tidak ada status order (ADR-016)
+- [x] US-4.3 List, detail, edit, hapus
 
 ## Sprint 5 — Planning Job
 - [ ] US-5.1 Form planning ⛔ Q10, Q12

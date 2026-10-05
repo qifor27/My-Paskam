@@ -47,7 +47,7 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q6. Edit/hapus:** bolehkah Pengawas mengedit atau menghapus laporan setelah submit/approve?
 - **Q7. Foto:** berapa jumlah minimum/maksimum foto per laporan? Apakah wajib?
 
-### Order Spare Part (Sprint 4)
+### Order Spare Part (Sprint 4) — ✅ Q8 dijawab (tanpa status, ADR-016); Q9 belum
 - **Q8. Status flow?** (mis. `DIAJUKAN → DIPROSES → DIPESAN → DITERIMA / DITOLAK`?) Siapa yang boleh mengubah status?
 - **Q9.** Perlu field jumlah (qty), prioritas/urgensi, atau nomor part?
 

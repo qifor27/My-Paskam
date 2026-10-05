@@ -49,6 +49,7 @@ src/
       akun/              # profil + keluar (+ menu admin untuk Owner)
       laporan-kerja/     # daftar, baru, [id] detail, [id]/edit, actions.ts, laporan-form.tsx
       unit/              # master data unit (Owner)
+      spare-part/        # daftar, baru, [id], [id]/edit, actions.ts, spare-part-form.tsx
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
@@ -70,8 +71,10 @@ src/
     format.ts            # format tanggal (zona aplikasi), todayISO, dayLabel, desimal
     route.ts             # handleRoute (route handler → PublicError JSON), cek Origin
     storage/             # StorageDriver (local; Supabase menyusul)
-    photo/               # rules (batas, magic bytes), compress (client), service (server)
-    laporan-kerja/       # schema, access, queries, draft (IndexedDB)
+    photo/               # rules, compress (client), service (server), modules (registry per modul)
+    laporan-kerja/       # schema (+ decimalField), access, queries, draft (IndexedDB)
+    spare-part/          # schema, access, queries, draft
+    records/access.ts    # aturan kepemilikan bersama (canViewOwned / canEditOwned)
     draft-store.ts       # wrapper IndexedDB tanpa dependency
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
@@ -107,6 +110,13 @@ Form (client) ──pilih foto──► compress (canvas) ──XHR + progress�
                                                          └─ hapus foto yang dilepas, audit, revalidate
 Detail ──<img src=/api/foto/:id>──► cek izin per request ──► file (private cache)
 ```
+
+### Menambah modul data lapangan baru (pola Sprint 3–4)
+1. Model Prisma (id UUID client, supervisor_id, created_by, deleted_at) + migrasi.
+2. `src/lib/<modul>/` : schema (zod), access (pakai `records/access`), queries, draft (store baru di `draft-store.ts`, naikkan `DB_VERSION`).
+3. Daftarkan di `PHOTO_MODULES` (`src/lib/photo/modules.ts`) + enum `PhotoModule` bila memakai foto.
+4. `actions.ts` (runAction → requirePermission → parseForm → assertPhotosUploaded → upsert → removeDetachedPhotos → audit).
+5. Form memakai `usePhotoUploads(id, initial, module)`, `PhotoGrid`, `FormAlerts`, `StickyActionBar`; halaman memakai `LocalDrafts`, `DeleteRecord`.
 
 ## Alur Autentikasi
 `/login` → `login()` → cek `rate_limit` → cari user → `verifySecret` (scrypt) → `createSession` (cookie + baris `session`) → `/`.
