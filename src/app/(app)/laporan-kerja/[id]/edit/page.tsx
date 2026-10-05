@@ -44,7 +44,7 @@ export default async function EditLaporanPage({ params }: { params: Promise<{ id
           unitId: laporan.unitId,
           operatorName: laporan.operatorName,
           hmJam: String(Number(laporan.hmJam)).replace(".", ","),
-          bbm: String(laporan.bbm),
+          bbm: String(Number(laporan.bbm)).replace(".", ","),
           lokasi: laporan.lokasi,
           deskripsi: laporan.deskripsi,
         }}

@@ -13,6 +13,13 @@ export function formatDateTime(date: Date): string {
   return dateTime.format(date);
 }
 
+const timeOnly = new Intl.DateTimeFormat("id-ID", { timeStyle: "short", timeZone: APP_TIME_ZONE });
+
+/** "14.05" di zona waktu aplikasi. */
+export function formatTime(date: Date): string {
+  return timeOnly.format(date);
+}
+
 const hourFormat = new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: APP_TIME_ZONE });
 
 /** Sapaan sesuai jam di zona waktu aplikasi. */

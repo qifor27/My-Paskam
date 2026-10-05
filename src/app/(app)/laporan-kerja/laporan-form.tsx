@@ -1,13 +1,11 @@
 "use client";
 
-import { RotateCw, Save } from "lucide-react";
-import Link from "next/link";
+import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 
-import { ErrorAlert } from "@/components/error-alert";
+import { FormAlerts } from "@/components/form-alerts";
 import { PhotoGrid } from "@/components/photo-grid";
-import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChoiceChips } from "@/components/ui/choice-chips";
@@ -137,6 +135,9 @@ function LaporanFormInner({
   const [savedLocally, setSavedLocally] = useState(false);
   const photos = usePhotoUploads(id, initialPhotos);
   const formRef = useRef<HTMLFormElement>(null);
+  // Setelah tersimpan di server, autosave yang masih tertunda tidak boleh
+  // menulis draft lagi (race: foto selesai → Simpan langsung ditekan).
+  const savedRef = useRef(false);
   const fieldErrors = error?.fieldErrors ?? {};
 
   // Error sebuah field hilang begitu field itu diubah ("reward early", riset UX).
@@ -157,6 +158,7 @@ function LaporanFormInner({
   useEffect(() => {
     if (!dirty && photos.items.length === initialPhotos.length) return;
     const timer = setTimeout(() => {
+      if (savedRef.current) return;
       laporanDrafts
         .save({
           id,
@@ -208,6 +210,7 @@ function LaporanFormInner({
         result = { ok: false, error: networkError() };
       }
       if (result.ok) {
+        savedRef.current = true;
         await laporanDrafts.remove(id).catch(() => {});
         router.push(`/laporan-kerja/${id}?tersimpan=${result.data.created ? "baru" : "ubah"}`);
         router.refresh();
@@ -225,53 +228,11 @@ function LaporanFormInner({
   }
 
   const unitOptions = units.map((u) => ({ value: u.id, label: u.name }));
-  const bbmOptions = LAPORAN_RULES.bbmOptions.map((n) => ({ value: String(n), label: String(n) }));
   const yesterday = shiftISO(today, -1);
 
   return (
     <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-4">
-      {restored ? (
-        <Alert
-          tone="info"
-          action={
-            <Button type="button" variant="secondary" size="sm" onClick={discardDraft} className="self-start">
-              Buang perubahan
-            </Button>
-          }
-        >
-          {mode === "edit" ? "Perubahan yang belum terkirim dipulihkan dari HP." : "Melanjutkan draft yang tersimpan di HP."}
-        </Alert>
-      ) : null}
-
-      {error && error.category === "NETWORK" ? (
-        <Alert
-          tone="warning"
-          action={
-            <Button type="submit" variant="secondary" size="sm" loading={pending} className="self-start">
-              <RotateCw aria-hidden /> Coba kirim lagi
-            </Button>
-          }
-        >
-          Koneksi terputus. Laporan <strong>tersimpan di HP</strong> sebagai draft dan bisa dikirim saat koneksi kembali.
-        </Alert>
-      ) : error && error.category === "SESSION_EXPIRED" ? (
-        <Alert tone="warning">
-          Sesi Anda telah berakhir. Laporan tetap tersimpan di HP.{" "}
-          <Link href="/login" className="font-semibold underline">
-            Login kembali
-          </Link>{" "}
-          lalu buka draft ini dari halaman Laporan Kerja.
-        </Alert>
-      ) : error && error.category !== "VALIDATION" ? (
-        <ErrorAlert
-          error={error}
-          action={
-            <Button type="submit" variant="secondary" size="sm" loading={pending} className="self-start">
-              Coba lagi
-            </Button>
-          }
-        />
-      ) : null}
+      <FormAlerts error={error} pending={pending} restored={restored} mode={mode} onDiscard={discardDraft} draftsHref="/laporan-kerja" />
 
       <Card className="flex flex-col gap-5 p-5">
         <h2 className="text-base font-semibold">Pekerjaan</h2>
@@ -383,17 +344,17 @@ function LaporanFormInner({
             </div>
           )}
         </Field>
-        <Field id="bbm" label="BBM (Solar)" error={fieldErrors.bbm}>
+        <Field id="bbm" label="BBM (Solar)" error={fieldErrors.bbm} hint="Jumlah, contoh: 40">
           {(p) => (
-            <ChoiceChips
-              name="bbm"
-              size="square"
-              labelledBy={p.id}
-              describedBy={p["aria-describedby"]}
-              invalid={p["aria-invalid"]}
-              options={bbmOptions}
+            <Input
+              {...p}
+              inputMode="decimal"
+              enterKeyHint="next"
+              autoComplete="off"
               value={fields.bbm}
-              onChange={(v) => set("bbm", v)}
+              onChange={(e) => set("bbm", e.target.value)}
+              placeholder="0"
+              className="tabular-nums"
             />
           )}
         </Field>

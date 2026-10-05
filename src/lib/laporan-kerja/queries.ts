@@ -4,6 +4,7 @@ import { can } from "@/lib/auth/permissions";
 import type { CurrentUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { dateToISO } from "@/lib/format";
+import { photoCounts } from "@/lib/photo/service";
 
 export const PAGE_SIZE = 20;
 
@@ -28,12 +29,7 @@ export async function listLaporan(user: CurrentUser, limit: number) {
     include: { unit: { select: { name: true } }, supervisor: { select: { name: true } } },
   });
   const page = rows.slice(0, limit);
-  const counts = await db.photo.groupBy({
-    by: ["recordId"],
-    where: { module: "LAPORAN_KERJA", recordId: { in: page.map((r) => r.id) }, deletedAt: null },
-    _count: true,
-  });
-  const countBy = new Map(counts.map((c) => [c.recordId, c._count]));
+  const countBy = await photoCounts("LAPORAN_KERJA", page.map((r) => r.id));
 
   const items: LaporanRow[] = page.map((r) => ({
     id: r.id,
@@ -41,7 +37,7 @@ export async function listLaporan(user: CurrentUser, limit: number) {
     unitName: r.unit.name,
     operatorName: r.operatorName,
     hmJam: Number(r.hmJam),
-    bbm: r.bbm,
+    bbm: Number(r.bbm),
     lokasi: r.lokasi,
     supervisorName: r.supervisor.name,
     photoCount: countBy.get(r.id) ?? 0,

@@ -21,11 +21,14 @@ export type PhotoItem = {
 
 const NETWORK_MESSAGE = "Foto belum terunggah karena koneksi terputus. Foto tetap tersimpan di HP.";
 
-function sendPhoto(item: PhotoItem, recordId: string, onProgress: (p: number) => void) {
+export type PhotoModuleName = "LAPORAN_KERJA" | "ORDER_SPARE_PART";
+
+function sendPhoto(item: PhotoItem, module: PhotoModuleName, recordId: string, onProgress: (p: number) => void) {
   return new Promise<{ ok: true } | { ok: false; message: string }>((resolve) => {
     if (!item.blob) return resolve({ ok: false, message: "File foto tidak tersedia. Hapus lalu ambil ulang." });
     const body = new FormData();
     body.append("id", item.id);
+    body.append("module", module);
     body.append("recordId", recordId);
     body.append("width", String(item.width));
     body.append("height", String(item.height));
@@ -54,7 +57,7 @@ function sendPhoto(item: PhotoItem, recordId: string, onProgress: (p: number) =>
  * Kelola foto satu laporan: kompres → unggah per foto (progress) → coba lagi.
  * Foto langsung diunggah begitu dipilih agar saat "Simpan" tinggal mengirim teks.
  */
-export function usePhotoUploads(recordId: string, initial: PhotoItem[]) {
+export function usePhotoUploads(recordId: string, initial: PhotoItem[], module: PhotoModuleName = "LAPORAN_KERJA") {
   const [items, setItems] = useState<PhotoItem[]>(initial);
   const itemsRef = useRef(items);
   useEffect(() => {
@@ -72,11 +75,11 @@ export function usePhotoUploads(recordId: string, initial: PhotoItem[]) {
         return;
       }
       update(item.id, { status: "uploading", progress: 0, error: undefined });
-      const result = await sendPhoto(item, recordId, (progress) => update(item.id, { progress }));
+      const result = await sendPhoto(item, module, recordId, (progress) => update(item.id, { progress }));
       if (result.ok) update(item.id, { status: "uploaded", progress: 100, blob: undefined });
       else update(item.id, { status: "failed", error: result.message });
     },
-    [recordId, update],
+    [module, recordId, update],
   );
 
   const addFiles = useCallback(

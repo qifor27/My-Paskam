@@ -15,7 +15,7 @@ import { dayLabel, formatDecimal } from "@/lib/format";
 import { listLaporan, PAGE_SIZE, type LaporanRow } from "@/lib/laporan-kerja/queries";
 import { cn } from "@/lib/utils";
 
-import { LocalDrafts } from "./local-drafts";
+import { LocalDrafts } from "@/components/local-drafts";
 
 export const metadata: Metadata = { title: "Laporan Kerja" };
 
@@ -54,7 +54,7 @@ export default async function LaporanListPage({
       />
 
       {dihapus ? <Alert tone="success">Laporan dihapus.</Alert> : null}
-      {canCreate ? <LocalDrafts units={units} /> : null}
+      {canCreate ? <LocalDrafts kind="laporan-kerja" units={units} /> : null}
 
       {items.length === 0 ? (
         <EmptyState
@@ -89,7 +89,7 @@ export default async function LaporanListPage({
                         <Timer className="size-4" aria-hidden /> {formatDecimal(r.hmJam)} jam
                       </span>
                       <span className="inline-flex items-center gap-1">
-                        <Fuel className="size-4" aria-hidden /> BBM {r.bbm}
+                        <Fuel className="size-4" aria-hidden /> BBM {formatDecimal(r.bbm)}
                       </span>
                       <span className="inline-flex items-center gap-1">
                         <Camera className="size-4" aria-hidden /> {r.photoCount}

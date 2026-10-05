@@ -17,7 +17,9 @@ import { canEditLaporan, canViewLaporan } from "@/lib/laporan-kerja/access";
 import { laporanPhotos } from "@/lib/photo/service";
 import { cn } from "@/lib/utils";
 
-import { DeleteLaporan } from "./delete-laporan";
+import { DeleteRecord } from "@/components/delete-record";
+
+import { deleteLaporan } from "../actions";
 
 export const metadata: Metadata = { title: "Detail Laporan Kerja" };
 
@@ -61,7 +63,7 @@ export default async function LaporanDetailPage({
 
       <Card className="grid grid-cols-2 gap-px overflow-hidden bg-border p-0">
         <Stat label="HM" value={`${formatDecimal(Number(laporan.hmJam))} jam`} />
-        <Stat label="BBM (Solar)" value={String(laporan.bbm)} />
+        <Stat label="BBM (Solar)" value={formatDecimal(Number(laporan.bbm))} />
       </Card>
 
       <Card className="flex flex-col divide-y divide-border">
@@ -103,7 +105,7 @@ export default async function LaporanDetailPage({
         <ModuleTile icon="laporan-kerja" color="blue" className="hidden sm:flex" />
       </Card>
 
-      {editable ? <DeleteLaporan id={id} /> : null}
+      {editable ? <DeleteRecord id={id} action={deleteLaporan} redirectTo="/laporan-kerja?dihapus=1" noun="laporan" /> : null}
     </div>
   );
 }

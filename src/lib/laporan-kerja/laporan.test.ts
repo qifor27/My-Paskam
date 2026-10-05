@@ -10,7 +10,7 @@ const valid = {
   unitId: "0a1f6c2e-1d1e-4a51-9a10-000000000001",
   operatorName: " Joko ",
   hmJam: "7,5",
-  bbm: "3",
+  bbm: "40,5",
   lokasi: "Pit Utara",
   deskripsi: "Perawatan unit",
   photoIds: "2f1c1d3e-0b4a-4c8e-9a6b-1d2e3f4a5b6c",
@@ -33,20 +33,24 @@ describe("laporanSchema", () => {
   it("menerima input valid dan menormalkan nilai", () => {
     const data = laporanSchema(today).parse(valid);
     expect(data.hmJam).toBe(7.5);
-    expect(data.bbm).toBe(3);
+    expect(data.bbm).toBe(40.5);
     expect(data.operatorName).toBe("Joko");
     expect(data.photoIds).toHaveLength(1);
   });
 
-  it("aturan ADR-014: foto wajib, maks. 6; BBM 1–6; HM 0–24 dengan 1 desimal", () => {
+  it("aturan ADR-014/016: foto wajib, maks. 6; BBM jumlah >= 0; HM 0–24 dengan 1 desimal", () => {
     expect(issues({ photoIds: "" })).toEqual([["photoIds", "Tambahkan minimal 1 foto"]]);
     const seven = Array.from({ length: 7 }, (_, i) => `2f1c1d3e-0b4a-4c8e-9a6b-1d2e3f4a5b6${i}`).join(",");
     expect(issues({ photoIds: seven })).toEqual([["photoIds", "Maksimal 6 foto"]]);
-    expect(issues({ bbm: "7" })).toEqual([["bbm", "Pilih BBM 1–6"]]);
-    expect(issues({ bbm: "" })).toEqual([["bbm", "Pilih BBM 1–6"]]);
+    expect(issues({ bbm: "0" })).toBeUndefined();
+    expect(issues({ bbm: "120" })).toBeUndefined();
+    expect(issues({ bbm: "" })).toEqual([["bbm", "BBM wajib diisi"]]);
+    expect(issues({ bbm: "-5" })).toEqual([["bbm", "BBM berupa angka, contoh 40"]]);
+    expect(issues({ bbm: "12,25" })).toEqual([["bbm", "BBM maksimal 1 angka di belakang koma"]]);
     expect(issues({ hmJam: "25" })).toEqual([["hmJam", "HM maksimal 24 jam"]]);
     expect(issues({ hmJam: "7,55" })).toEqual([["hmJam", "HM maksimal 1 angka di belakang koma"]]);
     expect(issues({ hmJam: "tujuh" })).toEqual([["hmJam", "HM berupa angka, contoh 7,5"]]);
+    expect(issues({ hmJam: "100" })).toEqual([["hmJam", "HM maksimal 24 jam"]]);
   });
 
   it("tanggal tidak boleh di masa depan", () => {

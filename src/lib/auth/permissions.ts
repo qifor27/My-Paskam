@@ -11,6 +11,9 @@ export const PERMISSIONS = {
   "laporan-kerja:view-all": ["SUPER_ADMIN"],
   "unit:manage": ["SUPER_ADMIN"], // ADR-014: unit bisa ditambah
   "spare-part:access": ["SUPER_ADMIN", "PENGAWAS"],
+  // ADR-016: dokumentasi spare part rusak; Pengawas mencatat, Owner melihat semua.
+  "spare-part:create": ["PENGAWAS"],
+  "spare-part:view-all": ["SUPER_ADMIN"],
   "planning-job:access": ["SUPER_ADMIN", "PENGAWAS"],
   // SEMENTARA (Q13): hanya Owner sampai diputuskan apakah Pengawas boleh melihat.
   "laporan-data:access": ["SUPER_ADMIN"],

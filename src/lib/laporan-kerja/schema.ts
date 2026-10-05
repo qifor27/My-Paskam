@@ -4,9 +4,10 @@ import { PHOTO_RULES } from "@/lib/photo/rules";
 
 // Aturan ADR-014. Nilai SEMENTARA ditandai.
 export const LAPORAN_RULES = {
-  /** SEMENTARA: HM = total jam kerja per laporan. */
+  /** HM = total jam kerja per laporan (ADR-014, dikonfirmasi). */
   hmMax: 24,
-  bbmOptions: [1, 2, 3, 4, 5, 6] as const,
+  /** BBM (Solar) = jumlah (ADR-016); batas atas = kapasitas kolom DECIMAL(6,1). */
+  bbmMax: 99999.9,
   operatorMax: 100,
   lokasiMax: 150,
   deskripsiMax: 2000,
@@ -15,8 +16,26 @@ export const LAPORAN_RULES = {
 /** "7,5" / "7.5" / " 8 " → angka; null jika bukan angka desimal yang valid. */
 export function parseDecimalInput(input: string): number | null {
   const normalized = input.trim().replace(",", ".");
-  if (!/^\d{1,3}(\.\d+)?$/.test(normalized)) return null;
+  if (!/^\d{1,5}(\.\d+)?$/.test(normalized)) return null;
   return Number(normalized);
+}
+
+/** Field angka desimal (koma/titik), >= 0, maks. 1 angka di belakang koma. */
+export function decimalField(label: string, max: number, example: string, unit = "") {
+  return z
+    .string()
+    .trim()
+    .min(1, `${label} wajib diisi`)
+    .transform((v, ctx) => {
+      const n = parseDecimalInput(v);
+      if (n === null) {
+        ctx.addIssue({ code: "custom", message: `${label} berupa angka, contoh ${example}` });
+        return z.NEVER;
+      }
+      return n;
+    })
+    .refine((n) => n <= max, `${label} maksimal ${String(max).replace(".", ",")}${unit ? ` ${unit}` : ""}`)
+    .refine((n) => Math.round(n * 10) / 10 === n, `${label} maksimal 1 angka di belakang koma`);
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -34,25 +53,8 @@ export function laporanSchema(today: string) {
       .trim()
       .min(1, "Nama operator wajib diisi")
       .max(LAPORAN_RULES.operatorMax, `Maksimal ${LAPORAN_RULES.operatorMax} karakter`),
-    hmJam: z
-      .string()
-      .trim()
-      .min(1, "HM wajib diisi")
-      .transform((v, ctx) => {
-        const n = parseDecimalInput(v);
-        if (n === null) {
-          ctx.addIssue({ code: "custom", message: "HM berupa angka, contoh 7,5" });
-          return z.NEVER;
-        }
-        return n;
-      })
-      .refine((n) => n <= LAPORAN_RULES.hmMax, `HM maksimal ${LAPORAN_RULES.hmMax} jam`)
-      .refine((n) => Math.round(n * 10) / 10 === n, "HM maksimal 1 angka di belakang koma"),
-    bbm: z.coerce
-      .number({ error: "Pilih BBM 1–6" })
-      .int("Pilih BBM 1–6")
-      .min(1, "Pilih BBM 1–6")
-      .max(6, "Pilih BBM 1–6"),
+    hmJam: decimalField("HM", LAPORAN_RULES.hmMax, "7,5", "jam"),
+    bbm: decimalField("BBM", LAPORAN_RULES.bbmMax, "40"),
     lokasi: z
       .string()
       .trim()

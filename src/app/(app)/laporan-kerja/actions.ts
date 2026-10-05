@@ -11,7 +11,7 @@ import { AppError } from "@/lib/errors";
 import { todayISO } from "@/lib/format";
 import { canEditLaporan } from "@/lib/laporan-kerja/access";
 import { laporanSchema } from "@/lib/laporan-kerja/schema";
-import { removeDetachedPhotos } from "@/lib/photo/service";
+import { assertPhotosUploaded, removeDetachedPhotos } from "@/lib/photo/service";
 
 /**
  * Simpan laporan (buat atau ubah). Idempoten (ADR-004): id dibuat di client,
@@ -33,15 +33,7 @@ export async function saveLaporan(formData: FormData) {
       throw new AppError("VALIDATION", { fieldErrors: { unitId: "Unit tidak tersedia, pilih unit lain" } });
     }
 
-    const photos = await db.photo.findMany({
-      where: { id: { in: data.photoIds }, module: "LAPORAN_KERJA", recordId: data.id, uploadedById: user.id, deletedAt: null },
-      select: { id: true },
-    });
-    if (photos.length !== data.photoIds.length) {
-      throw new AppError("VALIDATION", {
-        fieldErrors: { photoIds: "Sebagian foto belum terunggah. Tunggu sampai selesai atau ketuk Coba lagi." },
-      });
-    }
+    await assertPhotosUploaded("LAPORAN_KERJA", user.id, data.id, data.photoIds);
 
     const values = {
       tanggal: new Date(`${data.tanggal}T00:00:00Z`),
@@ -62,7 +54,7 @@ export async function saveLaporan(formData: FormData) {
           }),
       ...data.photoIds.map((id, index) => db.photo.update({ where: { id }, data: { sortOrder: index } })),
     ]);
-    const removed = await removeDetachedPhotos(user.id, data.id, data.photoIds);
+    const removed = await removeDetachedPhotos("LAPORAN_KERJA", user.id, data.id, data.photoIds);
 
     await audit({
       action: existing ? "LAPORAN_UPDATED" : "LAPORAN_CREATED",

@@ -1,7 +1,7 @@
 # Fitur: Laporan Kerja
 
 > Sprint: 3 · Story: US-3.1–US-3.6 · Status: Done (nilai SEMENTARA ditandai)
-> PRD: §14, §18, §19, §23, §24, §39 · ADR terkait: ADR-003, ADR-004, ADR-013, ADR-014, ADR-015
+> PRD: §14, §18, §19, §23, §24, §39 · ADR terkait: ADR-003, ADR-004, ADR-013, ADR-014, ADR-015, ADR-016
 
 ## 1. Tujuan
 Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, dan foto. Owner memantau semua laporan.
@@ -13,17 +13,17 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 | Tidak ada status dan tidak ada persetujuan | ADR-014 (Q1/Q2) |
 | Pengawas tercatat otomatis dari akun yang login (tidak diisi manual) | ADR-014 (Q16) |
 | Pengawas hanya melihat laporannya sendiri; Owner melihat semua; Owner tidak membuat/mengubah | ADR-014 (Q16) |
-| Operator diketik bebas + saran dari laporan sebelumnya | ADR-014 (Q3, *tafsiran*) |
+| Operator diketik bebas + saran dari laporan sebelumnya | ADR-014 (dikonfirmasi) |
 | Unit dipilih dari master data aktif (dikelola Owner) | ADR-014 (Q4) |
-| HM = total jam kerja, 1 desimal, **SEMENTARA** 0–24 | ADR-014 (Q5) |
-| BBM (Solar) = pilihan 1–6 | ADR-014 (Q5, *satuan menunggu konfirmasi*) |
+| HM = total jam kerja, 1 desimal, 0–24 | ADR-014 (dikonfirmasi) |
+| BBM (Solar) = jumlah (angka ≥ 0, 1 desimal) | ADR-016 (menggantikan pilihan 1–6) |
 | Tanggal tidak boleh melewati hari ini (zona `APP_TIME_ZONE`) | Validasi |
-| Foto wajib minimal 1, **SEMENTARA** maksimal 6 | ADR-014 (Q7) |
+| Foto wajib minimal 1, maksimal 6 | ADR-014 (dikonfirmasi) |
 | Pengawas boleh mengedit & menghapus laporannya (hapus = soft delete) | ADR-014 (Q6) |
 
 ## 3. Alur User
 1. Tombol "+" → "Laporan Kerja" (atau "Buat" di daftar / "Buat laporan" di Beranda) → `/laporan-kerja/baru?draft=<uuid>`.
-2. Isi: tanggal (chip Hari ini/Kemarin + date), unit (chip), operator & lokasi (saran), deskripsi, HM (keypad desimal, sufiks "jam"), BBM (chip 1–6), foto (Kamera / Galeri).
+2. Isi: tanggal (chip Hari ini/Kemarin + date), unit (chip), operator & lokasi (saran), deskripsi, HM (keypad desimal, sufiks "jam"), BBM (keypad desimal, jumlah), foto (Kamera / Galeri).
 3. Foto langsung dikompres & diunggah per foto (progress, Coba lagi, hapus). Tombol simpan menunggu semua foto selesai.
 4. Isian & foto yang belum terunggah **tersimpan otomatis di HP** (IndexedDB) setiap ±0,6 dtk.
 5. Simpan → detail laporan dengan pesan sukses; draft di HP dihapus.
@@ -83,3 +83,4 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
 | 2026-10-05 | Implementasi awal Sprint 3 | Claude Code |
+| 2026-10-05 | BBM menjadi jumlah (ADR-016); perbaikan race autosave yang menulis ulang draft setelah tersimpan; komponen bersama `FormAlerts`, `DeleteRecord`, `LocalDrafts` | Claude Code |

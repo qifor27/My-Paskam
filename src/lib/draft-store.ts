@@ -2,8 +2,9 @@
 // koneksi putus, sesi habis, atau aplikasi tertutup (PRD §19, §23). Tanpa
 // dependency; sync queue penuh menyusul di Sprint 7.
 const DB_NAME = "paskam";
-const DB_VERSION = 1;
-export const STORES = { laporan: "laporan-drafts" } as const;
+// Naikkan versi setiap menambah store; onupgradeneeded membuat store yang belum ada.
+const DB_VERSION = 2;
+export const STORES = { laporan: "laporan-drafts", sparePart: "spare-part-drafts" } as const;
 type StoreName = (typeof STORES)[keyof typeof STORES];
 
 function open(): Promise<IDBDatabase> {

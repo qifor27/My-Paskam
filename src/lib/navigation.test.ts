@@ -36,6 +36,7 @@ describe("createActionsFor", () => {
     expect(hrefs(createActionsFor("SUPER_ADMIN"))).toContain("/pengawas/baru");
     // ADR-014: laporan kerja dibuat Pengawas, Owner hanya melihat.
     expect(hrefs(createActionsFor("SUPER_ADMIN"))).not.toContain("/laporan-kerja/baru");
+    expect(hrefs(createActionsFor("SUPER_ADMIN"))).not.toContain("/spare-part/baru");
   });
 });
 
