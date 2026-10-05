@@ -1,37 +1,86 @@
 @import "tailwindcss";
 
 /*
- * Design token My PASKAM — lihat docs/design-system.md.
- * Biru = identitas/struktur, oranye = aksi. Kontras teks putih di atas
- * brand/action memenuhi WCAG AA (>= 4.5:1).
+ * Design token My PASKAM — gaya "Soft Operational" (ADR-013).
+ * Biru = warna utama (identitas + aksi utama), oranye = aksen untuk aksi
+ * "buat baru" (FAB) dan sorotan kecil. Lihat docs/design-system.md.
  */
+/* Pengguna yang mematikan efek transparansi di perangkat: glass jadi solid. */
+@custom-variant reduced-transparency (@media (prefers-reduced-transparency: reduce));
+
 @theme {
-  --color-brand-50: #eef3fb;
-  --color-brand-100: #d7e2f4;
-  --color-brand-500: #2f62b8;
-  --color-brand-600: #1e4fa3;
-  --color-brand-700: #1a4489;
-  --color-brand-800: #163a75;
-  --color-brand-900: #102a55;
+  /* Biru utama. Teks putih di atas 600–900 >= 5:1. */
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dce7fe;
+  --color-brand-200: #bcd0fb;
+  --color-brand-500: #3b6ff6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  /* Ujung gradien tombol utama & hero card (biru → indigo). */
+  --color-brand-indigo: #4f46e5;
 
-  --color-action-500: #d9480f;
-  --color-action-600: #c2410c;
-  --color-action-700: #9a3412;
+  /* Oranye aksen. 600 untuk ikon/isian FAB (ikon putih 3,6:1), 700 untuk teks. */
+  --color-accent-50: #fff4ec;
+  --color-accent-500: #f97316;
+  --color-accent-600: #ea580c;
+  --color-accent-700: #c2410c;
 
-  --color-danger-600: #c53030;
-  --color-danger-700: #9b2c2c;
-  --color-success-600: #15803d;
-  --color-warning-600: #b45309;
+  /* Tile ikon pastel per modul (ikon >= 3:1 terhadap latarnya). */
+  --color-tile-blue-bg: #eaf1ff;
+  --color-tile-blue-fg: #2563eb;
+  --color-tile-orange-bg: #fff1e7;
+  --color-tile-orange-fg: #ea580c;
+  --color-tile-violet-bg: #f2eeff;
+  --color-tile-violet-fg: #7c3aed;
+  --color-tile-green-bg: #e8f7f0;
+  --color-tile-green-fg: #059669;
+  --color-tile-cyan-bg: #e7f6fa;
+  --color-tile-cyan-fg: #0e7490;
+
+  /*
+   * Warna status. -600 = ikon/border, -50 = latar lembut, teks memakai nada
+   * tergelap (>= 7:1). Warning sengaja kuning agar tidak tertukar dengan oranye.
+   */
+  --color-danger-50: #fef2f2;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-800: #991b1b;
+  --color-success-50: #ecfdf3;
+  --color-success-600: #16a34a;
+  --color-success-800: #14532d;
+  --color-warning-50: #fefce8;
+  --color-warning-600: #a16207;
+  --color-warning-900: #713f12;
+  --color-neutral-50: #f1f5f9;
+  --color-neutral-700: #334155;
 
   --color-surface: #ffffff;
-  --color-canvas: #f4f6fa;
-  --color-border: #d5dbe5;
+  --color-canvas: #f5f7fb;
+  --color-border: #e5e9f2;
+  --color-border-strong: #cfd6e4;
   --color-ink: #0f172a;
   --color-ink-muted: #475569;
+  --color-placeholder: #64748b;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  --radius-control: 0.5rem;
+  /* Sudut: kontrol 14 px, kartu 20 px, sheet 28 px; tombol = pill. */
+  --radius-control: 0.875rem;
+  --radius-card: 1.25rem;
+  --radius-sheet: 1.75rem;
+
+  /* Shadow lembut berlapis, bukan shadow tebal. */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.12);
+  --shadow-raised: 0 2px 4px rgb(15 23 42 / 0.05), 0 16px 32px -12px rgb(15 23 42 / 0.18);
+  --shadow-primary: 0 8px 20px -8px rgb(37 99 235 / 0.55);
+  --shadow-accent: 0 10px 24px -8px rgb(234 88 12 / 0.55);
+}
+
+/* Gradien hanya untuk tombol utama dan hero card (ADR-013). */
+@utility bg-primary-gradient {
+  background-image: linear-gradient(135deg, var(--color-brand-600), var(--color-brand-indigo));
 }
 
 html {

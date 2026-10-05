@@ -34,7 +34,7 @@ function Field({
       </label>
       {children({ id, "aria-invalid": error ? true : undefined, "aria-describedby": describedBy })}
       {error ? (
-        <p id={`${id}-error`} className="flex items-center gap-1.5 text-sm text-danger-600">
+        <p id={`${id}-error`} className="flex items-center gap-1.5 text-sm font-medium text-danger-800">
           <CircleAlert className="size-4 shrink-0" aria-hidden />
           {error}
         </p>

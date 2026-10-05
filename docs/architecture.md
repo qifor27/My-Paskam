@@ -46,10 +46,11 @@ src/
     globals.css          # design token Tailwind (@theme)
     login/               # halaman + server action login/logout
     (app)/               # area setelah login; layout memanggil requireUser()
+      akun/              # profil + keluar (+ menu admin untuk Owner)
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
-      laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul
+      laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul (+ /baru)
     error.tsx            # error di layout (mis. DB tidak terjangkau)
     global-error.tsx     # error di root layout
     not-found.tsx        # 404

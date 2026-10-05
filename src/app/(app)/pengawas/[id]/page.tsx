@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { AccessDenied } from "@/components/access-denied";
 import { PageHeader } from "@/components/page-header";
+import { Card } from "@/components/ui/card";
 import { AUTH_CONFIG } from "@/lib/auth/config";
 import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
@@ -26,7 +27,7 @@ export default async function PengawasDetailPage({ params }: { params: Promise<{
   if (!pengawas || pengawas.role !== "PENGAWAS") notFound();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       <PageHeader title={pengawas.name} backHref="/pengawas" />
 
       <Section title="Data Pengawas">
@@ -54,12 +55,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-3 border-t border-border pt-5 first-of-type:border-t-0 first-of-type:pt-0">
+    <Card className="flex flex-col gap-4 p-5">
       <div>
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="text-base font-semibold">{title}</h2>
         {description ? <p className="text-sm text-ink-muted">{description}</p> : null}
       </div>
       {children}
-    </section>
+    </Card>
   );
 }

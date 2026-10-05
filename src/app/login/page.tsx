@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { BrandMark, Wordmark } from "@/components/brand";
 import { AUTH_CONFIG } from "@/lib/auth/config";
 import { getCurrentUser } from "@/lib/auth/session";
 
@@ -17,18 +18,19 @@ export default async function LoginPage({
   const { sesi } = await searchParams;
 
   return (
-    <main className="flex min-h-dvh flex-col bg-brand-800">
-      <header className="px-4 pb-8 pt-12 text-white">
-        <div className="mx-auto max-w-sm">
-          <p className="text-2xl font-bold tracking-wide">MY PASKAM</p>
-          <p className="mt-1 text-sm text-brand-100">Pencatatan operasional lapangan</p>
+    <main className="flex min-h-dvh flex-col items-center px-4 pb-10 pt-[calc(3.5rem+env(safe-area-inset-top))]">
+      <div className="flex w-full max-w-sm flex-col gap-8">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <BrandMark size="lg" />
+          <div>
+            <h1>
+              <Wordmark className="text-3xl" />
+            </h1>
+            <p className="mt-1 text-sm text-ink-muted">Pencatatan operasional lapangan</p>
+          </div>
         </div>
-      </header>
-      <section className="flex-1 rounded-t-2xl bg-canvas px-4 py-6">
-        <div className="mx-auto max-w-sm">
-          <LoginForm pinLength={AUTH_CONFIG.pinLength} sessionExpired={sesi === "berakhir"} />
-        </div>
-      </section>
+        <LoginForm pinLength={AUTH_CONFIG.pinLength} sessionExpired={sesi === "berakhir"} />
+      </div>
     </main>
   );
 }

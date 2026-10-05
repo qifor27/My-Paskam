@@ -1,7 +1,7 @@
 # Fitur: Dashboard & Navigasi
 
 > Sprint: 2 · Story: US-2.1, US-2.2, US-2.3, US-2.4 · Status: Done
-> PRD: §5, §6, §9, §13, §20–§22, §28–§29 · ADR terkait: ADR-010
+> PRD: §5, §6, §9, §13, §20–§22, §28–§29 · ADR terkait: ADR-010, ADR-013
 
 ## 1. Tujuan
 Setelah login, Owner dan Pengawas langsung melihat modul yang relevan dan bisa berpindah modul dengan satu tangan.
@@ -16,6 +16,9 @@ Setelah login, Owner dan Pengawas langsung melihat modul yang relevan dan bisa b
 | Glassmorphism hanya di bottom navigation (floating navigation) | PRD §6 |
 
 ## 3. Alur User
+
+> **Diperbarui 2026-10-05 (ADR-013):** header biru mobile dihapus; Beranda = sapaan + hero card + grid Menu + aktivitas; bottom nav 2 + tombol "+" oranye + 2 (Pengawas: Beranda, Laporan, Spare Part, Akun; Owner: Beranda, Laporan, Data, Akun); halaman `/akun` (profil, menu Pengawas untuk Owner, Keluar); menu "Buat baru" (`CreateSheet`) mengarah ke `/laporan-kerja/baru`, `/spare-part/baru`, `/planning-job/baru` (placeholder) dan `/pengawas/baru`. Uraian di bawah adalah versi awal Sprint 2.
+
 - **Mobile (< 768 px):** header biru (nama + role + keluar), bottom navigation tetap di bawah (Beranda + modul; Owner 5 item, Pengawas 4 item), aman untuk notch iPhone (`safe-area-inset-bottom`).
 - **Desktop (≥ 768 px):** sidebar biru tetap, grup "Administrasi" untuk Owner, user + keluar di bawah sidebar.
 - **Dashboard Owner:** Menu (4 modul) + Administrasi (Pengawas, dengan jumlah Pengawas aktif).
@@ -72,3 +75,4 @@ Tidak ada action baru.
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
 | 2026-10-04 | Implementasi awal Sprint 2 | Claude Code |
+| 2026-10-05 | Rombak visual "Soft Operational": Beranda baru, FAB + CreateSheet, halaman Akun, bottom nav per role | Claude Code |

@@ -12,3 +12,14 @@ const dateTime = new Intl.DateTimeFormat("id-ID", {
 export function formatDateTime(date: Date): string {
   return dateTime.format(date);
 }
+
+const hourFormat = new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: APP_TIME_ZONE });
+
+/** Sapaan sesuai jam di zona waktu aplikasi. */
+export function greeting(now: Date = new Date()): string {
+  const hour = Number(hourFormat.format(now));
+  if (hour >= 4 && hour < 11) return "Selamat pagi";
+  if (hour >= 11 && hour < 15) return "Selamat siang";
+  if (hour >= 15 && hour < 18) return "Selamat sore";
+  return "Selamat malam";
+}

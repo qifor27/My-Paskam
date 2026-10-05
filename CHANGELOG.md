@@ -8,6 +8,10 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Tampilan baru "Soft Operational": tombol pill biru, kartu membulat, ikon pastel per modul, font Inter (ADR-013).
+- Beranda baru: sapaan sesuai jam, kartu utama, grid menu, aktivitas terbaru.
+- Tombol "+" oranye di navigasi bawah dan "Buat baru" di sidebar untuk membuat laporan/order/planning/akun Pengawas.
+- Halaman Akun: profil, menu Pengawas (Owner), dan tombol Keluar.
 - Dashboard Owner dan Pengawas dengan shortcut modul sesuai role (Sprint 2, US-2.1, US-2.2).
 - Navigasi bawah di HP dan sidebar di desktop; menu mengikuti izin role (Sprint 2, US-2.3).
 - Halaman loading, halaman error dengan kode laporan dan COBA LAGI, halaman 404, dan banner saat offline (Sprint 2, US-2.4).
@@ -28,6 +32,10 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Fondasi offline: client UUID dan status sinkronisasi (Sprint 0, US-0.7, ADR-004).
 
 ### Changed
+- Tombol utama kini biru (oranye menjadi aksen); label tombol memakai huruf biasa ("Simpan", "Coba lagi") (ADR-013).
+- Header biru di HP diganti tampilan terang; tombol Keluar pindah ke halaman Akun.
+- Teks status, pesan error, dan placeholder lebih kontras untuk dibaca di bawah matahari; warna peringatan kini kuning (ADR-012).
+- Hasil riset UI dipindah ke `docs/research/`.
 - `prd.md` dipindah ke `docs/PRD.md` (US-0.8).
 
 ### Fixed

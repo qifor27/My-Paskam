@@ -7,6 +7,7 @@ import { ErrorAlert } from "@/components/error-alert";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { StickyActionBar } from "@/components/ui/sticky-action-bar";
 import { useServerAction } from "@/hooks/use-server-action";
 import { createClientId } from "@/lib/sync/client-id";
 
@@ -29,7 +30,7 @@ export function PengawasCreateForm({ pinLength }: { pinLength: number }) {
           error={error}
           action={
             <Button type="submit" variant="secondary" size="sm" loading={pending}>
-              COBA LAGI
+              Coba lagi
             </Button>
           }
         />
@@ -45,14 +46,14 @@ export function PengawasCreateForm({ pinLength }: { pinLength: number }) {
       </Field>
       <PinFields pinLength={pinLength} errors={fieldErrors} />
 
-      <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <StickyActionBar>
         <Button type="button" variant="secondary" onClick={() => router.push("/pengawas")}>
-          BATAL
+          Batal
         </Button>
-        <Button type="submit" loading={pending} loadingText="MENYIMPAN...">
-          SIMPAN
+        <Button type="submit" loading={pending} loadingText="Menyimpan…">
+          Simpan
         </Button>
-      </div>
+      </StickyActionBar>
     </form>
   );
 }

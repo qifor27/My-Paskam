@@ -11,9 +11,9 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
         {error.digest ? <p style={{ fontSize: 12 }}>Kode laporan: {error.digest}</p> : null}
         <button
           onClick={reset}
-          style={{ marginTop: 12, height: 48, padding: "0 20px", background: "#c2410c", color: "#fff", border: 0, borderRadius: 8, fontWeight: 600 }}
+          style={{ marginTop: 12, height: 48, padding: "0 20px", background: "#2563eb", color: "#fff", border: 0, borderRadius: 999, fontWeight: 600 }}
         >
-          COBA LAGI
+          Coba lagi
         </button>
       </body>
     </html>

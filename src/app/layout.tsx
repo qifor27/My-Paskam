@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 
 import "./globals.css";
+
+// Di-host sendiri oleh next/font (diunduh saat build): konsisten di semua HP
+// dan tetap tersedia offline. Angka tabular dipakai untuk HM/BBM/jumlah.
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: { default: "My PASKAM", template: "%s · My PASKAM" },
@@ -17,7 +22,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id">
+    <html lang="id" className={inter.variable}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

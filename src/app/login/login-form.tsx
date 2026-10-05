@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -32,7 +33,7 @@ export function LoginForm({ pinLength, sessionExpired }: { pinLength: number; se
       <div
         role="radiogroup"
         aria-label="Masuk sebagai"
-        className="grid grid-cols-2 gap-1 rounded-[var(--radius-control)] border border-border bg-surface p-1"
+        className="grid grid-cols-2 gap-1 rounded-full border border-border bg-surface p-1 shadow-card"
       >
         {(["PENGAWAS", "OWNER"] as const).map((m) => (
           <button
@@ -42,12 +43,12 @@ export function LoginForm({ pinLength, sessionExpired }: { pinLength: number; se
             aria-checked={mode === m}
             onClick={() => switchMode(m)}
             className={cn(
-              "h-11 rounded-md text-sm font-semibold tracking-wide transition-colors",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600",
-              mode === m ? "bg-brand-700 text-white" : "text-ink-muted hover:bg-brand-50",
+              "h-11 rounded-full text-sm font-semibold transition-colors",
+              "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-600/20",
+              mode === m ? "bg-brand-50 text-brand-700" : "text-ink-muted hover:text-ink",
             )}
           >
-            {m}
+            {m === "PENGAWAS" ? "Pengawas" : "Owner"}
           </button>
         ))}
       </div>
@@ -111,8 +112,8 @@ export function LoginForm({ pinLength, sessionExpired }: { pinLength: number; se
             </Field>
           </>
         )}
-        <Button type="submit" block loading={pending} loadingText="MEMERIKSA..." className="mt-2">
-          MASUK
+        <Button type="submit" size="lg" block loading={pending} loadingText="Memeriksa…" className="mt-2">
+          Masuk <ArrowRight aria-hidden />
         </Button>
       </form>
     </div>

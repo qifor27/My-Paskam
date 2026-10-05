@@ -15,7 +15,7 @@ export function ErrorScreen({ digest, reset }: { digest?: string; reset: () => v
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">Halaman gagal dimuat</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Halaman gagal dimuat</h1>
       <Alert
         tone="error"
         action={
@@ -29,11 +29,11 @@ export function ErrorScreen({ digest, reset }: { digest?: string; reset: () => v
                 })
               }
             >
-              <RefreshCw aria-hidden /> COBA LAGI
+              <RefreshCw aria-hidden /> Coba lagi
             </Button>
             <Link
               href="/"
-              className="inline-flex h-11 items-center px-3 text-sm font-medium text-danger-700 underline underline-offset-4"
+              className="inline-flex h-11 items-center px-3 text-sm font-semibold text-danger-800 underline underline-offset-4"
             >
               Ke beranda
             </Link>

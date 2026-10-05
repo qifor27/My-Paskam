@@ -29,6 +29,25 @@
 
 ---
 
+## UI Refresh — sebelum Sprint 3 (2026-10-05)
+
+**Goal:** UI modern dan konsisten sebelum modul data dibangun.
+
+### Log
+| Tanggal | Perubahan | Dokumen diperbarui |
+|---|---|---|
+| 2026-10-05 | Riset UI/UX (4 topik paralel) → laporan + catatan | `docs/research/` |
+| 2026-10-05 | Audit kontras: teks status/error/placeholder dinaikkan; warning jadi kuning; label seksi sentence case; fallback reduced-transparency; Inter self-hosted | ADR-012 |
+| 2026-10-05 | Owner memilih gaya referensi: biru utama (pill gradien), oranye aksen (FAB "+"), ikon pastel, tanpa maskot/emoji | ADR-013 |
+| 2026-10-05 | Rombak token + semua komponen (Button, Input, Card, StatusBadge, Alert, PageHeader, EmptyState, ModuleTile, BrandMark, Avatar, CreateSheet), login, Beranda, Akun, nav mobile/desktop, halaman Pengawas | `design-system.md` (ditulis ulang), `features/dashboard-navigation.md`, `architecture.md`, CLAUDE.md |
+| 2026-10-05 | Verifikasi: 30 unit test, E2E Sprint 1 (21) + Sprint 2 (29 cek) lulus; screenshot mobile & desktop | — |
+
+### Catatan
+- Sheet "Buat baru" belum terverifikasi visual (screenshot headless tidak bisa mengklik); diuji manual di perangkat.
+- Docker Desktop sempat mati: aplikasi menampilkan error yang benar (UNEXPECTED + kode laporan).
+
+---
+
 ## Sprint 2 — Dashboard (2026-10-04)
 
 **Goal:** Navigasi dan dashboard per role, dengan state loading/empty/error lengkap.

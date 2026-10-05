@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+import { Card } from "@/components/ui/card";
+
 // Empty state bukan error (PRD §28): jelaskan kondisi + aksi berikutnya.
 export function EmptyState({
   icon: Icon,
@@ -13,13 +15,15 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[var(--radius-control)] border border-dashed border-border bg-surface px-4 py-10 text-center">
-      <Icon className="size-8 text-ink-muted" aria-hidden />
+    <Card className="flex flex-col items-center gap-4 px-5 py-10 text-center">
+      <span className="flex size-14 items-center justify-center rounded-[var(--radius-control)] bg-tile-blue-bg text-tile-blue-fg">
+        <Icon className="size-6" aria-hidden />
+      </span>
       <div>
-        <p className="font-medium">{title}</p>
-        <p className="mx-auto max-w-sm text-sm text-ink-muted">{description}</p>
+        <p className="text-base font-semibold">{title}</p>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-ink-muted">{description}</p>
       </div>
       {action}
-    </div>
+    </Card>
   );
 }

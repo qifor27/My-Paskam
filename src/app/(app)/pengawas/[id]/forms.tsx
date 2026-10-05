@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { useServerAction } from "@/hooks/use-server-action";
 
 import { resetPengawasPin, setPengawasActive, updatePengawas } from "../actions";
@@ -16,7 +17,7 @@ import { PinFields } from "../pin-fields";
 function retryButton(pending: boolean) {
   return (
     <Button type="submit" variant="secondary" size="sm" loading={pending}>
-      COBA LAGI
+      Coba lagi
     </Button>
   );
 }
@@ -47,8 +48,8 @@ export function EditForm({ id, name, kodePengawas }: { id: string; name: string;
           />
         )}
       </Field>
-      <Button type="submit" loading={pending} loadingText="MENYIMPAN..." className="self-end">
-        SIMPAN
+      <Button type="submit" loading={pending} loadingText="Menyimpan…" className="self-stretch sm:self-end">
+        Simpan
       </Button>
     </form>
   );
@@ -66,8 +67,8 @@ export function PinResetForm({ id, pinLength }: { id: string; pinLength: number 
       {succeeded ? <Alert tone="success">PIN berhasil direset. Beritahukan PIN baru kepada Pengawas.</Alert> : null}
       {error && error.category !== "VALIDATION" ? <ErrorAlert error={error} action={retryButton(pending)} /> : null}
       <PinFields pinLength={pinLength} errors={fieldErrors} label="PIN baru" />
-      <Button type="submit" loading={pending} loadingText="MENYIMPAN..." className="self-end">
-        RESET PIN
+      <Button type="submit" loading={pending} loadingText="Menyimpan…" className="self-stretch sm:self-end">
+        Reset PIN
       </Button>
     </form>
   );
@@ -87,9 +88,9 @@ export function StatusForm({ id, isActive }: { id: string; isActive: boolean }) 
     <form onSubmit={submit} className="flex flex-col gap-3">
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="active" value={String(!isActive)} />
-      <p className="text-sm">
-        Status saat ini:{" "}
-        <strong className={isActive ? "text-success-600" : "text-ink-muted"}>{isActive ? "AKTIF" : "NONAKTIF"}</strong>
+      <p className="flex items-center gap-2 text-sm">
+        Status saat ini:
+        <StatusBadge tone={isActive ? "success" : "neutral"}>{isActive ? "Aktif" : "Nonaktif"}</StatusBadge>
       </p>
       {error ? <ErrorAlert error={error} action={retryButton(pending)} /> : null}
 
@@ -99,20 +100,20 @@ export function StatusForm({ id, isActive }: { id: string; isActive: boolean }) 
           <p>Pengawas tidak akan bisa masuk dan langsung keluar dari semua perangkat. Lanjutkan?</p>
           <div className="mt-3 flex gap-2">
             <Button type="button" variant="secondary" size="sm" onClick={() => setConfirming(false)}>
-              BATAL
+              Batal
             </Button>
-            <Button type="submit" variant="danger" size="sm" loading={pending} loadingText="MENYIMPAN...">
-              YA, NONAKTIFKAN
+            <Button type="submit" variant="danger" size="sm" loading={pending} loadingText="Menyimpan…">
+              Ya, nonaktifkan
             </Button>
           </div>
         </Alert>
       ) : isActive ? (
         <Button type="button" variant="secondary" className="self-start" onClick={() => setConfirming(true)}>
-          NONAKTIFKAN
+          Nonaktifkan
         </Button>
       ) : (
-        <Button type="submit" className="self-start" loading={pending} loadingText="MENYIMPAN...">
-          AKTIFKAN
+        <Button type="submit" className="self-start" loading={pending} loadingText="Menyimpan…">
+          Aktifkan
         </Button>
       )}
     </form>

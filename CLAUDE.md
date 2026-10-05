@@ -24,7 +24,7 @@ Baca hanya dokumen yang relevan dengan task (PRD §34, token efficiency).
 2. Kerjakan secara incremental, satu user story per task. Jangan mengubah file yang tidak terkait.
 3. Setiap fitur wajib memiliki state loading / success / empty / validation / network / server / permission error, retry yang aman, dan **input user tidak boleh hilang** saat gagal.
 4. Otorisasi selalu di server. Tidak ada credential plaintext. Retry tidak boleh membuat duplikat (idempotency key + client UUID).
-5. UI: biru = struktur, oranye = aksi; glassmorphism hanya aksen; Lucide Icons; hindari pola AI-slop (PRD §4).
+5. UI mengikuti `docs/design-system.md` (ADR-013 "Soft Operational"): biru = warna utama & aksi utama (tombol pill gradien), oranye = aksen untuk aksi "buat baru"; tile ikon pastel per modul; sentence case; pakai token, jangan hex langsung; tanpa emoji/maskot; glass hanya bottom nav & overlay.
 6. Sebelum selesai: typecheck, lint, test, dan build harus lulus.
 
 ## Aturan Dokumentasi (WAJIB setiap pengembangan)

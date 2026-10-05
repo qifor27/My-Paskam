@@ -28,7 +28,7 @@ export function NetworkBanner() {
   const online = useOnline();
   if (online) return null;
   return (
-    <div role="status" className="flex items-center gap-2 bg-amber-50 px-4 py-2 text-sm text-amber-900 border-b border-warning-600/30">
+    <div role="status" className="flex items-center gap-2 border-b border-warning-600/35 bg-warning-50 px-4 py-2 text-sm font-medium text-warning-900">
       <WifiOff className="size-4 shrink-0" aria-hidden />
       <span>Koneksi internet terputus. Isian Anda tidak akan dihapus.</span>
     </div>

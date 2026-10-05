@@ -54,7 +54,7 @@
 
 ### ADR-005: Palet warna & mode terang
 - Tanggal: 2026-10-01
-- Status: PROPOSED
+- Status: SUPERSEDED (palet) by ADR-013; bagian "mode terang saja" tetap berlaku
 - Konteks: PRD §7 menetapkan biru (identitas) dan oranye (aksi) tanpa nilai hex. Pengguna bekerja di lapangan.
 - Keputusan: Pakai palet di `docs/design-system.md`. Semua kombinasi teks putih di atas brand/action/danger ≥ 4.5:1 (WCAG AA). Untuk MVP hanya mode terang.
 - Konsekuensi: Dark mode bisa ditambahkan nanti tanpa mengubah komponen, karena warna diambil dari token.
@@ -97,3 +97,22 @@
 - Status: PROPOSED (nilai menunggu Q22)
 - Konteks: `Intl.DateTimeFormat` tanpa `timeZone` memakai zona server; di hosting umumnya UTC sehingga jam meleset 7–9 jam (ditemukan di daftar Pengawas).
 - Keputusan: Semua format tanggal lewat `src/lib/format.ts` dengan `APP_TIME_ZONE` (env, default sementara `Asia/Jakarta`). DB tetap UTC (`timestamptz`).
+
+### ADR-012: Target kontras teks status 7:1
+- Tanggal: 2026-10-05
+- Status: ACCEPTED
+- Konteks: Riset (docs/research) — kontras layar di bawah matahari turun drastis; WCAG AA (4,5:1) belum cukup untuk teks status/penting di lapangan.
+- Keputusan: Teks status, error inline, dan teks utama ≥ 7:1. Tombol berteks putih minimal AA (≥ 4,5:1). Ikon ≥ 3:1. Warning memakai kuning (`#A16207`/`#713F12`) agar terpisah dari oranye aksen.
+- Konsekuensi: Token status punya nada teks khusus (`*-800`/`*-900`).
+
+### ADR-013: Gaya visual "Soft Operational" — biru utama, oranye aksen
+- Tanggal: 2026-10-05
+- Status: ACCEPTED (keputusan Owner berdasarkan gambar referensi)
+- Konteks: Owner meminta UI dirombak mengikuti referensi aplikasi mobile modern (terang, rounded, tombol biru gradien, ikon pastel) dengan sedikit sentuhan oranye. Owner memilih: **biru sebagai warna utama dan aksi utama, oranye sebagai aksen**, serta **ikon pastel tanpa maskot/emoji**.
+- Keputusan:
+  - Menggantikan PRD §7 "orange = primary CTA": tombol utama kini **biru gradien (biru → indigo) berbentuk pill**. Oranye khusus tombol "+" / "Buat baru" dan sorotan kecil.
+  - Melonggarkan PRD §4 secara terbatas: gradien diizinkan hanya di tombol utama, hero card (1 per halaman), dan BrandMark; sudut besar (kartu 20 px, tombol pill) dan shadow lembut diizinkan. Larangan emoji, maskot, glow, card bertumpuk, dan widget dekoratif **tetap berlaku**.
+  - Label tombol & judul memakai sentence case ("Simpan"), bukan huruf kapital semua seperti notasi di PRD §8/§11.
+  - Navigasi mobile: tanpa header bar biru; bottom nav 2 + tombol "+" oranye + 2; halaman Akun (profil, menu admin, keluar).
+  - Font Inter di-host sendiri (`next/font`).
+- Konsekuensi: `docs/design-system.md` ditulis ulang; CLAUDE.md aturan UI diperbarui. Rekomendasi riset yang menolak gradien dikesampingkan oleh keputusan Owner ini; aturan kontras dan status dari riset tetap dipakai (ADR-012).

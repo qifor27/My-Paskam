@@ -7,7 +7,7 @@ export function AccessDenied() {
   return (
     <div className="flex flex-col gap-4">
       <Alert tone="error">Anda tidak memiliki akses untuk membuka halaman ini.</Alert>
-      <Link href="/" className="text-sm font-medium text-brand-700 underline underline-offset-4">
+      <Link href="/" className="text-sm font-semibold text-brand-700 underline underline-offset-4">
         Kembali ke beranda
       </Link>
     </div>
