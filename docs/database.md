@@ -16,8 +16,8 @@
 
 | Entitas | Field utama (PRD) | Catatan |
 |---|---|---|
-| `user` | role (`SUPER_ADMIN`/`PENGAWAS`), email/username (lowercase), password_hash, kode_pengawas (uppercase), pin_hash, is_active, last_login_at, created_by | §10, §12 ✅ |
-| `session` | id = SHA-256 token, user_id, expires_at, user_agent | ADR-002 ✅ |
+| `user` | role (`SUPER_ADMIN`/`PENGAWAS`), email/username (lowercase), password_hash, kode_pengawas (uppercase), pin_hash, data_pin_hash (Owner, ADR-018), is_active, last_login_at, created_by | §10, §12 ✅ |
+| `session` | id = SHA-256 token, user_id, expires_at, user_agent, data_unlocked_until | ADR-002, ADR-018 ✅ |
 | `rate_limit` | key, count, window_start, locked_until | ADR-009 ✅ |
 | ~~`operator`~~ | — | Tidak dibuat: operator = teks bebas (ADR-014) |
 | `unit` | id, name (unik, huruf besar), is_active, sort_order | ADR-014 ✅ (seed 6 unit) |
@@ -32,6 +32,7 @@
 | Tanggal | Migrasi | Perubahan | Story |
 |---|---|---|---|
 | 2026-10-01 | `20261001000000_init` | Tabel `user`, `session`, `audit_log`, `setting`; enum `Role`, `AuditResult`. Dibuat dengan `prisma migrate diff`. | US-0.3 |
+| 2026-10-05 | `20261005081625_laporan_data_pin` | `user.data_pin_hash`, `session.data_unlocked_until` | ADR-018, US-6.3 |
 | 2026-10-05 | `20261005074827_spare_part_fields_planning_job` | `order_spare_part`: part_number, quantity (CHECK ≥ 1), priority; enum `SparePartPriority`, `PlanningStatus`; tabel `planning_job` | ADR-017, US-5.1 |
 | 2026-10-05 | `20261005072549_order_spare_part_bbm_qty` | `laporan_kerja.bbm` → DECIMAL(6,1), CHECK 1–6 diganti ≥ 0; tabel `order_spare_part` | ADR-016, US-4.1 |
 | 2026-10-05 | `20261005065344_laporan_kerja` | Tabel `unit` (+ seed 6 unit), `laporan_kerja` (+ CHECK bbm 1–6, hm ≥ 0), `photo`; enum `PhotoModule`, `RetentionStatus` | US-3.1, US-3.2 |
