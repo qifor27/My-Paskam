@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Avatar } from "@/components/avatar";
 import { DeleteRecord } from "@/components/delete-record";
 import { PageHeader } from "@/components/page-header";
+import { PriorityBadge } from "@/components/priority-badge";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -58,7 +59,24 @@ export default async function SparePartDetailPage({
 
       {tersimpan ? <Alert tone="success">{tersimpan === "baru" ? "Catatan berhasil disimpan." : "Perubahan disimpan."}</Alert> : null}
 
+      <Card className="grid grid-cols-2 gap-px overflow-hidden bg-border p-0">
+        <div className="flex flex-col gap-1 bg-surface p-4">
+          <span className="text-sm text-ink-muted">Jumlah</span>
+          <span className="text-2xl font-bold tabular-nums">{record.quantity}</span>
+        </div>
+        <div className="flex flex-col items-start gap-2 bg-surface p-4">
+          <span className="text-sm text-ink-muted">Prioritas</span>
+          <PriorityBadge priority={record.priority} />
+        </div>
+      </Card>
+
       <Card className="flex flex-col divide-y divide-border">
+        {record.partNumber ? (
+          <div className="flex items-start justify-between gap-4 p-4">
+            <span className="text-sm text-ink-muted">Nomor part</span>
+            <span className="text-right font-medium tabular-nums">{record.partNumber}</span>
+          </div>
+        ) : null}
         <div className="flex items-start justify-between gap-4 p-4">
           <span className="text-sm text-ink-muted">Unit</span>
           <span className="text-right font-medium">{record.unit.name}</span>

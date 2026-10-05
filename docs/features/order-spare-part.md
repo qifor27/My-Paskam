@@ -1,7 +1,7 @@
 # Fitur: Order Spare Part (dokumentasi spare part rusak)
 
 > Sprint: 4 · Story: US-4.1, US-4.3 (US-4.2 dibatalkan) · Status: Done
-> PRD: §15, §18 · ADR terkait: ADR-015, ADR-016
+> PRD: §15, §18 · ADR terkait: ADR-015, ADR-016, ADR-017
 
 ## 1. Tujuan
 Mendokumentasikan **spare part yang rusak** dari lapangan, lengkap dengan foto, agar Owner tahu apa yang rusak, di unit mana, dan kapan. Ini **bukan** alur pemesanan: tidak ada status order (ADR-016).
@@ -15,10 +15,12 @@ Mendokumentasikan **spare part yang rusak** dari lapangan, lengkap dengan foto, 
 | Pengawas hanya melihat catatannya; Owner melihat semua & tidak mengubah | ADR-016 (*tafsiran*) |
 | Foto wajib 1–6 | ADR-016 (*tafsiran*) |
 | Pengawas boleh mengubah/menghapus catatannya (soft delete) | ADR-016 (*tafsiran*) |
-| Kolom jumlah / prioritas / nomor part | Belum dibuat (Q9 belum dijawab) |
+| Jumlah (bilangan bulat ≥ 1, default 1) | ADR-017 |
+| Prioritas Rendah / Sedang / Tinggi (default Sedang), badge ikon bar sinyal | ADR-017 (*tafsiran* pilihan) |
+| Nomor part opsional | ADR-017 (*tafsiran*) |
 
 ## 3. Alur User
-Tombol "+" → "Order Spare Part" (atau "Catat" di daftar) → pilih unit (chip) → nama spare part (saran dari riwayat) → deskripsi kerusakan → lokasi (saran) → foto (Kamera/Galeri) → Simpan → detail. Draft otomatis di HP; gagal kirim → "Belum terkirim".
+Tombol "+" → "Order Spare Part" (atau "Catat" di daftar) → pilih unit (chip) → nama spare part (saran dari riwayat) → nomor part (opsional) → jumlah (tombol −/+) → prioritas (chip) → deskripsi kerusakan → lokasi (saran) → foto (Kamera/Galeri) → Simpan → detail. Draft otomatis di HP; gagal kirim → "Belum terkirim".
 
 ## 4. Data
 `order_spare_part` (tanpa kolom status), `photo` (module `ORDER_SPARE_PART`). Detail: `docs/database.md`.
@@ -38,7 +40,7 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 
 ## 8. Testing
 - Unit: `spare-part/spare-part.test.ts` (schema tanpa status, field wajib, akses).
-- E2E (2026-10-05): 21 cek — upload, validasi, idempotensi, tidak ada kolom status, visibilitas antar Pengawas (halaman & foto), foto lintas modul ditolak, edit ganti foto, hapus, audit. Semua lulus.
+- E2E (2026-10-05): 23 cek (21 + 2 untuk jumlah/prioritas/nomor part) — upload, validasi, idempotensi, tidak ada kolom status, visibilitas antar Pengawas (halaman & foto), foto lintas modul ditolak, edit ganti foto, hapus, audit. Semua lulus.
 - Interaktif (Puppeteer + Firefox): isi form, upload foto, simpan langsung → detail; draft tidak muncul lagi (3×).
 
 ## 9. Definition of Done (PRD §31)
@@ -58,3 +60,4 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
 | 2026-10-05 | Implementasi awal Sprint 4 | Claude Code |
+| 2026-10-05 | Tambah jumlah, prioritas, nomor part (ADR-017) | Claude Code |

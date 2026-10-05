@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { todayISO } from "@/lib/format";
 import { photoCounts } from "@/lib/photo/service";
 
+import type { Priority } from "./priority";
+
 export const PAGE_SIZE = 20;
 
 export type SparePartRow = {
@@ -15,6 +17,8 @@ export type SparePartRow = {
   createdAt: Date;
   unitName: string;
   partName: string;
+  quantity: number;
+  priority: Priority;
   lokasi: string;
   supervisorName: string;
   photoCount: number;
@@ -35,6 +39,8 @@ export async function listSpareParts(user: CurrentUser, limit: number) {
     createdAt: r.createdAt,
     unitName: r.unit.name,
     partName: r.partName,
+    quantity: r.quantity,
+    priority: r.priority,
     lokasi: r.lokasi,
     supervisorName: r.supervisor.name,
     photoCount: countBy.get(r.id) ?? 0,

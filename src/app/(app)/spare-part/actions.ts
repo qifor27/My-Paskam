@@ -30,7 +30,15 @@ export async function saveSparePart(formData: FormData) {
     }
     await assertPhotosUploaded("ORDER_SPARE_PART", user.id, data.id, data.photoIds);
 
-    const values = { unitId: data.unitId, partName: data.partName, kerusakan: data.kerusakan, lokasi: data.lokasi };
+    const values = {
+      unitId: data.unitId,
+      partName: data.partName,
+      partNumber: data.partNumber,
+      quantity: data.quantity,
+      priority: data.priority,
+      kerusakan: data.kerusakan,
+      lokasi: data.lokasi,
+    };
     await db.$transaction([
       existing
         ? db.orderSparePart.update({ where: { id: data.id }, data: { ...values, updatedById: user.id } })

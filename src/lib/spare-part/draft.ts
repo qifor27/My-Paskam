@@ -1,7 +1,15 @@
 import { STORES, draftStore } from "@/lib/draft-store";
 import type { DraftPhoto } from "@/lib/laporan-kerja/draft";
 
-export type SparePartFields = { unitId: string; partName: string; kerusakan: string; lokasi: string };
+export type SparePartFields = {
+  unitId: string;
+  partName: string;
+  partNumber: string;
+  quantity: string;
+  priority: string;
+  kerusakan: string;
+  lokasi: string;
+};
 
 export type SparePartDraft = {
   id: string;

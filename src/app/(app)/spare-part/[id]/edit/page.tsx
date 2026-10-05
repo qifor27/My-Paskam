@@ -38,7 +38,15 @@ export default async function EditSparePartPage({ params }: { params: Promise<{ 
         units={units}
         suggestions={suggestions}
         initialPhotos={photos}
-        initialFields={{ unitId: record.unitId, partName: record.partName, kerusakan: record.kerusakan, lokasi: record.lokasi }}
+        initialFields={{
+          unitId: record.unitId,
+          partName: record.partName,
+          partNumber: record.partNumber ?? "",
+          quantity: String(record.quantity),
+          priority: record.priority,
+          kerusakan: record.kerusakan,
+          lokasi: record.lokasi,
+        }}
       />
     </div>
   );

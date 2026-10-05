@@ -6,6 +6,7 @@ import { AccessDenied } from "@/components/access-denied";
 import { EmptyState } from "@/components/empty-state";
 import { LocalDrafts } from "@/components/local-drafts";
 import { PageHeader } from "@/components/page-header";
+import { PriorityBadge } from "@/components/priority-badge";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -71,9 +72,12 @@ export default async function SparePartListPage({ searchParams }: { searchParams
               {rows.map((r) => (
                 <Link key={r.id} href={`/spare-part/${r.id}`} className="flex items-center gap-3 p-4 hover:bg-canvas focus-visible:bg-canvas focus-visible:outline-none">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">
-                      {r.partName} <span className="font-normal text-ink-muted">· {r.unitName}</span>
-                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate font-semibold">
+                        {r.partName} <span className="font-normal tabular-nums text-ink-muted">×{r.quantity} · {r.unitName}</span>
+                      </p>
+                      <PriorityBadge priority={r.priority} />
+                    </div>
                     <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm tabular-nums text-ink-muted">
                       <span>{formatTime(r.createdAt)}</span>
                       <span className="inline-flex items-center gap-1">

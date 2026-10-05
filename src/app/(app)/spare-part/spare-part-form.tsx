@@ -12,12 +12,14 @@ import { ChoiceChips } from "@/components/ui/choice-chips";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { StickyActionBar } from "@/components/ui/sticky-action-bar";
+import { QuantityInput } from "@/components/ui/quantity-input";
 import { Textarea } from "@/components/ui/textarea";
 import { usePhotoUploads, type PhotoItem } from "@/hooks/use-photo-uploads";
 import { requestPersistentStorage } from "@/lib/draft-store";
 import { networkError } from "@/lib/errors/client";
 import type { PublicError } from "@/lib/errors/public-error";
 import { sparePartDrafts, type SparePartFields } from "@/lib/spare-part/draft";
+import { PRIORITIES, PRIORITY_META, type Priority } from "@/lib/spare-part/priority";
 import { SPARE_PART_RULES } from "@/lib/spare-part/schema";
 import { createClientId } from "@/lib/sync/client-id";
 
@@ -32,8 +34,8 @@ type Props = {
   initialPhotos?: { id: string; width: number; height: number }[];
 };
 
-const EMPTY: SparePartFields = { unitId: "", partName: "", kerusakan: "", lokasi: "" };
-const FIELD_ORDER = ["unitId", "partName", "kerusakan", "lokasi", "photoIds"] as const;
+const EMPTY: SparePartFields = { unitId: "", partName: "", partNumber: "", quantity: "1", priority: "SEDANG", kerusakan: "", lokasi: "" };
+const FIELD_ORDER = ["unitId", "partName", "partNumber", "quantity", "priority", "kerusakan", "lokasi", "photoIds"] as const;
 
 /** Memuat draft dari HP (jika ada) sebelum form ditampilkan. */
 export function SparePartForm(props: Props) {
@@ -64,7 +66,7 @@ export function SparePartForm(props: Props) {
             previewUrl: p.blob ? URL.createObjectURL(p.blob) : `/api/foto/${p.id}`,
             blob: p.blob,
           }));
-          setState({ status: "ready", id, fields: draft.fields, photos, restored: true });
+          setState({ status: "ready", id, fields: { ...EMPTY, ...draft.fields }, photos, restored: true });
         } else {
           setState({ status: "ready", id, fields: props.initialFields ?? EMPTY, photos: fromServer, restored: false });
         }
@@ -215,6 +217,45 @@ function Inner({
                 ))}
               </datalist>
             </>
+          )}
+        </Field>
+        <Field id="partNumber" label="Nomor part (opsional)" error={fieldErrors.partNumber}>
+          {(p) => (
+            <Input
+              {...p}
+              value={fields.partNumber}
+              onChange={(e) => set("partNumber", e.target.value)}
+              autoComplete="off"
+              autoCapitalize="characters"
+              maxLength={SPARE_PART_RULES.partNumberMax}
+              placeholder="Contoh: 600-211-1340"
+              className="tabular-nums"
+            />
+          )}
+        </Field>
+        <Field id="quantity" label="Jumlah" error={fieldErrors.quantity}>
+          {(p) => (
+            <QuantityInput
+              id={p.id}
+              value={fields.quantity}
+              onChange={(v) => set("quantity", v)}
+              invalid={p["aria-invalid"]}
+              describedBy={p["aria-describedby"]}
+              max={SPARE_PART_RULES.quantityMax}
+            />
+          )}
+        </Field>
+        <Field id="priority" label="Prioritas" error={fieldErrors.priority}>
+          {(p) => (
+            <ChoiceChips
+              name="priority"
+              labelledBy={p.id}
+              describedBy={p["aria-describedby"]}
+              invalid={p["aria-invalid"]}
+              options={PRIORITIES.map((v) => ({ value: v, label: PRIORITY_META[v].label }))}
+              value={fields.priority as Priority}
+              onChange={(v) => set("priority", v)}
+            />
           )}
         </Field>
         <Field id="kerusakan" label="Deskripsi kerusakan" error={fieldErrors.kerusakan}>
