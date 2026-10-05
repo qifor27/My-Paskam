@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Avatar } from "@/components/avatar";
+import { InstallApp } from "@/components/install-app";
 import { ModuleTile } from "@/components/nav-icon";
 import { PageHeader } from "@/components/page-header";
 import { Card } from "@/components/ui/card";
@@ -69,6 +70,8 @@ export default async function AkunPage() {
           </Link>
         </Card>
       ) : null}
+
+      <InstallApp />
 
       <LogoutButton />
     </div>
