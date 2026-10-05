@@ -164,6 +164,12 @@ Ikon status memakai **satu keluarga bentuk** agar terbaca tanpa warna dan tidak 
 
 Prioritas memakai keluarga bar sinyal (`SignalLow/Medium/High`): makin tinggi makin penuh. Jangan mencampur ikon dekoratif (bintang, api, roket, emoji) untuk status atau prioritas.
 
+### Laporan / ringkasan data
+- Angka ringkasan: kartu bergaris (grid `gap-px` di atas `bg-border`) berisi label kecil + angka besar `tabular-nums` — bukan deretan kartu stat berwarna.
+- Tabel: header `text-xs font-semibold text-ink-muted`, angka rata kanan, baris `divide-y`; di HP diganti daftar.
+- Filter panjang: `<details>` "Filter" yang bisa dilipat, ringkasan filter aktif di baris judul, tombol Reset (secondary) + Terapkan (primary); filter disimpan di URL (form GET).
+- Gerbang PIN: kartu tengah dengan tile ikon `LockKeyhole`/`ShieldCheck` hijau (warna modul Laporan Data).
+
 ### Filter tab
 Tab status (mis. Aktif / Selesai / Dibatalkan) = pill tersegmentasi (`rounded-full`, item aktif `bg-brand-50 text-brand-700`) berisi label + jumlah `tabular-nums`; berupa link (`?tab=`) agar bisa dibagikan & tombol kembali berfungsi.
 

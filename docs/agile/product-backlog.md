@@ -54,9 +54,10 @@
 - [x] US-4.4 (tambahan) Jumlah, prioritas, nomor part di Order Spare Part
 
 ## Sprint 6 — Laporan Data
-- [ ] US-6.1 Filter tanggal/unit/Pengawas/status ⛔ Q13
-- [ ] US-6.2 Export PDF ⛔ Q15
-- [ ] US-6.3 PIN gate (opsional) ⛔ Q14
+> Dokumen: [laporan-data.md](../features/laporan-data.md) · Aturan: ADR-018
+- [x] US-6.1 Filter tanggal/unit/Pengawas/status/prioritas untuk 3 modul + ringkasan
+- [ ] US-6.2 Export PDF — **ditunda** atas keputusan Owner (ADR-018)
+- [x] US-6.3 PIN gate
 - [ ] US-6.4 Storage Monitoring (read-only) ⛔ Q20
 
 ## Sprint 7 — PWA & Offline

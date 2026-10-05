@@ -27,6 +27,12 @@
 - **Order Spare Part (ADR-016):** aturan sama dengan Laporan Kerja; izin `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Aturan kepemilikan dipusatkan di `src/lib/records/access.ts`.
 - **Planning Job (ADR-017):** `planning-job:create` & `planning-job:view-all` (SUPER_ADMIN). Pengawas hanya melihat planning yang ditugaskan; perubahan status dicek di server dengan tabel transisi per role (Pengawas maju satu langkah, hanya miliknya). Hanya user ber-role PENGAWAS yang bisa ditugaskan.
 
+## PIN Laporan Data (ADR-018)
+- PIN 6 digit terpisah milik akun Owner, hash scrypt (`user.data_pin_hash`). Membuat/mengganti PIN wajib password akun (re-autentikasi); setelah ganti, semua sesi lain terkunci.
+- PIN benar → `session.data_unlocked_until` = sekarang + 15 menit; hanya sesi itu yang terbuka. Tombol Kunci menghapusnya.
+- Brute-force: `rate_limit` key `datapin:<userId>` (5 gagal / 15 menit → kunci 15 menit), berlaku juga untuk password saat membuat PIN.
+- Data laporan tidak di-query sebelum gerbang terbuka. Filter dari URL divalidasi zod; nilai tidak valid diabaikan (diuji dengan input injeksi).
+
 ## Foto & Storage (ADR-015)
 - **Upload** `POST /api/foto`: wajib login + izin buat sesuai modul (`module` = `LAPORAN_KERJA` / `ORDER_SPARE_PART`, registry `src/lib/photo/modules.ts`); cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
 - **Akses** `GET /api/foto/:id`: tidak ada URL publik. Setiap request dicek: foto milik laporan yang boleh dilihat user dan diunggah pembuat laporan; foto draft hanya pengunggah. Selain itu → 404 (keberadaan tidak terungkap). Header `Cache-Control: private`, `X-Content-Type-Options: nosniff`.
@@ -51,6 +57,7 @@ Implementasi: `src/lib/logger.ts`. Key dipecah per kata (camelCase/snake_case), 
 | UNIT_CREATED / UPDATED (from→to) / ACTIVATED / DEACTIVATED | Sprint 3 |
 | SPARE_PART_CREATED / UPDATED / DELETED (detail: sparePartId, unit, partName, jumlah foto) | Sprint 4 |
 | PLANNING_CREATED / UPDATED / DELETED, PLANNING_STATUS_CHANGED (from→to) | Sprint 5 |
+| DATA_PIN_SET / DATA_PIN_FAILED (step, ip) / DATA_PIN_LOCKED / DATA_UNLOCKED / DATA_LOCKED | Sprint 6 |
 
 Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis audit tidak menggagalkan aksi utama (dicatat di log aplikasi).
 | PHOTO_CLEANUP | Sprint 8 |
@@ -66,4 +73,5 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 | 2026-10-05 | Sprint 3 | `notFound()` di bawah `loading.tsx` = status 200 (UI tidak ditemukan, tanpa data) | Diterima (ADR-015) |
 | 2026-10-05 | Sprint 3 | Foto yatim (laporan tidak pernah disimpan) menumpuk di storage | Terbuka → Sprint 8 cleanup |
 | 2026-10-05 | Sprint 4 spare part (E2E 21 cek) | Foto tidak bisa dipakai lintas modul/record; Owner & Pengawas lain ditolak | OK |
+| 2026-10-05 | Sprint 6 Laporan Data (E2E 24 cek) | Isolasi PIN per sesi, lockout, Pengawas ditolak, query injeksi diabaikan, PIN tidak masuk log | OK |
 | 2026-10-05 | Sprint 5 planning (E2E 26 cek) | Lompat status, batal oleh Pengawas, ubah status planning orang lain, menugaskan Owner — semua ditolak | OK |

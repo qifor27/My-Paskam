@@ -51,6 +51,7 @@ src/
       unit/              # master data unit (Owner)
       spare-part/        # daftar, baru, [id], [id]/edit, actions.ts, spare-part-form.tsx
       planning-job/      # daftar (tab), baru, [id] (+ status-actions), [id]/edit — form Owner
+      laporan-data/      # gerbang PIN, tab modul, filter (GET), ringkasan; pin/ (ganti PIN)
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
@@ -76,6 +77,7 @@ src/
     laporan-kerja/       # schema (+ decimalField), access, queries, draft (IndexedDB)
     spare-part/          # schema, access, queries, draft, priority
     planning/            # status (meta + transisi), schema, access, queries
+    laporan-data/        # filters (URL → zod), queries (agregasi per modul), pin (status gerbang)
     records/access.ts    # aturan kepemilikan bersama (canViewOwned / canEditOwned)
     draft-store.ts       # wrapper IndexedDB tanpa dependency
     db.ts                # Prisma client (server-only)

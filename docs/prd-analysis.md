@@ -56,7 +56,7 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q11. Status flow?** Apakah Planning Job bisa dikonversi menjadi Laporan Kerja setelah selesai?
 - **Q12.** Perlu estimasi selesai atau unit terkait?
 
-### Laporan Data (Sprint 6)
+### Laporan Data (Sprint 6) — ✅ dijawab, lihat ADR-018 (PDF ditunda)
 - **Q13. Visibilitas:** apakah Laporan Data hanya untuk Owner, atau Pengawas juga bisa melihat data miliknya sendiri?
 - **Q14. PIN gate "jika diperlukan":** PIN milik siapa (PIN Owner terpisah)? Diputuskan ya/tidak?
 - **Q15. Isi PDF:** kolom apa saja, apakah foto disertakan, perlu kop perusahaan, orientasi kertas?

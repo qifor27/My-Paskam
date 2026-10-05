@@ -29,6 +29,24 @@
 
 ---
 
+## Sprint 6 — Laporan Data (2026-10-05)
+
+**Goal:** Owner melihat data semua modul dengan filter, dilindungi PIN tambahan.
+**Story:** US-6.1, US-6.3 (US-6.2 PDF ditunda)
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-05 | — | Jawaban Owner Q13–Q15 (semua modul, PDF ditunda, hanya Owner, PIN perlu) | ADR-018, ADR-010 |
+| 2026-10-05 | US-6.3 | Migrasi PIN; buat/ganti PIN (re-auth password), buka 15 menit per sesi, kunci manual, lockout, audit | `security.md`, `database.md` |
+| 2026-10-05 | US-6.1 | Filter dari URL (zod, fallback aman), agregasi per modul, tab modul, panel filter, ringkasan, tabel/daftar | `features/laporan-data.md`, `design-system.md`, `architecture.md` |
+| 2026-10-05 | — | Verifikasi: 57 unit test; E2E S1 21 + S2 19 + S3 32 + S4 23 + S5 26 + S6 24 = **145 cek** (dihitung dari output) lulus; buka PIN interaktif lulus | — |
+
+### Catatan
+- Tafsiran menunggu konfirmasi: PIN milik akun Owner, durasi 15 menit, default rentang bulan berjalan.
+
+---
+
 ## Sprint 5 — Planning Job (2026-10-05)
 
 **Goal:** Owner membuat planning untuk Pengawas; Pengawas memulai & menyelesaikan pekerjaan. Tambahan field spare part.
