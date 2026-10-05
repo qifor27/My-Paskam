@@ -23,7 +23,9 @@ export function useServerAction<T>(
     event.preventDefault();
     if (pending) return; // PRD §29: cegah submit ganda
     const form = event.currentTarget;
-    const formData = new FormData(form);
+    // Sertakan tombol submit yang ditekan (name/value), mis. pilihan status.
+    const submitter = (event.nativeEvent as SubmitEvent).submitter;
+    const formData = new FormData(form, submitter instanceof HTMLButtonElement ? submitter : null);
 
     startTransition(async () => {
       let next: Result<T>;
@@ -42,7 +44,18 @@ export function useServerAction<T>(
   }
 
   const error = result && !result.ok ? result.error : null;
+
+  /** Hapus error satu field saat diubah ("reward early"); pasang di onInput form. */
+  function clearFieldError(name: string) {
+    setResult((prev) => {
+      if (!prev || prev.ok || !prev.error.fieldErrors?.[name]) return prev;
+      const rest = Object.fromEntries(Object.entries(prev.error.fieldErrors).filter(([k]) => k !== name));
+      return { ok: false, error: { ...prev.error, fieldErrors: rest } };
+    });
+  }
+
   return {
+    clearFieldError,
     pending,
     submit,
     error,

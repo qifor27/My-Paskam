@@ -15,6 +15,9 @@ export const PERMISSIONS = {
   "spare-part:create": ["PENGAWAS"],
   "spare-part:view-all": ["SUPER_ADMIN"],
   "planning-job:access": ["SUPER_ADMIN", "PENGAWAS"],
+  // ADR-017: Owner membuat & mengelola planning; Pengawas melihat yang ditugaskan.
+  "planning-job:create": ["SUPER_ADMIN"],
+  "planning-job:view-all": ["SUPER_ADMIN"],
   // SEMENTARA (Q13): hanya Owner sampai diputuskan apakah Pengawas boleh melihat.
   "laporan-data:access": ["SUPER_ADMIN"],
 } as const satisfies Record<string, readonly Role[]>;

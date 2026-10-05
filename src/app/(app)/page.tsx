@@ -3,13 +3,15 @@ import Link from "next/link";
 
 import { Avatar } from "@/components/avatar";
 import { ModuleTile } from "@/components/nav-icon";
+import { PlanningStatusBadge } from "@/components/planning-status-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { dayLabel, formatDecimal, greeting } from "@/lib/format";
+import { dayLabel, formatDecimal, formatISODate, greeting } from "@/lib/format";
 import { listLaporan } from "@/lib/laporan-kerja/queries";
+import { listPlanning } from "@/lib/planning/queries";
 import { navFor } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +24,11 @@ export default async function DashboardPage() {
   const items = navFor(user.role);
   const quick = items.filter((i) => i.quickAction);
   const isOwner = can(user.role, "pengawas:manage");
-  const [activePengawas, recent] = await Promise.all([
+  const [activePengawas, recent, myPlanning] = await Promise.all([
     isOwner ? db.user.count({ where: { role: "PENGAWAS", isActive: true } }) : 0,
     can(user.role, "laporan-kerja:access") ? listLaporan(user, 3) : { items: [], hasMore: false },
+    // Pengawas: pekerjaan aktif yang ditugaskan Owner (ADR-017).
+    !isOwner && can(user.role, "planning-job:access") ? listPlanning(user, "aktif", 3) : [],
   ]);
 
   return (
@@ -99,6 +103,35 @@ export default async function DashboardPage() {
               <span className="text-sm font-semibold tabular-nums text-brand-700">{activePengawas} aktif</span>
               <ChevronRight className="size-5 text-ink-muted" aria-hidden />
             </Link>
+          </Card>
+        </section>
+      ) : null}
+
+      {myPlanning.length > 0 ? (
+        <section aria-labelledby="planning-title" className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 id="planning-title" className="text-base font-semibold">
+              Planning untuk Anda
+            </h2>
+            <Link href="/planning-job" className="text-sm font-semibold text-brand-700 hover:underline">
+              Lihat semua
+            </Link>
+          </div>
+          <Card className="divide-y divide-border overflow-hidden">
+            {myPlanning.map((p) => (
+              <Link key={p.id} href={`/planning-job/${p.id}`} className="flex items-center gap-3 p-4 hover:bg-canvas focus-visible:bg-canvas focus-visible:outline-none">
+                <span className="min-w-0 flex-1">
+                  <span className="line-clamp-2 font-semibold">{p.namaPekerjaan}</span>
+                  <span className="mt-1.5 flex items-center gap-2 text-sm tabular-nums text-ink-muted">
+                    <PlanningStatusBadge status={p.status} />
+                    <span className="truncate">
+                      {p.unitName} · mulai {formatISODate(p.estimasiMulai)}
+                    </span>
+                  </span>
+                </span>
+                <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
+              </Link>
+            ))}
           </Card>
         </section>
       ) : null}
