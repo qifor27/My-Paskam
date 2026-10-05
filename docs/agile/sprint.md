@@ -45,7 +45,7 @@
 | 2026-10-05 | US-3.1 | Halaman Unit (Owner) | `features/unit-management.md` |
 | 2026-10-05 | — | Temuan: path storage membuat seluruh proyek ter-trace saat build → diperbaiki | `security.md` |
 | 2026-10-05 | — | Temuan (uji interaktif Puppeteer + Firefox): error field tidak hilang setelah diperbaiki → diperbaiki | `design-system.md` |
-| 2026-10-05 | — | Verifikasi: 46 unit test; E2E S1 (21) + S2 (29) + S3 (34) lulus; alur interaktif (isi form, upload foto, simpan, sheet Buat baru) lulus | — |
+| 2026-10-05 | — | Verifikasi: 41 unit test; E2E S1 (21) + S2 (29) + S3 (34) lulus; alur interaktif (isi form, upload foto, simpan, sheet Buat baru) lulus | — |
 
 ### Catatan
 - Nilai SEMENTARA: HM maks. 24 jam, maks. 6 foto; tafsiran: operator teks bebas, BBM 1–6 (satuan?).
