@@ -158,3 +158,18 @@
   - *Tafsiran (disamakan dengan Laporan Kerja, ADR-014):* foto wajib 1–6; dibuat oleh Pengawas (nama tercatat otomatis); Pengawas hanya melihat miliknya, Owner melihat semua; Pengawas boleh mengubah/menghapus miliknya (soft delete).
   - *Belum dijawab (Q9):* kolom jumlah, prioritas, atau nomor part — tidak dibuat dulu.
 - Konsekuensi: Izin baru `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Modul foto & draft digeneralisasi untuk dipakai dua modul.
+
+### ADR-017: Tambahan Order Spare Part & aturan Planning Job (jawaban Owner 2026-10-05)
+- Tanggal: 2026-10-05
+- Status: ACCEPTED (butir *tafsiran* menunggu konfirmasi)
+- Menjawab: Q9, Q10, Q11, Q12 (docs/prd-analysis.md)
+- Keputusan Order Spare Part (melengkapi ADR-016):
+  - **Jumlah** (bilangan bulat ≥ 1, default 1), **prioritas**, dan **nomor part** ditambahkan.
+  - *Tafsiran:* prioritas = Rendah / Sedang / Tinggi (default Sedang), ikon bar sinyal; nomor part **opsional** (tidak selalu diketahui di lapangan).
+- Keputusan Planning Job:
+  - **Dibuat oleh Owner** dan ditugaskan ke satu Pengawas.
+  - Field: Pengawas, unit, nama pekerjaan, lokasi, deskripsi, **estimasi mulai**, **estimasi selesai** (tanggal, selesai ≥ mulai), status. **Tanpa foto.**
+  - **Status:** Direncanakan → Berjalan → Selesai, plus Dibatalkan. Ikon satu keluarga lingkaran (CircleDashed, CircleDot, CircleCheck, CircleX) + teks + warna.
+  - *Tafsiran:* Pengawas yang ditugaskan mengubah status pekerjaannya (Direncanakan→Berjalan, Berjalan→Selesai); Owner boleh mengubah ke status apa pun, termasuk Dibatalkan. Waktu mulai/selesai aktual dicatat otomatis saat status berubah.
+  - *Tafsiran:* Pengawas hanya melihat planning yang ditugaskan kepadanya; Owner melihat semua serta mengubah/menghapus (soft delete).
+- Konsekuensi: Izin `planning-job:create` dan `planning-job:view-all` (SUPER_ADMIN); perubahan status dicek di server dengan tabel transisi.

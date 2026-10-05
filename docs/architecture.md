@@ -50,6 +50,7 @@ src/
       laporan-kerja/     # daftar, baru, [id] detail, [id]/edit, actions.ts, laporan-form.tsx
       unit/              # master data unit (Owner)
       spare-part/        # daftar, baru, [id], [id]/edit, actions.ts, spare-part-form.tsx
+      planning-job/      # daftar (tab), baru, [id] (+ status-actions), [id]/edit — form Owner
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
@@ -73,7 +74,8 @@ src/
     storage/             # StorageDriver (local; Supabase menyusul)
     photo/               # rules, compress (client), service (server), modules (registry per modul)
     laporan-kerja/       # schema (+ decimalField), access, queries, draft (IndexedDB)
-    spare-part/          # schema, access, queries, draft
+    spare-part/          # schema, access, queries, draft, priority
+    planning/            # status (meta + transisi), schema, access, queries
     records/access.ts    # aturan kepemilikan bersama (canViewOwned / canEditOwned)
     draft-store.ts       # wrapper IndexedDB tanpa dependency
     db.ts                # Prisma client (server-only)
@@ -92,7 +94,7 @@ Konvensi: test berada di samping kode (`*.test.ts`). Alias import `@/` → `src/
 ## Pola Server Action
 Setiap mutasi = server action di `actions.ts` milik route-nya:
 `runAction(name, fn)` → di dalamnya `requirePermission()` → `parseForm(schema)` → logika → `audit()` → return data.
-Hasil selalu `ActionResult` (`{ ok: true, data } | { ok: false, error: PublicError }`); action tidak pernah melempar error ke client. Di client, `useServerAction` mengubah kegagalan transport menjadi error `NETWORK`.
+`useServerAction` menyertakan tombol submit yang ditekan ke FormData (`new FormData(form, submitter)`), sehingga satu form bisa punya beberapa aksi lewat `name`/`value` tombol (dipakai untuk status planning). Hasil selalu `ActionResult` (`{ ok: true, data } | { ok: false, error: PublicError }`); action tidak pernah melempar error ke client. Di client, `useServerAction` mengubah kegagalan transport menjadi error `NETWORK`.
 
 ## Error Boundary
 | Lokasi error | Ditangkap oleh | Tampilan |

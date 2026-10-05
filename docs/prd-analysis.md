@@ -47,11 +47,11 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q6. Edit/hapus:** bolehkah Pengawas mengedit atau menghapus laporan setelah submit/approve?
 - **Q7. Foto:** berapa jumlah minimum/maksimum foto per laporan? Apakah wajib?
 
-### Order Spare Part (Sprint 4) — ✅ Q8 dijawab (tanpa status, ADR-016); Q9 belum
+### Order Spare Part (Sprint 4) — ✅ Q8 (tanpa status, ADR-016), Q9 (jumlah/prioritas/nomor part, ADR-017)
 - **Q8. Status flow?** (mis. `DIAJUKAN → DIPROSES → DIPESAN → DITERIMA / DITOLAK`?) Siapa yang boleh mengubah status?
 - **Q9.** Perlu field jumlah (qty), prioritas/urgensi, atau nomor part?
 
-### Planning Job (Sprint 5)
+### Planning Job (Sprint 5) — ✅ dijawab, lihat ADR-017
 - **Q10. Siapa yang membuat?** Owner menugaskan ke Pengawas, atau Pengawas membuat sendiri?
 - **Q11. Status flow?** Apakah Planning Job bisa dikonversi menjadi Laporan Kerja setelah selesai?
 - **Q12.** Perlu estimasi selesai atau unit terkait?

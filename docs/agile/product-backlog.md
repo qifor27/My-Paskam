@@ -48,8 +48,10 @@
 - [x] US-4.3 List, detail, edit, hapus
 
 ## Sprint 5 — Planning Job
-- [ ] US-5.1 Form planning ⛔ Q10, Q12
-- [ ] US-5.2 List & status ⛔ Q11
+> Dokumen: [planning-job.md](../features/planning-job.md) · Aturan: ADR-017
+- [x] US-5.1 Form planning (Owner; Pengawas, unit, estimasi mulai–selesai)
+- [x] US-5.2 List (tab Aktif/Selesai/Dibatalkan), detail, status (Direncanakan → Berjalan → Selesai / Dibatalkan)
+- [x] US-4.4 (tambahan) Jumlah, prioritas, nomor part di Order Spare Part
 
 ## Sprint 6 — Laporan Data
 - [ ] US-6.1 Filter tanggal/unit/Pengawas/status ⛔ Q13

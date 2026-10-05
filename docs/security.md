@@ -25,6 +25,7 @@
 - **Laporan Kerja (ADR-014):** Pengawas hanya melihat & mengubah laporan miliknya (`supervisor_id`/`created_by` = user login, diisi server, tidak dari form); Owner melihat semua, tidak mengubah. Laporan orang lain → halaman "tidak ditemukan" tanpa data (status 200 karena streaming, ADR-015).
 - Izin baru: `laporan-kerja:create` (PENGAWAS), `laporan-kerja:view-all` (SUPER_ADMIN), `unit:manage` (SUPER_ADMIN).
 - **Order Spare Part (ADR-016):** aturan sama dengan Laporan Kerja; izin `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Aturan kepemilikan dipusatkan di `src/lib/records/access.ts`.
+- **Planning Job (ADR-017):** `planning-job:create` & `planning-job:view-all` (SUPER_ADMIN). Pengawas hanya melihat planning yang ditugaskan; perubahan status dicek di server dengan tabel transisi per role (Pengawas maju satu langkah, hanya miliknya). Hanya user ber-role PENGAWAS yang bisa ditugaskan.
 
 ## Foto & Storage (ADR-015)
 - **Upload** `POST /api/foto`: wajib login + izin buat sesuai modul (`module` = `LAPORAN_KERJA` / `ORDER_SPARE_PART`, registry `src/lib/photo/modules.ts`); cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
@@ -49,6 +50,7 @@ Implementasi: `src/lib/logger.ts`. Key dipecah per kata (camelCase/snake_case), 
 | LAPORAN_CREATED / UPDATED / DELETED (detail: laporanId, unit, tanggal, jumlah foto) | Sprint 3 |
 | UNIT_CREATED / UPDATED (from→to) / ACTIVATED / DEACTIVATED | Sprint 3 |
 | SPARE_PART_CREATED / UPDATED / DELETED (detail: sparePartId, unit, partName, jumlah foto) | Sprint 4 |
+| PLANNING_CREATED / UPDATED / DELETED, PLANNING_STATUS_CHANGED (from→to) | Sprint 5 |
 
 Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis audit tidak menggagalkan aksi utama (dicatat di log aplikasi).
 | PHOTO_CLEANUP | Sprint 8 |
@@ -59,8 +61,9 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 | 2026-10-03 | Sprint 1 auth & manajemen Pengawas (review mandiri + E2E) | Pesan Zod bawaan berbahasa Inggris bocor saat field tidak terkirim | Diperbaiki (locale `id` + "Wajib diisi") |
 | 2026-10-03 | Sprint 1 | Tidak ada password/PIN di audit_log maupun log server (diverifikasi dengan pencarian) | OK |
 | 2026-10-03 | Sprint 1 | Kepercayaan `x-forwarded-for` bergantung pada hosting | Terbuka, tinjau saat Q23 |
-| 2026-10-05 | Sprint 3 laporan & foto (review mandiri + E2E 33 cek) | Path storage dinamis membuat Turbopack men-trace seluruh proyek (foto bisa ikut ter-deploy) | Diperbaiki (`turbopackIgnore`) |
+| 2026-10-05 | Sprint 3 laporan & foto (review mandiri + E2E 32 cek) | Path storage dinamis membuat Turbopack men-trace seluruh proyek (foto bisa ikut ter-deploy) | Diperbaiki (`turbopackIgnore`) |
 | 2026-10-05 | Sprint 3 | File palsu, foto lintas Pengawas, edit laporan orang lain, Owner membuat laporan — semua ditolak | OK |
 | 2026-10-05 | Sprint 3 | `notFound()` di bawah `loading.tsx` = status 200 (UI tidak ditemukan, tanpa data) | Diterima (ADR-015) |
 | 2026-10-05 | Sprint 3 | Foto yatim (laporan tidak pernah disimpan) menumpuk di storage | Terbuka → Sprint 8 cleanup |
 | 2026-10-05 | Sprint 4 spare part (E2E 21 cek) | Foto tidak bisa dipakai lintas modul/record; Owner & Pengawas lain ditolak | OK |
+| 2026-10-05 | Sprint 5 planning (E2E 26 cek) | Lompat status, batal oleh Pengawas, ubah status planning orang lain, menugaskan Owner — semua ditolak | OK |

@@ -8,6 +8,9 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Planning Job: Owner membuat rencana pekerjaan untuk Pengawas (unit, lokasi, estimasi mulai–selesai) dengan status Direncanakan → Berjalan → Selesai / Dibatalkan; Pengawas menekan "Mulai pekerjaan" dan "Tandai selesai" (Sprint 5, ADR-017).
+- Beranda Pengawas menampilkan "Planning untuk Anda" (Sprint 5).
+- Order Spare Part: jumlah (tombol −/+), prioritas (Rendah/Sedang/Tinggi), dan nomor part opsional (ADR-017).
 - Order Spare Part: dokumentasi spare part yang rusak (unit, nama spare part, deskripsi kerusakan, lokasi, foto) tanpa status order; Owner melihat semua catatan (Sprint 4, ADR-016).
 - Laporan Kerja: buat, lihat, ubah, hapus; tanggal, unit, operator, HM (total jam), BBM (Solar) 1–6, lokasi, deskripsi, dan foto wajib (Sprint 3, ADR-014).
 - Foto dari Kamera atau Galeri: dikompres di HP, diunggah per foto dengan progress, bisa dicoba lagi, dan dicoba ulang otomatis saat online (Sprint 3).

@@ -29,6 +29,27 @@
 
 ---
 
+## Sprint 5 — Planning Job (2026-10-05)
+
+**Goal:** Owner membuat planning untuk Pengawas; Pengawas memulai & menyelesaikan pekerjaan. Tambahan field spare part.
+**Story:** US-5.1, US-5.2, US-4.4
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-05 | — | Jawaban Owner Q9–Q12 | ADR-017, `prd-analysis.md` |
+| 2026-10-05 | — | Migrasi: kolom spare part (jumlah, prioritas, nomor part) + tabel `planning_job` | `database.md` |
+| 2026-10-05 | US-4.4 | Form/detail/daftar spare part: `QuantityInput`, chip prioritas, `PriorityBadge` | `features/order-spare-part.md`, `design-system.md` |
+| 2026-10-05 | US-5.1, 5.2 | Status + transisi per role, form Owner, daftar ber-tab, detail + tombol status, "Planning untuk Anda" di Beranda | `features/planning-job.md`, `security.md`, `architecture.md` |
+| 2026-10-05 | — | `useServerAction`: `clearFieldError` + FormData dengan submitter | `architecture.md` |
+| 2026-10-05 | — | Temuan visual: judul planning terpotong di Beranda → judul 2 baris, badge di baris keterangan | `design-system.md` |
+| 2026-10-05 | — | Verifikasi: 52 unit test; E2E S1 (21) + S2 (19) + S3 (32) + S4 (23) + S5 (26) = 121 cek lulus (dihitung dari output); alur status interaktif lulus | — |
+
+### Catatan
+- Tafsiran menunggu konfirmasi: pilihan prioritas, nomor part opsional, aturan siapa mengubah status, visibilitas planning.
+
+---
+
 ## Sprint 4 — Order Spare Part (2026-10-05)
 
 **Goal:** Pengawas mendokumentasikan spare part yang rusak beserta foto; Owner melihat semua.
@@ -43,7 +64,7 @@
 | 2026-10-05 | — | Generalisasi foto per modul (registry), akses kepemilikan bersama, komponen `FormAlerts`/`DeleteRecord`/`LocalDrafts` | `architecture.md`, `design-system.md`, `security.md` |
 | 2026-10-05 | US-4.1, 4.3 | Form, daftar per hari, detail, edit, hapus spare part | `features/order-spare-part.md` |
 | 2026-10-05 | — | Temuan uji interaktif: autosave tertunda menulis ulang draft setelah tersimpan (muncul di "Belum terkirim") → diperbaiki di kedua form | `features/laporan-kerja.md` |
-| 2026-10-05 | — | Verifikasi: 44 unit test; E2E S1 (21) + S2 (29) + S3 (34) + S4 (21) lulus; alur interaktif spare part 3× lulus | — |
+| 2026-10-05 | — | Verifikasi: 44 unit test; E2E S1 (21) + S2 (19) + S3 (32) + S4 (21) lulus *(angka dikoreksi 2026-10-05 setelah dihitung ulang)*; alur interaktif spare part 3× lulus | — |
 
 ### Catatan
 - Belum dijawab: Q9 kolom jumlah/prioritas/nomor part; tafsiran visibilitas & foto wajib untuk spare part.
@@ -66,7 +87,7 @@
 | 2026-10-05 | US-3.1 | Halaman Unit (Owner) | `features/unit-management.md` |
 | 2026-10-05 | — | Temuan: path storage membuat seluruh proyek ter-trace saat build → diperbaiki | `security.md` |
 | 2026-10-05 | — | Temuan (uji interaktif Puppeteer + Firefox): error field tidak hilang setelah diperbaiki → diperbaiki | `design-system.md` |
-| 2026-10-05 | — | Verifikasi: 41 unit test; E2E S1 (21) + S2 (29) + S3 (34) lulus; alur interaktif (isi form, upload foto, simpan, sheet Buat baru) lulus | — |
+| 2026-10-05 | — | Verifikasi: 41 unit test; E2E S1 (21) + S2 (19) + S3 (32) lulus *(angka dikoreksi 2026-10-05 setelah dihitung ulang)*; alur interaktif (isi form, upload foto, simpan, sheet Buat baru) lulus | — |
 
 ### Catatan
 - Nilai SEMENTARA: HM maks. 24 jam, maks. 6 foto; tafsiran: operator teks bebas, BBM 1–6 (satuan?).
@@ -85,7 +106,7 @@
 | 2026-10-05 | Audit kontras: teks status/error/placeholder dinaikkan; warning jadi kuning; label seksi sentence case; fallback reduced-transparency; Inter self-hosted | ADR-012 |
 | 2026-10-05 | Owner memilih gaya referensi: biru utama (pill gradien), oranye aksen (FAB "+"), ikon pastel, tanpa maskot/emoji | ADR-013 |
 | 2026-10-05 | Rombak token + semua komponen (Button, Input, Card, StatusBadge, Alert, PageHeader, EmptyState, ModuleTile, BrandMark, Avatar, CreateSheet), login, Beranda, Akun, nav mobile/desktop, halaman Pengawas | `design-system.md` (ditulis ulang), `features/dashboard-navigation.md`, `architecture.md`, CLAUDE.md |
-| 2026-10-05 | Verifikasi: 30 unit test, E2E Sprint 1 (21) + Sprint 2 (29 cek) lulus; screenshot mobile & desktop | — |
+| 2026-10-05 | Verifikasi: 30 unit test, E2E Sprint 1 (21) + Sprint 2 (±19 cek) lulus *(angka dikoreksi 2026-10-05 setelah dihitung ulang)*; screenshot mobile & desktop | — |
 
 ### Catatan
 - Sheet "Buat baru" belum terverifikasi visual (screenshot headless tidak bisa mengklik); diuji manual di perangkat.
@@ -106,7 +127,7 @@
 | 2026-10-04 | US-2.4 | `loading.tsx`, `error.tsx` (root & `(app)`), `global-error.tsx`, `not-found.tsx`, `EmptyState`, `NetworkBanner` | `architecture.md`, `design-system.md` |
 | 2026-10-04 | — | Temuan visual: jam "terakhir masuk" bergantung zona server → `formatDateTime` + `APP_TIME_ZONE` | ADR-011 |
 | 2026-10-04 | — | Temuan uji DB mati: error di layout jatuh ke `global-error` tanpa styling → tambah `app/error.tsx` | `architecture.md` |
-| 2026-10-04 | — | Verifikasi visual pertama dengan Firefox headless (termasuk halaman login Sprint 1) + E2E 22 cek rute | `features/dashboard-navigation.md` |
+| 2026-10-04 | — | Verifikasi visual pertama dengan Firefox headless (termasuk halaman login Sprint 1) + E2E ±18 cek rute *(angka dikoreksi 2026-10-05 setelah dihitung ulang)* | `features/dashboard-navigation.md` |
 
 ### Catatan
 - Laporan Data untuk Pengawas dan zona waktu masih SEMENTARA (Q13, Q22).

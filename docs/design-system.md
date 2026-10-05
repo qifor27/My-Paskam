@@ -115,6 +115,10 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 | FormAlerts | `components/form-alerts.tsx` | Banner form data lapangan: draft dipulihkan (Buang perubahan), koneksi putus ("tersimpan di HP" + Coba kirim lagi), sesi habis, error server. |
 | DeleteRecord | `components/delete-record.tsx` | Tombol hapus `danger-outline` → konfirmasi dua langkah inline. |
 | LocalDrafts | `components/local-drafts.tsx` | Bagian "Belum terkirim (n)" di daftar modul: draft dari IndexedDB + badge "Tersimpan di HP". |
+| Select | `components/ui/select.tsx` | Select native bergaya Input + chevron; untuk daftar panjang (mis. Pengawas). |
+| QuantityInput | `components/ui/quantity-input.tsx` | Tombol −/+ 48 px + input angka di tengah (keypad numeric). |
+| PriorityBadge | `components/priority-badge.tsx` | Prioritas spare part: Rendah (neutral, `SignalLow`), Sedang (info, `SignalMedium`), Tinggi (danger, `SignalHigh`). |
+| PlanningStatusBadge | `components/planning-status-badge.tsx` | Status planning, lihat "Ikon status" di bawah. |
 | PhotoGrid | `components/photo-grid.tsx` | Grid 3 kolom, overlay proses/progress %, overlay gagal + "Coba lagi", tanda terunggah, tombol hapus; tombol **Kamera** & **Galeri** terpisah; penghitung "n/6 foto". |
 
 ## 6. Layout
@@ -147,6 +151,21 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 - **Status**: selalu `StatusBadge` (ikon + teks + warna).
 - **Motion**: transisi singkat untuk warna/skala; semua animasi punya `motion-reduce` (skeleton dan spinner berhenti).
 - **Glass** hanya di: bottom nav dan overlay sheet/dialog. Tidak pernah bertumpuk.
+
+### Ikon status (anti AI-slop)
+Ikon status memakai **satu keluarga bentuk** agar terbaca tanpa warna dan tidak terlihat acak:
+
+| Status | Ikon Lucide | Nada |
+|---|---|---|
+| Direncanakan | `CircleDashed` (lingkaran putus-putus = belum mulai) | neutral |
+| Berjalan | `CircleDot` (lingkaran bertitik = sedang dikerjakan) | info |
+| Selesai | `CircleCheck` | success |
+| Dibatalkan | `CircleX` | neutral |
+
+Prioritas memakai keluarga bar sinyal (`SignalLow/Medium/High`): makin tinggi makin penuh. Jangan mencampur ikon dekoratif (bintang, api, roket, emoji) untuk status atau prioritas.
+
+### Filter tab
+Tab status (mis. Aktif / Selesai / Dibatalkan) = pill tersegmentasi (`rounded-full`, item aktif `bg-brand-50 text-brand-700`) berisi label + jumlah `tabular-nums`; berupa link (`?tab=`) agar bisa dibagikan & tombol kembali berfungsi.
 
 ## 8. Dilarang (PRD §4, diperbarui ADR-013)
 

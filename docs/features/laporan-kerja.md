@@ -62,7 +62,7 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 
 ## 8. Testing
 - Unit: `laporan-kerja/laporan.test.ts` (schema, desimal, akses), `photo/rules.test.ts` (magic bytes), `format.test.ts` (tanggal).
-- E2E (2026-10-05, server production + PostgreSQL): 33 cek — upload & idempotensi, file palsu, validasi ADR-014, simpan ulang tanpa duplikat, visibilitas antar Pengawas (halaman & foto), edit ganti foto, hapus, unit, audit log. Semua lulus.
+- E2E (2026-10-05, server production + PostgreSQL): 32 cek (dihitung ulang) — upload & idempotensi, file palsu, validasi ADR-014, simpan ulang tanpa duplikat, visibilitas antar Pengawas (halaman & foto), edit ganti foto, hapus, unit, audit log. Semua lulus.
 - Visual: daftar (Owner & Pengawas), detail.
 - Belum: uji kamera & kompresi di HP nyata; mode offline penuh (Sprint 7).
 

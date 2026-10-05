@@ -54,7 +54,7 @@ Tidak ada action baru.
 
 ## 8. Testing
 - Unit: `navigation.test.ts` (menu per role, maks. 5 item bottom nav, item aktif), `format.test.ts` (zona waktu).
-- E2E (2026-10-04, server production): 22 cek akses rute per role + regresi 21 skenario Sprint 1, semua lulus.
+- E2E (2026-10-04, server production): ±18 cek akses rute per role (dihitung ulang; kini 19 cek) + regresi 21 skenario Sprint 1, semua lulus.
 - Visual (Firefox headless): dashboard Owner/Pengawas mobile 390 px, `/pengawas` desktop 1280 px, akses ditolak, modul placeholder, halaman error saat database dimatikan.
 - Belum: uji di perangkat Android/iPhone nyata.
 
@@ -76,4 +76,5 @@ Tidak ada action baru.
 |---|---|---|
 | 2026-10-04 | Implementasi awal Sprint 2 | Claude Code |
 | 2026-10-05 | Rombak visual "Soft Operational": Beranda baru, FAB + CreateSheet, halaman Akun, bottom nav per role | Claude Code |
+| 2026-10-05 | Beranda Pengawas: "Planning untuk Anda" (maks. 3 planning aktif); "Planning Job" di Buat baru hanya untuk Owner | Claude Code |
 | 2026-10-05 | Aktivitas terbaru = 3 laporan kerja terakhir (sesuai visibilitas); menu admin "Unit"; "Laporan Kerja" di Buat baru hanya untuk Pengawas | Claude Code |
