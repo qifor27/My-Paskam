@@ -45,6 +45,8 @@ model User {
   laporanCreated      LaporanKerja[]   @relation("LaporanCreatedBy")
   sparePartSupervised OrderSparePart[] @relation("SparePartSupervisor")
   sparePartCreated    OrderSparePart[] @relation("SparePartCreatedBy")
+  planningAssigned    PlanningJob[]    @relation("PlanningSupervisor")
+  planningCreated     PlanningJob[]    @relation("PlanningCreatedBy")
   photosUploaded      Photo[]
   sessions            Session[]
   auditLogs           AuditLog[]
@@ -115,6 +117,7 @@ model Unit {
 
   laporan    LaporanKerja[]
   spareParts OrderSparePart[]
+  plannings  PlanningJob[]
 
   @@map("unit")
 }
@@ -153,19 +156,24 @@ model LaporanKerja {
 
 // Order Spare Part = dokumentasi spare part yang rusak, tanpa status (ADR-016).
 model OrderSparePart {
-  id           String    @id @db.Uuid
-  unitId       String    @map("unit_id") @db.Uuid
-  partName     String    @map("part_name")
+  id           String            @id @db.Uuid
+  unitId       String            @map("unit_id") @db.Uuid
+  partName     String            @map("part_name")
+  /// Nomor part pabrikan (opsional, ADR-017).
+  partNumber   String?           @map("part_number")
+  /// Jumlah spare part rusak (>= 1, ADR-017).
+  quantity     Int               @default(1)
+  priority     SparePartPriority @default(SEDANG)
   /// Deskripsi kerusakan.
   kerusakan    String
   lokasi       String
   /// Pengawas yang login saat mencatat (tidak diisi manual).
-  supervisorId String    @map("supervisor_id") @db.Uuid
-  createdById  String    @map("created_by") @db.Uuid
-  updatedById  String?   @map("updated_by") @db.Uuid
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(3)
+  supervisorId String            @map("supervisor_id") @db.Uuid
+  createdById  String            @map("created_by") @db.Uuid
+  updatedById  String?           @map("updated_by") @db.Uuid
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt    DateTime?         @map("deleted_at") @db.Timestamptz(3)
 
   unit       Unit @relation(fields: [unitId], references: [id])
   supervisor User @relation("SparePartSupervisor", fields: [supervisorId], references: [id])
@@ -175,6 +183,49 @@ model OrderSparePart {
   @@index([createdAt])
   @@index([unitId, createdAt])
   @@map("order_spare_part")
+}
+
+enum SparePartPriority {
+  RENDAH
+  SEDANG
+  TINGGI
+}
+
+enum PlanningStatus {
+  DIRENCANAKAN
+  BERJALAN
+  SELESAI
+  DIBATALKAN
+}
+
+// Planning Job (PRD §16, ADR-017): dibuat Owner, ditugaskan ke satu Pengawas.
+model PlanningJob {
+  id              String         @id @db.Uuid
+  /// Pengawas yang ditugaskan.
+  supervisorId    String         @map("supervisor_id") @db.Uuid
+  unitId          String         @map("unit_id") @db.Uuid
+  namaPekerjaan   String         @map("nama_pekerjaan")
+  lokasi          String
+  deskripsi       String
+  estimasiMulai   DateTime       @map("estimasi_mulai") @db.Date
+  estimasiSelesai DateTime       @map("estimasi_selesai") @db.Date
+  status          PlanningStatus @default(DIRENCANAKAN)
+  /// Waktu aktual, diisi otomatis saat status berubah.
+  startedAt       DateTime?      @map("started_at") @db.Timestamptz(3)
+  completedAt     DateTime?      @map("completed_at") @db.Timestamptz(3)
+  createdById     String         @map("created_by") @db.Uuid
+  updatedById     String?        @map("updated_by") @db.Uuid
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt       DateTime?      @map("deleted_at") @db.Timestamptz(3)
+
+  unit       Unit @relation(fields: [unitId], references: [id])
+  supervisor User @relation("PlanningSupervisor", fields: [supervisorId], references: [id])
+  createdBy  User @relation("PlanningCreatedBy", fields: [createdById], references: [id])
+
+  @@index([supervisorId, status])
+  @@index([status, estimasiMulai])
+  @@map("planning_job")
 }
 
 enum PhotoModule {
