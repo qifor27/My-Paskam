@@ -9,3 +9,6 @@ next-env.d.ts
 !.env.example
 src/generated/
 .DS_Store
+
+# Foto hasil upload (driver local)
+/storage/
