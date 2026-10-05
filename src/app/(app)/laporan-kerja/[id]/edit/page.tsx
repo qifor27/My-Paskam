@@ -33,6 +33,7 @@ export default async function EditLaporanPage({ params }: { params: Promise<{ id
     <div className="flex flex-col gap-5">
       <PageHeader title="Ubah laporan kerja" backHref={`/laporan-kerja/${id}`} />
       <LaporanForm
+        userId={user.id}
         mode="edit"
         id={id}
         today={todayISO()}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { compressImage } from "@/lib/photo/compress";
+import { NETWORK_MESSAGE, uploadPhoto, type PhotoModuleName } from "@/lib/photo/upload-client";
 import { PHOTO_RULES } from "@/lib/photo/rules";
 import { createClientId } from "@/lib/sync/client-id";
 
@@ -17,41 +18,11 @@ export type PhotoItem = {
   previewUrl: string;
   blob?: Blob;
   error?: string;
+  /** Gagal karena jaringan → boleh dimasukkan antrean kirim (ADR-019). */
+  networkError?: boolean;
 };
 
-const NETWORK_MESSAGE = "Foto belum terunggah karena koneksi terputus. Foto tetap tersimpan di HP.";
-
-export type PhotoModuleName = "LAPORAN_KERJA" | "ORDER_SPARE_PART";
-
-function sendPhoto(item: PhotoItem, module: PhotoModuleName, recordId: string, onProgress: (p: number) => void) {
-  return new Promise<{ ok: true } | { ok: false; message: string }>((resolve) => {
-    if (!item.blob) return resolve({ ok: false, message: "File foto tidak tersedia. Hapus lalu ambil ulang." });
-    const body = new FormData();
-    body.append("id", item.id);
-    body.append("module", module);
-    body.append("recordId", recordId);
-    body.append("width", String(item.width));
-    body.append("height", String(item.height));
-    body.append("file", item.blob, `${item.id}.jpg`);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/foto");
-    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
-    xhr.onload = () => {
-      if (xhr.status === 200 || xhr.status === 201) return resolve({ ok: true });
-      let message = "Foto gagal diunggah. Coba lagi.";
-      try {
-        message = JSON.parse(xhr.responseText).error?.message ?? message;
-      } catch {}
-      if (xhr.status === 401) message = "Sesi Anda telah berakhir. Login kembali; foto tetap tersimpan di HP.";
-      resolve({ ok: false, message });
-    };
-    xhr.onerror = () => resolve({ ok: false, message: NETWORK_MESSAGE });
-    xhr.ontimeout = () => resolve({ ok: false, message: NETWORK_MESSAGE });
-    xhr.timeout = 60_000;
-    xhr.send(body);
-  });
-}
+export type { PhotoModuleName };
 
 /**
  * Kelola foto satu laporan: kompres → unggah per foto (progress) → coba lagi.
@@ -71,13 +42,17 @@ export function usePhotoUploads(recordId: string, initial: PhotoItem[], module: 
   const upload = useCallback(
     async (item: PhotoItem) => {
       if (typeof navigator !== "undefined" && !navigator.onLine) {
-        update(item.id, { status: "failed", error: NETWORK_MESSAGE });
+        update(item.id, { status: "failed", error: NETWORK_MESSAGE, networkError: true });
         return;
       }
-      update(item.id, { status: "uploading", progress: 0, error: undefined });
-      const result = await sendPhoto(item, module, recordId, (progress) => update(item.id, { progress }));
+      if (!item.blob) {
+        update(item.id, { status: "failed", error: "File foto tidak tersedia. Hapus lalu ambil ulang.", networkError: false });
+        return;
+      }
+      update(item.id, { status: "uploading", progress: 0, error: undefined, networkError: undefined });
+      const result = await uploadPhoto({ ...item, blob: item.blob }, module, recordId, (progress) => update(item.id, { progress }));
       if (result.ok) update(item.id, { status: "uploaded", progress: 100, blob: undefined });
-      else update(item.id, { status: "failed", error: result.message });
+      else update(item.id, { status: "failed", error: result.message, networkError: result.kind !== "rejected" });
     },
     [module, recordId, update],
   );
@@ -95,7 +70,7 @@ export function usePhotoUploads(recordId: string, initial: PhotoItem[], module: 
           update(id, item);
           await upload(item);
         } catch {
-          update(id, { status: "failed", error: "Foto tidak bisa diproses. Hapus lalu coba foto lain." });
+          update(id, { status: "failed", error: "Foto tidak bisa diproses. Hapus lalu coba foto lain.", networkError: false });
         }
       }
     },
@@ -135,5 +110,7 @@ export function usePhotoUploads(recordId: string, initial: PhotoItem[], module: 
     remove,
     busy: items.some((p) => p.status === "processing" || p.status === "uploading"),
     failedCount: items.filter((p) => p.status === "failed").length,
+    /** Foto gagal yang bukan karena jaringan (harus diperbaiki user). */
+    rejectedCount: items.filter((p) => p.status === "failed" && !p.networkError).length,
   };
 }

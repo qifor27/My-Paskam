@@ -1,4 +1,7 @@
 import { STORES, draftStore } from "@/lib/draft-store";
+import type { BaseDraft } from "@/lib/sync/draft-types";
+
+export type { DraftPhoto } from "@/lib/sync/draft-types";
 
 export type LaporanFields = {
   tanggal: string;
@@ -10,22 +13,7 @@ export type LaporanFields = {
   deskripsi: string;
 };
 
-export type DraftPhoto = {
-  id: string;
-  width: number;
-  height: number;
-  uploaded: boolean;
-  /** Ada selama foto belum terunggah. */
-  blob?: Blob;
-};
-
-export type LaporanDraft = {
-  id: string;
-  mode: "create" | "edit";
-  updatedAt: number;
-  fields: LaporanFields;
-  photos: DraftPhoto[];
-};
+export type LaporanDraft = BaseDraft<LaporanFields>;
 
 export const laporanDrafts = {
   get: (id: string) => draftStore.get<LaporanDraft>(STORES.laporan, id),

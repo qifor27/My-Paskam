@@ -19,10 +19,10 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Order Spare Part" };
 
-export default async function SparePartListPage({ searchParams }: { searchParams: Promise<{ hal?: string; dihapus?: string }> }) {
+export default async function SparePartListPage({ searchParams }: { searchParams: Promise<{ hal?: string; dihapus?: string; antre?: string }> }) {
   const user = await requireUser();
   if (!can(user.role, "spare-part:access")) return <AccessDenied />;
-  const { hal, dihapus } = await searchParams;
+  const { hal, dihapus, antre } = await searchParams;
   const pages = Math.min(Math.max(Number(hal) || 1, 1), 50);
   const { items, hasMore } = await listSpareParts(user, pages * PAGE_SIZE);
   const canCreate = can(user.role, "spare-part:create");
@@ -48,8 +48,9 @@ export default async function SparePartListPage({ searchParams }: { searchParams
         }
       />
 
+      {antre ? <Alert tone="info">Catatan disimpan di HP dan akan dikirim otomatis saat koneksi tersedia.</Alert> : null}
       {dihapus ? <Alert tone="success">Catatan dihapus.</Alert> : null}
-      {canCreate ? <LocalDrafts kind="spare-part" units={units} /> : null}
+      {canCreate ? <LocalDrafts kind="spare-part" userId={user.id} units={units} /> : null}
 
       {items.length === 0 ? (
         <EmptyState

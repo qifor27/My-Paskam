@@ -17,16 +17,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePhotoUploads, type PhotoItem } from "@/hooks/use-photo-uploads";
 import { requestPersistentStorage } from "@/lib/draft-store";
 import { networkError } from "@/lib/errors/client";
+import { zodFieldErrors } from "@/lib/errors/zod-client";
+import { notifyDraftsChanged } from "@/lib/sync/draft-types";
 import type { PublicError } from "@/lib/errors/public-error";
 import { sparePartDrafts, type SparePartFields } from "@/lib/spare-part/draft";
 import { PRIORITIES, PRIORITY_META, type Priority } from "@/lib/spare-part/priority";
-import { SPARE_PART_RULES } from "@/lib/spare-part/schema";
+import { SPARE_PART_RULES, sparePartSchema } from "@/lib/spare-part/schema";
 import { createClientId } from "@/lib/sync/client-id";
 
 import { saveSparePart } from "./actions";
 
 type Props = {
   mode: "create" | "edit";
+  /** Pemilik draft di HP (perangkat bisa dipakai bergantian, ADR-019). */
+  userId: string;
   id?: string;
   units: { id: string; name: string }[];
   suggestions: { partNames: string[]; lokasi: string[] };
@@ -39,7 +43,6 @@ const FIELD_ORDER = ["unitId", "partName", "partNumber", "quantity", "priority",
 
 /** Memuat draft dari HP (jika ada) sebelum form ditampilkan. */
 export function SparePartForm(props: Props) {
-  const router = useRouter();
   const [state, setState] = useState<
     { status: "loading" } | { status: "ready"; id: string; fields: SparePartFields; photos: PhotoItem[]; restored: boolean }
   >({ status: "loading" });
@@ -47,15 +50,27 @@ export function SparePartForm(props: Props) {
   useEffect(() => {
     let cancelled = false;
     requestPersistentStorage();
-    const id = props.id ?? createClientId();
-    if (props.mode === "create" && !props.id) router.replace(`/spare-part/baru?draft=${id}`, { scroll: false });
+    // Halaman form bisa berasal dari cache offline (tanpa ?draft= di props server),
+    // jadi id draft dibaca dari URL di browser. URL diperbarui dengan replaceState
+    // (bukan router.replace) agar tidak memicu navigasi yang gagal saat offline.
+    const fromUrl = props.mode === "create" ? new URLSearchParams(window.location.search).get("draft") : null;
+    const id = props.id ?? (fromUrl && /^[0-9a-f-]{36}$/i.test(fromUrl) ? fromUrl : createClientId());
+    if (props.mode === "create" && fromUrl !== id) window.history.replaceState(window.history.state, "", `/spare-part/baru?draft=${id}`);
     const fromServer: PhotoItem[] = (props.initialPhotos ?? []).map((p) => ({ ...p, status: "uploaded", progress: 100, previewUrl: `/api/foto/${p.id}` }));
 
     sparePartDrafts
       .get(id)
       .catch(() => undefined)
-      .then((draft) => {
+      .then((found) => {
         if (cancelled) return;
+        // Draft milik akun lain (HP dipakai bergantian) tidak dibuka.
+        const draft = found && found.userId === props.userId ? found : undefined;
+        if (found && !draft && props.mode === "create") {
+          const fresh = createClientId();
+          window.history.replaceState(window.history.state, "", `/spare-part/baru?draft=${fresh}`);
+          setState({ status: "ready", id: fresh, fields: props.initialFields ?? EMPTY, photos: [], restored: false });
+          return;
+        }
         if (draft) {
           const photos: PhotoItem[] = draft.photos.map((p) => ({
             id: p.id,
@@ -86,6 +101,7 @@ export function SparePartForm(props: Props) {
 
 function Inner({
   mode,
+  userId,
   id,
   units,
   suggestions,
@@ -125,6 +141,7 @@ function Inner({
       sparePartDrafts
         .save({
           id,
+          userId,
           mode,
           updatedAt: Date.now(),
           fields,
@@ -136,47 +153,87 @@ function Inner({
         .catch(() => {});
     }, 600);
     return () => clearTimeout(timer);
-  }, [dirty, fields, photos.items, id, mode, initialPhotos.length]);
+  }, [dirty, fields, photos.items, id, mode, userId, initialPhotos.length]);
+
+  /** Simpan ke antrean kirim; outbox mengirim otomatis saat online (ADR-019). */
+  async function queueForSync() {
+    savedRef.current = true;
+    await sparePartDrafts
+      .save({
+        id,
+        userId,
+        mode,
+        updatedAt: Date.now(),
+        fields,
+        photos: photos.items
+          .filter((p) => p.status === "uploaded" || p.blob)
+          .map((p) => ({ id: p.id, width: p.width, height: p.height, uploaded: p.status === "uploaded", blob: p.blob })),
+        sync: { status: "queued", queuedAt: Date.now() },
+      })
+      .catch(() => {});
+    notifyDraftsChanged();
+    router.push("/spare-part?antre=1");
+    router.refresh();
+  }
+
+  function showFieldErrors(fe: Record<string, string>) {
+    setError({ category: "VALIDATION", message: "", errorId: "", retryable: false, fieldErrors: fe });
+    const first = FIELD_ORDER.find((k) => fe[k]);
+    if (first) {
+      const el = formRef.current?.querySelector<HTMLElement>(`#${first}, [name="${first}"]`);
+      el?.focus();
+      el?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }
 
   async function discardDraft() {
     await sparePartDrafts.remove(id).catch(() => {});
     window.location.reload();
   }
 
-  const fail = (fe: Record<string, string>) => setError({ category: "VALIDATION", message: "", errorId: "", retryable: false, fieldErrors: fe });
-
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (pending) return;
-    if (photos.busy) return fail({ photoIds: "Tunggu sampai semua foto selesai diunggah." });
-    if (photos.failedCount > 0) return fail({ photoIds: "Ada foto yang gagal diunggah. Ketuk Coba lagi atau hapus foto tersebut." });
+    if (photos.busy) return showFieldErrors({ photoIds: "Tunggu sampai semua foto selesai diproses." });
+    if (photos.rejectedCount > 0) return showFieldErrors({ photoIds: "Ada foto yang ditolak. Hapus foto tersebut lalu coba lagi." });
+
+    // Validasi di HP dengan schema yang sama dengan server: tetap jalan saat offline.
+    const allPhotoIds = photos.items.map((p) => p.id).join(",");
+    const check = sparePartSchema.safeParse({ id, ...fields, photoIds: allPhotoIds });
+    if (!check.success) return showFieldErrors(zodFieldErrors(check.error));
+
+    // Offline, atau ada foto yang tertunda karena jaringan → antrean kirim.
+    if (!navigator.onLine || photos.items.some((p) => p.status !== "uploaded")) {
+      void queueForSync();
+      return;
+    }
 
     const body = new FormData();
     body.set("id", id);
     for (const [k, v] of Object.entries(fields)) body.set(k, v);
-    body.set("photoIds", photos.items.filter((p) => p.status === "uploaded").map((p) => p.id).join(","));
+    body.set("photoIds", allPhotoIds);
 
     startTransition(async () => {
       let result: Awaited<ReturnType<typeof saveSparePart>>;
       try {
-        result = navigator.onLine ? await saveSparePart(body) : { ok: false, error: networkError() };
+        result = await saveSparePart(body);
       } catch {
         result = { ok: false, error: networkError() };
       }
       if (result.ok) {
         savedRef.current = true;
         await sparePartDrafts.remove(id).catch(() => {});
+        notifyDraftsChanged();
         router.push(`/spare-part/${id}?tersimpan=${result.data.created ? "baru" : "ubah"}`);
         router.refresh();
         return;
       }
-      setError(result.error);
-      const first = FIELD_ORDER.find((k) => result.error.fieldErrors?.[k]);
-      if (first) {
-        const el = formRef.current?.querySelector<HTMLElement>(`#${first}, [name="${first}"]`);
-        el?.focus();
-        el?.scrollIntoView({ block: "center", behavior: "smooth" });
+      if (result.error.category === "NETWORK") {
+        await queueForSync();
+        return;
       }
+      setError(result.error);
+      if (result.error.fieldErrors) showFieldErrors(result.error.fieldErrors);
     });
   }
 

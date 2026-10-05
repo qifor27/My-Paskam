@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, HardDrive } from "lucide-react";
+import { ChevronRight, CloudUpload, HardDrive, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -9,43 +9,75 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { formatISODate } from "@/lib/format";
 import { laporanDrafts } from "@/lib/laporan-kerja/draft";
 import { sparePartDrafts } from "@/lib/spare-part/draft";
+import { DRAFTS_CHANGED, type DraftSync } from "@/lib/sync/draft-types";
 
-type Row = { id: string; href: string; title: string; subtitle: string; updatedAt: number };
+type Row = { id: string; href: string; title: string; subtitle: string; updatedAt: number; sync?: DraftSync };
 
 const LOADERS = {
-  "laporan-kerja": async (units: Record<string, string>): Promise<Row[]> =>
-    (await laporanDrafts.list()).map((d) => {
-      const pending = d.photos.filter((p) => !p.uploaded).length;
-      return {
-        id: d.id,
-        href: d.mode === "edit" ? `/laporan-kerja/${d.id}/edit` : `/laporan-kerja/baru?draft=${d.id}`,
-        title: `${units[d.fields.unitId] ?? "Unit belum dipilih"} · ${d.mode === "edit" ? "perubahan" : "laporan baru"}`,
-        subtitle: `${d.fields.tanggal ? formatISODate(d.fields.tanggal) : "Tanpa tanggal"}${pending ? ` · ${pending} foto belum terunggah` : ""}`,
-        updatedAt: d.updatedAt,
-      };
-    }),
-  "spare-part": async (units: Record<string, string>): Promise<Row[]> =>
-    (await sparePartDrafts.list()).map((d) => {
-      const pending = d.photos.filter((p) => !p.uploaded).length;
-      return {
-        id: d.id,
-        href: d.mode === "edit" ? `/spare-part/${d.id}/edit` : `/spare-part/baru?draft=${d.id}`,
-        title: `${d.fields.partName || "Spare part"} · ${units[d.fields.unitId] ?? "unit belum dipilih"}`,
-        subtitle: `${d.mode === "edit" ? "Perubahan" : "Catatan baru"}${pending ? ` · ${pending} foto belum terunggah` : ""}`,
-        updatedAt: d.updatedAt,
-      };
-    }),
+  "laporan-kerja": async (userId: string, units: Record<string, string>): Promise<Row[]> =>
+    (await laporanDrafts.list())
+      .filter((d) => d.userId === userId)
+      .map((d) => {
+        const pending = d.photos.filter((p) => !p.uploaded).length;
+        return {
+          id: d.id,
+          href: d.mode === "edit" ? `/laporan-kerja/${d.id}/edit` : `/laporan-kerja/baru?draft=${d.id}`,
+          title: `${units[d.fields.unitId] ?? "Unit belum dipilih"} · ${d.mode === "edit" ? "perubahan" : "laporan baru"}`,
+          subtitle: `${d.fields.tanggal ? formatISODate(d.fields.tanggal) : "Tanpa tanggal"}${pending ? ` · ${pending} foto belum terunggah` : ""}`,
+          updatedAt: d.updatedAt,
+          sync: d.sync,
+        };
+      }),
+  "spare-part": async (userId: string, units: Record<string, string>): Promise<Row[]> =>
+    (await sparePartDrafts.list())
+      .filter((d) => d.userId === userId)
+      .map((d) => {
+        const pending = d.photos.filter((p) => !p.uploaded).length;
+        return {
+          id: d.id,
+          href: d.mode === "edit" ? `/spare-part/${d.id}/edit` : `/spare-part/baru?draft=${d.id}`,
+          title: `${d.fields.partName || "Spare part"} · ${units[d.fields.unitId] ?? "unit belum dipilih"}`,
+          subtitle: `${d.mode === "edit" ? "Perubahan" : "Catatan baru"}${pending ? ` · ${pending} foto belum terunggah` : ""}`,
+          updatedAt: d.updatedAt,
+          sync: d.sync,
+        };
+      }),
 };
 
-/** Data yang masih tersimpan di HP (belum terkirim). Hanya ada di perangkat ini. */
-export function LocalDrafts({ kind, units }: { kind: keyof typeof LOADERS; units: Record<string, string> }) {
+// Bahasa status mengikuti nasib data (riset web.dev): di HP / menunggu / gagal.
+function SyncBadge({ sync }: { sync?: DraftSync }) {
+  if (sync?.status === "queued")
+    return (
+      <StatusBadge tone="info" icon={CloudUpload}>
+        Menunggu dikirim
+      </StatusBadge>
+    );
+  if (sync?.status === "failed")
+    return (
+      <StatusBadge tone="danger" icon={TriangleAlert}>
+        Gagal dikirim
+      </StatusBadge>
+    );
+  return (
+    <StatusBadge tone="warning" icon={HardDrive}>
+      Draft di HP
+    </StatusBadge>
+  );
+}
+
+/** Data yang masih tersimpan di HP milik akun ini (belum terkirim). */
+export function LocalDrafts({ kind, userId, units }: { kind: keyof typeof LOADERS; userId: string; units: Record<string, string> }) {
   const [rows, setRows] = useState<Row[]>([]);
 
   useEffect(() => {
-    LOADERS[kind](units)
-      .then((all) => setRows(all.sort((a, b) => b.updatedAt - a.updatedAt)))
-      .catch(() => {});
-  }, [kind, units]);
+    const load = () =>
+      LOADERS[kind](userId, units)
+        .then((all) => setRows(all.sort((a, b) => b.updatedAt - a.updatedAt)))
+        .catch(() => {});
+    load();
+    window.addEventListener(DRAFTS_CHANGED, load);
+    return () => window.removeEventListener(DRAFTS_CHANGED, load);
+  }, [kind, userId, units]);
 
   if (rows.length === 0) return null;
 
@@ -60,10 +92,9 @@ export function LocalDrafts({ kind, units }: { kind: keyof typeof LOADERS; units
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold">{r.title}</p>
               <p className="text-sm tabular-nums text-ink-muted">{r.subtitle}</p>
+              {r.sync?.status === "failed" ? <p className="mt-1 text-sm font-medium text-danger-800">{r.sync.error} Ketuk untuk memperbaiki.</p> : null}
             </div>
-            <StatusBadge tone="warning" icon={HardDrive}>
-              Tersimpan di HP
-            </StatusBadge>
+            <SyncBadge sync={r.sync} />
             <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
           </Link>
         ))}

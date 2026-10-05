@@ -21,7 +21,7 @@ export default async function NewSparePartPage({ searchParams }: { searchParams:
   return (
     <div className="flex flex-col gap-5">
       <PageHeader title="Catat spare part rusak" description={`Pengawas: ${user.name}`} backHref="/spare-part" />
-      <SparePartForm mode="create" id={draftId} units={units} suggestions={suggestions} />
+      <SparePartForm userId={user.id} mode="create" id={draftId} units={units} suggestions={suggestions} />
     </div>
   );
 }

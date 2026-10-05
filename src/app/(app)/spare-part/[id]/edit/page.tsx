@@ -33,6 +33,7 @@ export default async function EditSparePartPage({ params }: { params: Promise<{ 
     <div className="flex flex-col gap-5">
       <PageHeader title="Ubah catatan spare part" backHref={`/spare-part/${id}`} />
       <SparePartForm
+        userId={user.id}
         mode="edit"
         id={id}
         units={units}

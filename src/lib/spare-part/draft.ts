@@ -1,5 +1,5 @@
 import { STORES, draftStore } from "@/lib/draft-store";
-import type { DraftPhoto } from "@/lib/laporan-kerja/draft";
+import type { BaseDraft } from "@/lib/sync/draft-types";
 
 export type SparePartFields = {
   unitId: string;
@@ -11,13 +11,7 @@ export type SparePartFields = {
   lokasi: string;
 };
 
-export type SparePartDraft = {
-  id: string;
-  mode: "create" | "edit";
-  updatedAt: number;
-  fields: SparePartFields;
-  photos: DraftPhoto[];
-};
+export type SparePartDraft = BaseDraft<SparePartFields>;
 
 export const sparePartDrafts = {
   get: (id: string) => draftStore.get<SparePartDraft>(STORES.sparePart, id),

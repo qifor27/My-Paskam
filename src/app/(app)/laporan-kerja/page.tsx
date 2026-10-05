@@ -22,11 +22,11 @@ export const metadata: Metadata = { title: "Laporan Kerja" };
 export default async function LaporanListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ hal?: string; dihapus?: string }>;
+  searchParams: Promise<{ hal?: string; dihapus?: string; antre?: string }>;
 }) {
   const user = await requireUser();
   if (!can(user.role, "laporan-kerja:access")) return <AccessDenied />;
-  const { hal, dihapus } = await searchParams;
+  const { hal, dihapus, antre } = await searchParams;
   const pages = Math.min(Math.max(Number(hal) || 1, 1), 50);
   const { items, hasMore } = await listLaporan(user, pages * PAGE_SIZE);
   const canCreate = can(user.role, "laporan-kerja:create");
@@ -53,8 +53,9 @@ export default async function LaporanListPage({
         }
       />
 
+      {antre ? <Alert tone="info">Laporan disimpan di HP dan akan dikirim otomatis saat koneksi tersedia.</Alert> : null}
       {dihapus ? <Alert tone="success">Laporan dihapus.</Alert> : null}
-      {canCreate ? <LocalDrafts kind="laporan-kerja" units={units} /> : null}
+      {canCreate ? <LocalDrafts kind="laporan-kerja" userId={user.id} units={units} /> : null}
 
       {items.length === 0 ? (
         <EmptyState
