@@ -76,3 +76,4 @@ Tidak ada action baru.
 |---|---|---|
 | 2026-10-04 | Implementasi awal Sprint 2 | Claude Code |
 | 2026-10-05 | Rombak visual "Soft Operational": Beranda baru, FAB + CreateSheet, halaman Akun, bottom nav per role | Claude Code |
+| 2026-10-05 | Aktivitas terbaru = 3 laporan kerja terakhir (sesuai visibilitas); menu admin "Unit"; "Laporan Kerja" di Buat baru hanya untuk Pengawas | Claude Code |

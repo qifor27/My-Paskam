@@ -110,6 +110,9 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 | NetworkBanner | `components/network-status.tsx` | Banner kuning saat offline. |
 | AccessDenied | `components/access-denied.tsx` | Pesan error otorisasi PRD §21. |
 | ModulePlaceholder | `components/module-placeholder.tsx` | Sementara untuk modul/form yang belum dibangun. |
+| ChoiceChips | `components/ui/choice-chips.tsx` | Radio group berbentuk pill untuk opsi sedikit (unit, BBM 1–6, Hari ini/Kemarin). Terpilih = isian biru. `size="square"` 48 px untuk angka. |
+| Textarea | `components/ui/textarea.tsx` | Sama dengan Input, min. 112 px. |
+| PhotoGrid | `components/photo-grid.tsx` | Grid 3 kolom, overlay proses/progress %, overlay gagal + "Coba lagi", tanda terunggah, tombol hapus; tombol **Kamera** & **Galeri** terpisah; penghitung "n/6 foto". |
 
 ## 6. Layout
 
@@ -120,6 +123,20 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 - iPhone: `viewport-fit=cover` + `env(safe-area-inset-*)` di atas dan bawah.
 
 ## 7. Pola interaksi
+
+### Form data lapangan (contoh: Laporan Kerja)
+- Satu halaman, dibagi **kartu per bagian** (Pekerjaan · Jam kerja & BBM · Dokumentasi foto), bukan wizard.
+- Opsi ≤ ~8 → `ChoiceChips`; teks berulang → `Input` + `datalist` saran dari riwayat; angka → `inputMode="decimal"` + sufiks satuan, terima koma.
+- Tanggal: chip "Hari ini/Kemarin" + input date (maks. hari ini).
+- Error inline hilang begitu field diubah; saat submit gagal, fokus & scroll ke field pertama yang salah.
+- Draft otomatis di HP; teks kecil "Draft tersimpan otomatis di HP" di bawah tombol.
+- Status penyimpanan lokal: `StatusBadge tone="warning"` + ikon HardDrive "Tersimpan di HP".
+
+### Daftar data
+- Kelompok per tanggal ("Hari ini", "Kemarin", tanggal panjang) dengan judul seksi `text-sm font-semibold text-ink-muted`.
+- Baris: judul tebal (unit · operator) + metrik ber-ikon kecil (`Timer`, `Fuel`, `Camera`) `tabular-nums` + baris konteks.
+- Paginasi "Muat lebih banyak", bukan infinite scroll.
+
 
 - **Form**: `useServerAction` dengan `onSubmit` (bukan prop `action`) agar isian tidak hilang (PRD §23). `VALIDATION` → inline; kategori lain → `ErrorAlert` di atas form. Aksi utama di `StickyActionBar`.
 - **Feedback** (PRD §22): inline (validasi) · banner `Alert` (sistem/hasil aksi) · modal/sheet hanya untuk aksi destruktif, keamanan, atau pilihan seperti "Buat baru". **Toast tidak untuk error, server, izin, atau pesan kritis** (Carbon).

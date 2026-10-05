@@ -38,7 +38,7 @@ Kekuatan PRD: sangat jelas di **UX, error handling, keamanan data saat gagal, da
 
 Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsikan jawabannya (PRD §32.2).
 
-### Laporan Kerja (Sprint 3)
+### Laporan Kerja (Sprint 3) — ✅ dijawab 2026-10-05, lihat ADR-014
 - **Q1. Nilai status apa saja?** (mis. `DRAFT → SUBMITTED → APPROVED / REJECTED`?) Status data bisnis ini berbeda dari status sync (§25).
 - **Q2. Alur approval:** ada field `approved_by`, tetapi siapa yang approve dan kapan tidak dijelaskan. Apakah Owner wajib approve setiap laporan?
 - **Q3. Operator itu apa?** `operator_id` berarti Operator adalah entitas, tetapi tidak ada manajemen Operator. Apakah Operator adalah master data (bukan user login)? Siapa yang mengelolanya?
@@ -62,7 +62,7 @@ Pertanyaan ini **harus dijawab Owner/klien**. Claude Code tidak boleh mengasumsi
 - **Q15. Isi PDF:** kolom apa saja, apakah foto disertakan, perlu kop perusahaan, orientasi kertas?
 
 ### Visibilitas & Otorisasi (Sprint 1)
-- **Q16.** Apakah Pengawas bisa melihat laporan/order/planning **milik Pengawas lain**? (Menentukan aturan otorisasi dan akses foto §12.12.)
+- **Q16.** ✅ (ADR-014, untuk Laporan Kerja) Pengawas hanya melihat miliknya, Owner semua. Apakah Pengawas bisa melihat laporan/order/planning **milik Pengawas lain**? (Menentukan aturan otorisasi dan akses foto §12.12.)
 - **Q17. Kebijakan PIN:** panjang (6 digit?), lockout setelah berapa kali gagal, berapa lama?
 - **Q18. Durasi sesi** Owner dan Pengawas? Apakah Pengawas tetap login berhari-hari di HP lapangan?
 - **Q19. Offline + sesi:** jika sesi habis saat offline, apakah draft tetap bisa dibuat? (Disarankan: ya, sync menunggu login ulang.)

@@ -42,13 +42,13 @@
 
 ### ADR-003: Model foto (file vs attachment)
 - Tanggal: 2026-10-01
-- Status: PROPOSED
+- Status: DITUNDA — Sprint 3 memakai satu tabel `photo` (ADR-015); pemisahan file/attachment baru diperlukan bila dedup checksum (PRD §39.9) diaktifkan
 - Konteks: Dedup checksum (PRD storage §12.9) dan cleanup (§12.5) bisa saling bertabrakan (Risiko R3).
 - Usulan: Tabel `photo_file` (hash, path, size, retention_status) dan `photo_attachment` (module, record_id, photo_file_id). File fisik dihapus hanya jika semua attachment eligible dan tidak ada yang `KEEP`.
 
 ### ADR-004: ID dari client & idempotency sejak Sprint 0
 - Tanggal: 2026-10-01
-- Status: PROPOSED
+- Status: ACCEPTED — diterapkan: primary key UUID dari client berfungsi sebagai idempotency key (tidak perlu kolom terpisah)
 - Konteks: Offline baru dijadwalkan di Sprint 7, tetapi Sprint 3 sudah membutuhkan draft dan retry aman (Risiko R1).
 - Usulan: Semua record bisnis memakai UUID yang dibuat client + kolom `idempotency_key` unik, sejak skema pertama.
 
@@ -116,3 +116,32 @@
   - Navigasi mobile: tanpa header bar biru; bottom nav 2 + tombol "+" oranye + 2; halaman Akun (profil, menu admin, keluar).
   - Font Inter di-host sendiri (`next/font`).
 - Konsekuensi: `docs/design-system.md` ditulis ulang; CLAUDE.md aturan UI diperbarui. Rekomendasi riset yang menolak gradien dikesampingkan oleh keputusan Owner ini; aturan kontras dan status dari riset tetap dipakai (ADR-012).
+
+### ADR-014: Aturan bisnis Laporan Kerja (jawaban Owner 2026-10-05)
+- Tanggal: 2026-10-05
+- Status: ACCEPTED (butir bertanda *tafsiran* menunggu konfirmasi Owner)
+- Menjawab: Q1–Q7, Q16 (docs/prd-analysis.md)
+- Keputusan:
+  - **Q1/Q2 Status & approval: tidak perlu.** Laporan tidak punya status bisnis maupun alur persetujuan; field `approved_by` dan `status` dari PRD §14 tidak dipakai. Status sinkron offline (PRD §25) tetap ada di sisi perangkat.
+  - **Q3 Operator: tidak perlu daftar.** *Tafsiran:* nama operator diketik bebas (teks), dengan saran dari nama yang pernah diketik Pengawas tersebut.
+  - **Q4 Unit: bisa ditambah.** Unit = master data yang dikelola Owner (tambah, ubah nama, aktif/nonaktif). Awal: PASKAM 1–4, DUMP, TOWING.
+  - **Q5 HM = total jam kerja** (angka desimal, 1 angka di belakang koma). *Sementara:* 0–24 jam per laporan.
+  - **Q5 BBM (Solar): pilihan 1–6.** *Tafsiran:* nilai bulat 1 sampai 6 dipilih dengan tombol (satuan menunggu konfirmasi: liter/level/strip).
+  - **Q6 Edit/hapus: boleh.** Pengawas boleh mengedit dan menghapus laporan miliknya sendiri. Hapus = soft delete + audit log.
+  - **Q7 Foto: wajib.** Minimal 1 foto. *Sementara:* maksimal 6 foto per laporan.
+  - **Q16 Visibilitas (usulan Owner + rekomendasi):** Pengawas tercatat otomatis dari akun yang login (`supervisor_id` = user login, tidak diisi manual). Owner melihat semua laporan; Pengawas hanya melihat laporannya sendiri. Laporan dibuat oleh Pengawas; Owner hanya melihat.
+- Konsekuensi: Permission baru `laporan-kerja:create` (PENGAWAS), `laporan-kerja:view-all` (SUPER_ADMIN), `unit:manage` (SUPER_ADMIN).
+
+### ADR-015: Arsitektur foto & draft Laporan Kerja
+- Tanggal: 2026-10-05
+- Status: ACCEPTED
+- Konteks: PRD §18/§39 (kompresi, upload progress, retry, validasi server, akses terotorisasi) dan §23 (input tidak boleh hilang). Kredensial Supabase belum tersedia (Q23).
+- Keputusan:
+  - **Upload sebelum simpan:** foto diunggah satu per satu ke `POST /api/foto` begitu dipilih (id foto & id laporan dari client), lalu `saveLaporan` hanya mengirim daftar id foto. Memberi progress per foto dan retry tanpa mengulang seluruh form.
+  - **Kompresi di HP:** canvas → JPEG 80%, sisi terpanjang 1600 px. Re-encode sekaligus membuang EXIF (termasuk GPS).
+  - **Validasi server:** ukuran ≤ 2 MB, tipe dicek dari magic bytes (JPEG/WebP saja), foto hanya bisa ditempel ke laporan milik pengunggah.
+  - **Akses:** tidak ada URL publik; `GET /api/foto/:id` memeriksa izin laporan setiap request; foto orang lain → 404.
+  - **Storage:** antarmuka `StorageDriver` (`src/lib/storage`), driver `local` (folder `storage/`, di-gitignore) untuk development; driver Supabase ditambahkan saat kredensial ada, tanpa mengubah kode lain (PRD §39.13).
+  - **Draft di HP:** IndexedDB (`paskam` → `laporan-drafts`), simpan otomatis ±0,6 dtk berisi isian + blob foto yang belum terunggah; dihapus setelah tersimpan di server. `navigator.storage.persist()` diminta agar tidak dihapus browser.
+  - **Foto dilepas saat edit** dihapus (soft delete + file dihapus) ketika laporan disimpan.
+- Konsekuensi: Foto yatim (diunggah tapi laporan tak pernah disimpan) perlu dibersihkan berkala — dicatat untuk Sprint 8 (Storage Management). Halaman yang memakai `notFound()` di bawah `loading.tsx` mengembalikan status 200 dengan UI "tidak ditemukan" (perilaku streaming Next.js); tidak ada data yang bocor (diuji E2E).

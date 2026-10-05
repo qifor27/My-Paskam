@@ -29,6 +29,30 @@
 
 ---
 
+## Sprint 3 — Laporan Kerja (2026-10-05)
+
+**Goal:** Pengawas mencatat laporan kerja lengkap dengan foto dari HP; Owner memantau semua.
+**Story:** US-3.1 – US-3.6
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-05 | — | Jawaban Owner Q1–Q7 & Q16 dicatat | ADR-014, `prd-analysis.md` |
+| 2026-10-05 | US-3.1, 3.2 | Migrasi `unit` (+seed), `laporan_kerja`, `photo`; izin baru | `database.md`, `security.md` |
+| 2026-10-05 | US-3.3 | Storage driver, `POST/GET /api/foto`, kompresi client, `usePhotoUploads`, `PhotoGrid` | ADR-015, `architecture.md`, `design-system.md` |
+| 2026-10-05 | US-3.2, 3.5 | Form Laporan Kerja + draft IndexedDB + "Belum terkirim" di daftar | `features/laporan-kerja.md` |
+| 2026-10-05 | US-3.6 | Daftar per hari, detail, edit (ganti foto), hapus (soft delete); aktivitas terbaru di Beranda | `features/laporan-kerja.md`, `features/dashboard-navigation.md` |
+| 2026-10-05 | US-3.1 | Halaman Unit (Owner) | `features/unit-management.md` |
+| 2026-10-05 | — | Temuan: path storage membuat seluruh proyek ter-trace saat build → diperbaiki | `security.md` |
+| 2026-10-05 | — | Temuan (uji interaktif Puppeteer + Firefox): error field tidak hilang setelah diperbaiki → diperbaiki | `design-system.md` |
+| 2026-10-05 | — | Verifikasi: 46 unit test; E2E S1 (21) + S2 (29) + S3 (34) lulus; alur interaktif (isi form, upload foto, simpan, sheet Buat baru) lulus | — |
+
+### Catatan
+- Nilai SEMENTARA: HM maks. 24 jam, maks. 6 foto; tafsiran: operator teks bebas, BBM 1–6 (satuan?).
+- Belum: uji kamera di HP nyata; driver Supabase (Q23); cleanup foto yatim (Sprint 8).
+
+---
+
 ## UI Refresh — sebelum Sprint 3 (2026-10-05)
 
 **Goal:** UI modern dan konsisten sebelum modul data dibangun.

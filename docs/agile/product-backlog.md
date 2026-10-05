@@ -33,12 +33,13 @@
 - [x] US-2.4 Loading/empty/error state (termasuk error boundary root/layout/halaman dan 404)
 
 ## Sprint 3 — Laporan Kerja
-- [ ] US-3.1 Master data Unit & Operator ⛔ Q3, Q4
-- [ ] US-3.2 Form Laporan Kerja ⛔ Q5
-- [ ] US-3.3 Upload foto (kamera/galeri, kompresi, preview, progress, retry) ⛔ Q7
-- [ ] US-3.4 Status & approval ⛔ Q1, Q2
-- [ ] US-3.5 Draft offline (IndexedDB)
-- [ ] US-3.6 List & detail ⛔ Q6
+> Dokumen: [laporan-kerja.md](../features/laporan-kerja.md), [unit-management.md](../features/unit-management.md) · Aturan: ADR-014
+- [x] US-3.1 Master data Unit (Owner) — operator = teks bebas (ADR-014)
+- [x] US-3.2 Form Laporan Kerja (HM total jam, BBM 1–6)
+- [x] US-3.3 Upload foto (kamera/galeri, kompresi, preview, progress, retry)
+- [x] ~~US-3.4 Status & approval~~ — dibatalkan: tidak perlu (ADR-014)
+- [x] US-3.5 Draft offline (IndexedDB)
+- [x] US-3.6 List, detail, edit, hapus
 
 ## Sprint 4 — Order Spare Part
 - [ ] US-4.1 Form + foto ⛔ Q9

@@ -8,6 +8,12 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Laporan Kerja: buat, lihat, ubah, hapus; tanggal, unit, operator, HM (total jam), BBM (Solar) 1–6, lokasi, deskripsi, dan foto wajib (Sprint 3, ADR-014).
+- Foto dari Kamera atau Galeri: dikompres di HP, diunggah per foto dengan progress, bisa dicoba lagi, dan dicoba ulang otomatis saat online (Sprint 3).
+- Laporan yang belum terkirim tersimpan otomatis di HP dan tampil di bagian "Belum terkirim" (Sprint 3).
+- Nama Pengawas tercatat otomatis dari akun yang login; Owner melihat semua laporan, Pengawas hanya miliknya (Sprint 3).
+- Halaman Unit untuk Owner: tambah, ubah nama, aktif/nonaktif (Sprint 3).
+- Beranda menampilkan 3 laporan terbaru (Sprint 3).
 - Tampilan baru "Soft Operational": tombol pill biru, kartu membulat, ikon pastel per modul, font Inter (ADR-013).
 - Beranda baru: sapaan sesuai jam, kartu utama, grid menu, aktivitas terbaru.
 - Tombol "+" oranye di navigasi bawah dan "Buat baru" di sidebar untuk membuat laporan/order/planning/akun Pengawas.
@@ -44,6 +50,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Pesan validasi bawaan Zod kini berbahasa Indonesia; field yang tidak terkirim menampilkan "Wajib diisi" (Sprint 1).
 
 ### Security
+- Foto hanya bisa dibuka lewat server setelah cek izin; file palsu ditolak; data lokasi (EXIF) dibuang saat kompresi (Sprint 3, ADR-015).
 - Password & PIN di-hash scrypt; token sesi disimpan sebagai SHA-256 (Sprint 1, ADR-008).
 - Penguncian login setelah percobaan gagal berulang, termasuk untuk kode/email yang tidak terdaftar (Sprint 1, US-1.7, ADR-009).
 - Audit log untuk login, logout, dan semua perubahan akun Pengawas (Sprint 1, US-1.8).

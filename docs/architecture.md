@@ -47,10 +47,13 @@ src/
     login/               # halaman + server action login/logout
     (app)/               # area setelah login; layout memanggil requireUser()
       akun/              # profil + keluar (+ menu admin untuk Owner)
+      laporan-kerja/     # daftar, baru, [id] detail, [id]/edit, actions.ts, laporan-form.tsx
+      unit/              # master data unit (Owner)
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
       laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul (+ /baru)
+    api/foto/            # POST upload, GET [id] akses terotorisasi
     error.tsx            # error di layout (mis. DB tidak terjangkau)
     global-error.tsx     # error di root layout
     not-found.tsx        # 404
@@ -64,7 +67,12 @@ src/
     auth/                # config, password (scrypt), session, permissions, rate limit, validasi
     request.ts           # IP & user agent dari header
     navigation.ts        # daftar menu + filter per role (satu sumber untuk nav & dashboard)
-    format.ts            # format tanggal dengan zona waktu aplikasi
+    format.ts            # format tanggal (zona aplikasi), todayISO, dayLabel, desimal
+    route.ts             # handleRoute (route handler → PublicError JSON), cek Origin
+    storage/             # StorageDriver (local; Supabase menyusul)
+    photo/               # rules (batas, magic bytes), compress (client), service (server)
+    laporan-kerja/       # schema, access, queries, draft (IndexedDB)
+    draft-store.ts       # wrapper IndexedDB tanpa dependency
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
     errors/              # AppError, kategori, pesan user, toPublicError
@@ -91,6 +99,15 @@ Hasil selalu `ActionResult` (`{ ok: true, data } | { ok: false, error: PublicErr
 | Root layout | `app/global-error.tsx` | Versi darurat |
 Kode laporan = `error.digest`, sama dengan yang tercetak di log server.
 
+## Alur Laporan Kerja & Foto (ADR-015)
+```text
+Form (client) ──pilih foto──► compress (canvas) ──XHR + progress──► POST /api/foto ──► storage + tabel photo
+     │  autosave ±0,6 dtk ──► IndexedDB (isian + blob foto belum terunggah)
+     └─ Simpan ──► saveLaporan(id, field, photoIds) ──► validasi + cek foto ──► upsert laporan_kerja
+                                                         └─ hapus foto yang dilepas, audit, revalidate
+Detail ──<img src=/api/foto/:id>──► cek izin per request ──► file (private cache)
+```
+
 ## Alur Autentikasi
 `/login` → `login()` → cek `rate_limit` → cari user → `verifySecret` (scrypt) → `createSession` (cookie + baris `session`) → `/`.
 Setiap halaman di `(app)/` memanggil `requireUser()`; sesi tidak valid → `/login?sesi=berakhir`.
@@ -111,3 +128,5 @@ Setiap record membawa UUID client + idempotency key (ADR-004).
 | server-only | Mencegah kode DB masuk bundle browser | Sprint 0 |
 | typescript, eslint, eslint-config-next, vitest | Typecheck, lint, test (PRD §31) | Sprint 0 |
 | tsx (dev) | Menjalankan script TypeScript (`scripts/create-owner.ts`) | Sprint 1 |
+
+Sprint 3 tidak menambah dependency: kompresi (canvas), IndexedDB, dan upload (XHR) memakai API browser; storage lokal memakai `node:fs`.
