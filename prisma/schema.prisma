@@ -39,10 +39,13 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  createdBy    User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
-  createdUsers User[]     @relation("UserCreatedBy")
-  sessions     Session[]
-  auditLogs    AuditLog[]
+  createdBy         User?          @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers      User[]         @relation("UserCreatedBy")
+  laporanSupervised LaporanKerja[] @relation("LaporanSupervisor")
+  laporanCreated    LaporanKerja[] @relation("LaporanCreatedBy")
+  photosUploaded    Photo[]
+  sessions          Session[]
+  auditLogs         AuditLog[]
 
   @@map("user")
 }
@@ -96,4 +99,90 @@ model RateLimit {
   lockedUntil DateTime? @map("locked_until") @db.Timestamptz(3)
 
   @@map("rate_limit")
+}
+
+// Master data unit (ADR-014: bisa ditambah Owner). Tidak dihapus, hanya
+// dinonaktifkan, agar laporan lama tetap merujuk unit yang benar.
+model Unit {
+  id        String   @id @db.Uuid
+  name      String   @unique
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  laporan LaporanKerja[]
+
+  @@map("unit")
+}
+
+// Laporan Kerja (PRD §14, ADR-014). id dibuat di client dan sekaligus menjadi
+// idempotency key (ADR-004): kirim ulang dengan id sama tidak membuat duplikat.
+model LaporanKerja {
+  id           String    @id @db.Uuid
+  tanggal      DateTime  @db.Date
+  unitId       String    @map("unit_id") @db.Uuid
+  operatorName String    @map("operator_name")
+  /// Total jam kerja (HM), 1 angka desimal.
+  hmJam        Decimal   @map("hm_jam") @db.Decimal(4, 1)
+  /// BBM (Solar), nilai 1–6 (ADR-014).
+  bbm          Int       @db.SmallInt
+  lokasi       String
+  deskripsi    String
+  /// Pengawas yang login saat membuat laporan (tidak diisi manual).
+  supervisorId String    @map("supervisor_id") @db.Uuid
+  createdById  String    @map("created_by") @db.Uuid
+  updatedById  String?   @map("updated_by") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  /// Soft delete (ADR-014): laporan terhapus tidak tampil, tetap ada untuk audit.
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  unit       Unit @relation(fields: [unitId], references: [id])
+  supervisor User @relation("LaporanSupervisor", fields: [supervisorId], references: [id])
+  createdBy  User @relation("LaporanCreatedBy", fields: [createdById], references: [id])
+
+  @@index([supervisorId, tanggal])
+  @@index([tanggal])
+  @@index([unitId, tanggal])
+  @@map("laporan_kerja")
+}
+
+enum PhotoModule {
+  LAPORAN_KERJA
+  ORDER_SPARE_PART
+  PLANNING_JOB
+}
+
+enum RetentionStatus {
+  KEEP
+  ACTIVE
+  ARCHIVED
+  DELETE_PENDING
+  DELETED
+}
+
+// Metadata foto (PRD §39.2). File ada di storage, bukan di DB.
+// Foto diunggah lebih dulu (record_id null), lalu ditautkan saat laporan disimpan.
+model Photo {
+  id              String          @id @db.Uuid
+  module          PhotoModule
+  recordId        String?         @map("record_id") @db.Uuid
+  storagePath     String          @map("storage_path")
+  mimeType        String          @map("mime_type")
+  sizeBytes       Int             @map("size_bytes")
+  width           Int
+  height          Int
+  sha256          String
+  sortOrder       Int             @default(0) @map("sort_order")
+  retentionStatus RetentionStatus @default(ACTIVE) @map("retention_status")
+  uploadedById    String          @map("uploaded_by") @db.Uuid
+  uploadedAt      DateTime        @default(now()) @map("uploaded_at") @db.Timestamptz(3)
+  deletedAt       DateTime?       @map("deleted_at") @db.Timestamptz(3)
+
+  uploadedBy User @relation(fields: [uploadedById], references: [id])
+
+  @@index([module, recordId])
+  @@index([uploadedById, recordId])
+  @@map("photo")
 }
