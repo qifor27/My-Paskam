@@ -34,6 +34,8 @@ model User {
   kodePengawas String?   @unique @map("kode_pengawas")
   pinHash      String?   @map("pin_hash")
   isActive     Boolean   @default(true) @map("is_active")
+  /// PIN Laporan Data milik Owner (ADR-018), hash scrypt.
+  dataPinHash  String?   @map("data_pin_hash")
   lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(3)
   createdById  String?   @map("created_by") @db.Uuid
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -56,11 +58,13 @@ model User {
 
 model Session {
   // SHA-256 dari token sesi; token mentah hanya ada di cookie httpOnly.
-  id        String   @id
-  userId    String   @map("user_id") @db.Uuid
-  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  userAgent String?  @map("user_agent")
+  id                String    @id
+  userId            String    @map("user_id") @db.Uuid
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(3)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  userAgent         String?   @map("user_agent")
+  /// Laporan Data terbuka sampai waktu ini setelah PIN benar (ADR-018).
+  dataUnlockedUntil DateTime? @map("data_unlocked_until") @db.Timestamptz(3)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

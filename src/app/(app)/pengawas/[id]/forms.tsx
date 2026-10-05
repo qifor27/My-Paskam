@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { useServerAction } from "@/hooks/use-server-action";
 
 import { resetPengawasPin, setPengawasActive, updatePengawas } from "../actions";
-import { PinFields } from "../pin-fields";
+import { PinFields } from "@/components/pin-fields";
 
 function retryButton(pending: boolean) {
   return (

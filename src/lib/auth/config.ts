@@ -12,6 +12,8 @@ export const AUTH_CONFIG = {
     /** SEMENTARA (Q17): lama penguncian. */
     lockMinutes: 15,
   },
+  /** SEMENTARA (ADR-018): lama Laporan Data terbuka setelah PIN benar. */
+  dataPinUnlockMinutes: 15,
   /** SEMENTARA (Q18): durasi sesi per role, dalam jam. */
   sessionHours: {
     SUPER_ADMIN: 12,

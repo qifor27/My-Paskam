@@ -20,7 +20,12 @@ export function loginKeys(identifier: string, ip: string | null) {
   ];
 }
 
-type Keys = ReturnType<typeof loginKeys>;
+/** Percobaan PIN Laporan Data per akun (ADR-018). */
+export function dataPinKeys(userId: string) {
+  return [{ key: `datapin:${userId}`, rule: RULES.identifier }];
+}
+
+type Keys = { key: string; rule: RateLimitRule }[];
 
 /** Sisa waktu kunci terlama (ms), 0 jika tidak terkunci. */
 export async function loginLockRemaining(keys: Keys, now = new Date()): Promise<number> {
@@ -34,6 +39,10 @@ export async function recordLoginFailure(keys: Keys, now = new Date()): Promise<
     const next = registerFailure(current, rule, now);
     await db.rateLimit.upsert({ where: { key }, create: { key, ...next }, update: next });
   }
+}
+
+export async function clearRateLimit(keys: Keys): Promise<void> {
+  await db.rateLimit.deleteMany({ where: { key: { in: keys.map((k) => k.key) } } });
 }
 
 export async function clearLoginFailures(identifier: string): Promise<void> {

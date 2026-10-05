@@ -29,3 +29,11 @@ describe("tanggal tanpa jam", () => {
     expect(dayLabel("2026-10-01", now)).toBe("Kamis, 1 Oktober 2026");
   });
 });
+
+describe("zonedDayStart", () => {
+  it("00.00 WIB = 17.00 UTC hari sebelumnya", async () => {
+    const { zonedDayStart, monthStartISO } = await import("./format");
+    expect(zonedDayStart("2026-10-05").toISOString()).toBe("2026-10-04T17:00:00.000Z");
+    expect(monthStartISO("2026-10-05")).toBe("2026-10-01");
+  });
+});

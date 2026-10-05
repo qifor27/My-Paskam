@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, KeyRound } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -6,6 +6,7 @@ import { Avatar } from "@/components/avatar";
 import { ModuleTile } from "@/components/nav-icon";
 import { PageHeader } from "@/components/page-header";
 import { Card } from "@/components/ui/card";
+import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { navFor } from "@/lib/navigation";
@@ -51,6 +52,21 @@ export default async function AkunPage() {
               <ChevronRight className="size-5 text-ink-muted" aria-hidden />
             </Link>
           ))}
+        </Card>
+      ) : null}
+
+      {can(user.role, "laporan-data:access") ? (
+        <Card className="overflow-hidden">
+          <Link href="/laporan-data/pin" className="flex items-center gap-3 p-4 hover:bg-canvas focus-visible:bg-canvas focus-visible:outline-none">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-tile-green-bg text-tile-green-fg">
+              <KeyRound className="size-5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold">PIN Laporan Data</span>
+              <span className="block text-sm text-ink-muted">Buat atau ganti PIN untuk membuka Laporan Data</span>
+            </span>
+            <ChevronRight className="size-5 text-ink-muted" aria-hidden />
+          </Link>
         </Card>
       ) : null}
 

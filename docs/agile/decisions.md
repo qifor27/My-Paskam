@@ -88,7 +88,7 @@
 
 ### ADR-010: Akses Laporan Data sementara hanya untuk Owner
 - Tanggal: 2026-10-04
-- Status: PROPOSED (sementara, menunggu Q13)
+- Status: ACCEPTED — dikonfirmasi Owner 2026-10-05 (ADR-018): Pengawas tidak boleh membuka Laporan Data
 - Konteks: Navigasi Sprint 2 butuh keputusan siapa yang melihat Laporan Data.
 - Keputusan sementara: `laporan-data:access` hanya SUPER_ADMIN (prinsip least privilege). Dibuka untuk Pengawas cukup dengan menambah role di `src/lib/auth/permissions.ts`.
 
@@ -173,3 +173,16 @@
   - *Tafsiran:* Pengawas yang ditugaskan mengubah status pekerjaannya (Direncanakan→Berjalan, Berjalan→Selesai); Owner boleh mengubah ke status apa pun, termasuk Dibatalkan. Waktu mulai/selesai aktual dicatat otomatis saat status berubah.
   - *Tafsiran:* Pengawas hanya melihat planning yang ditugaskan kepadanya; Owner melihat semua serta mengubah/menghapus (soft delete).
 - Konsekuensi: Izin `planning-job:create` dan `planning-job:view-all` (SUPER_ADMIN); perubahan status dicek di server dengan tabel transisi.
+
+### ADR-018: Laporan Data — cakupan, PDF ditunda, PIN gate (jawaban Owner 2026-10-05)
+- Tanggal: 2026-10-05
+- Status: ACCEPTED (butir *tafsiran* menunggu konfirmasi)
+- Menjawab: Q13, Q14, Q15 (docs/prd-analysis.md)
+- Keputusan:
+  - **Cakupan: semua modul** — Laporan Kerja, Order Spare Part, Planning Job — dengan filter tanggal, unit, Pengawas, dan status/prioritas sesuai modul (PRD §17).
+  - **Export PDF ditunda** atas permintaan Owner ("tidak usah dulu"); dijadwalkan ulang bila diminta.
+  - **Hanya Owner** yang membuka Laporan Data (ADR-010 dikonfirmasi).
+  - **PIN gate diperlukan** (PRD §17 "secondary PIN gate").
+  - *Tafsiran:* PIN Laporan Data = PIN 6 digit terpisah milik akun Owner, dibuat/diganti dengan konfirmasi password. Setelah PIN benar, Laporan Data terbuka **15 menit** untuk sesi login itu saja (bisa dikunci manual). Salah PIN 5× → dikunci 15 menit. Semua percobaan dicatat di audit log.
+  - *Tafsiran:* rentang tanggal default = awal bulan berjalan s.d. hari ini; tanggal Spare Part = waktu dicatat, tanggal Planning = estimasi mulai.
+- Konsekuensi: kolom `user.data_pin_hash` dan `session.data_unlocked_until`.

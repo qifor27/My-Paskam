@@ -70,3 +70,32 @@ export function dayLabel(iso: string, now: Date = new Date()): string {
 export function formatDecimal(value: number, digits = 1): string {
   return value.toLocaleString("id-ID", { minimumFractionDigits: 0, maximumFractionDigits: digits });
 }
+
+const offsetParts = new Intl.DateTimeFormat("en-US", {
+  timeZone: APP_TIME_ZONE,
+  hourCycle: "h23",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
+/** Selisih zona aplikasi terhadap UTC (ms) pada instan tertentu. */
+function zoneOffsetMs(instant: Date): number {
+  const p = Object.fromEntries(offsetParts.formatToParts(instant).map((x) => [x.type, x.value]));
+  const asUtc = Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour), Number(p.minute), Number(p.second));
+  return asUtc - Math.floor(instant.getTime() / 1000) * 1000;
+}
+
+/** Instan UTC untuk pukul 00.00 tanggal YYYY-MM-DD di zona aplikasi. */
+export function zonedDayStart(iso: string): Date {
+  const guess = new Date(`${iso}T00:00:00Z`);
+  return new Date(guess.getTime() - zoneOffsetMs(guess));
+}
+
+/** Tanggal 1 bulan berjalan (zona aplikasi). */
+export function monthStartISO(today: string): string {
+  return `${today.slice(0, 8)}01`;
+}

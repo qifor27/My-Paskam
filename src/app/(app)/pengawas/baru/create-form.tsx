@@ -12,7 +12,7 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { createClientId } from "@/lib/sync/client-id";
 
 import { createPengawas } from "../actions";
-import { PinFields } from "../pin-fields";
+import { PinFields } from "@/components/pin-fields";
 
 export function PengawasCreateForm({ pinLength }: { pinLength: number }) {
   const router = useRouter();
