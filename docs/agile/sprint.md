@@ -29,6 +29,29 @@
 
 ---
 
+## Sprint 7 — PWA & Offline (2026-10-05)
+
+**Goal:** Aplikasi bisa dipasang dan tetap dipakai tanpa sinyal; data terkirim otomatis tanpa duplikat.
+**Story:** US-7.1 – US-7.5
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-05 | US-7.1 | Manifest, ikon (any/maskable/apple), metadata PWA, kartu Pasang aplikasi | `features/pwa-offline.md`, `design-system.md` |
+| 2026-10-05 | US-7.2 | `public/sw.js` manual, halaman `/offline`, header no-cache untuk sw.js, pemanasan cache | ADR-019, `architecture.md` |
+| 2026-10-05 | US-7.3 | Outbox (foto tertunda → data), `SyncProvider`, validasi zod di HP, draft per akun | ADR-019, `security.md` |
+| 2026-10-05 | US-7.4 | `SyncBanner`, badge status draft | `design-system.md` |
+| 2026-10-05 | — | Temuan: pesan WARM hilang di kunjungan pertama (SW belum aktif) → tunggu SW aktif & set penanda hanya bila terkirim | `features/pwa-offline.md` |
+| 2026-10-05 | — | Temuan: form dari cache me-reload terus saat offline (`router.replace`) → id draft dibaca dari URL + `history.replaceState` | `features/pwa-offline.md` |
+| 2026-10-05 | — | Temuan: banner antrean baru muncul setelah proses kirim selesai → hitung dulu sebelum kirim | — |
+| 2026-10-05 | — | Verifikasi: 57 unit test; E2E S1–S6 = 145 cek lulus; uji offline interaktif 2× lulus; uji isolasi akun & validasi offline lulus | — |
+
+### Catatan
+- Belum diuji di HP nyata / mode pesawat; iOS tidak mengirim antrean di latar belakang (terkirim saat app dibuka).
+- Skrip uji E2E/Puppeteer berada di luar repo (scratchpad); usul: pindahkan ke `tests/e2e` di Sprint 8.
+
+---
+
 ## Sprint 6 — Laporan Data (2026-10-05)
 
 **Goal:** Owner melihat data semua modul dengan filter, dilindungi PIN tambahan.

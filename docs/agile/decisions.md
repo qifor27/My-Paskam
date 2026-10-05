@@ -186,3 +186,16 @@
   - *Tafsiran:* PIN Laporan Data = PIN 6 digit terpisah milik akun Owner, dibuat/diganti dengan konfirmasi password. Setelah PIN benar, Laporan Data terbuka **15 menit** untuk sesi login itu saja (bisa dikunci manual). Salah PIN 5× → dikunci 15 menit. Semua percobaan dicatat di audit log.
   - *Tafsiran:* rentang tanggal default = awal bulan berjalan s.d. hari ini; tanggal Spare Part = waktu dicatat, tanggal Planning = estimasi mulai.
 - Konsekuensi: kolom `user.data_pin_hash` dan `session.data_unlocked_until`.
+
+### ADR-019: Strategi PWA & offline (antrean kirim di browser)
+- Tanggal: 2026-10-05
+- Status: ACCEPTED
+- Konteks: PRD §19, §23–§25. Background Sync API belum didukung Safari/iOS (riset), dan server action Next.js tidak bisa dipanggil dari service worker.
+- Keputusan:
+  - **Service worker manual** (`public/sw.js`, tanpa library): aset `/_next/static` & ikon cache-first; halaman lapangan tertentu (Beranda, daftar & form Laporan Kerja/Spare Part) network-first dengan cadangan cache; `/offline` sebagai cadangan terakhir. **API, server action, dan foto tidak pernah di-cache.**
+  - **Pemanasan cache:** untuk Pengawas, form & daftar disimpan ke cache (beserta aset JS/CSS-nya) sekali per sesi browser setelah SW aktif, sehingga form bisa dibuka offline walau belum pernah dikunjungi.
+  - **Antrean kirim di browser (outbox):** Simpan saat offline / ada foto tertunda / gagal jaringan → draft diberi status `queued`. `SyncProvider` mengirim antrean saat aplikasi dibuka, saat event `online`, tiap 30 dtk selama antrean ada, dan lewat "Kirim sekarang". Urutan per draft: unggah foto tertunda → kirim data. Idempoten (id client, ADR-004).
+  - **Validasi di HP** dengan schema zod yang sama dengan server sebelum masuk antrean; kesalahan bisnis dari server saat sync → status `failed` dengan pesan, user memperbaiki lewat form.
+  - **Perangkat bersama:** setiap draft menyimpan `userId`; draft hanya ditampilkan/dikirim untuk akun pemiliknya. Logout menghapus cache halaman (berisi data user). Draft tidak dihapus saat logout agar data lapangan tidak hilang.
+  - Status tampil dengan bahasa nasib data: "Draft di HP", "Menunggu dikirim", "Mengirim data…", "Gagal dikirim".
+- Konsekuensi: Data antre baru terkirim ketika aplikasi dibuka kembali (iOS tidak mengirim di latar belakang) — dijelaskan di banner. Mengubah strategi cache = naikkan `VERSION` di `sw.js`.

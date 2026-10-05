@@ -61,11 +61,12 @@
 - [ ] US-6.4 Storage Monitoring (read-only) ⛔ Q20
 
 ## Sprint 7 — PWA & Offline
-- [ ] US-7.1 Manifest + installability
-- [ ] US-7.2 Service worker + offline cache
-- [ ] US-7.3 Sync queue + upload queue + retry
-- [ ] US-7.4 Indikator status jaringan & status sync
-- [ ] US-7.5 Proteksi duplikat (server-side)
+> Dokumen: [pwa-offline.md](../features/pwa-offline.md) · ADR-019
+- [x] US-7.1 Manifest + installability (ikon, kartu Pasang aplikasi)
+- [x] US-7.2 Service worker + offline cache (+ pemanasan cache form, halaman /offline)
+- [x] US-7.3 Sync queue + upload queue + retry (outbox di browser)
+- [x] US-7.4 Indikator status jaringan & status sync (banner + badge per item)
+- [x] US-7.5 Proteksi duplikat (id client, sejak Sprint 3; diuji ulang offline)
 
 ## Sprint 8 — Production Hardening
 - [ ] US-8.1 Security & authorization review

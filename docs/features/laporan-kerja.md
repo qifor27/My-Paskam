@@ -27,7 +27,7 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 3. Foto langsung dikompres & diunggah per foto (progress, Coba lagi, hapus). Tombol simpan menunggu semua foto selesai.
 4. Isian & foto yang belum terunggah **tersimpan otomatis di HP** (IndexedDB) setiap ±0,6 dtk.
 5. Simpan → detail laporan dengan pesan sukses; draft di HP dihapus.
-6. Gagal jaringan → banner "Laporan tersimpan di HP… Coba kirim lagi"; draft tampil di daftar bagian "Belum terkirim".
+6. Offline / gagal jaringan → laporan masuk **antrean kirim** dan terkirim otomatis saat online (lihat `pwa-offline.md`); tampil di "Belum terkirim · Menunggu dikirim".
 7. Detail → Ubah (form sama, foto lama ikut) / Hapus (konfirmasi dua langkah).
 
 ## 4. Data
@@ -83,4 +83,5 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
 | 2026-10-05 | Implementasi awal Sprint 3 | Claude Code |
+| 2026-10-05 | Offline penuh (ADR-019): validasi di HP, Simpan offline → antrean kirim otomatis; draft per akun | Claude Code |
 | 2026-10-05 | BBM menjadi jumlah (ADR-016); perbaikan race autosave yang menulis ulang draft setelah tersimpan; komponen bersama `FormAlerts`, `DeleteRecord`, `LocalDrafts` | Claude Code |

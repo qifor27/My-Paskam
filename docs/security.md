@@ -33,6 +33,13 @@
 - Brute-force: `rate_limit` key `datapin:<userId>` (5 gagal / 15 menit → kunci 15 menit), berlaku juga untuk password saat membuat PIN.
 - Data laporan tidak di-query sebelum gerbang terbuka. Filter dari URL divalidasi zod; nilai tidak valid diabaikan (diuji dengan input injeksi).
 
+## Offline & perangkat bersama (ADR-019)
+- Service worker tidak meng-cache `/api/*` (foto privat), server action (POST), maupun halaman di luar daftar lapangan.
+- Halaman yang di-cache berisi data user → dihapus saat logout (`CLEAR_USER_CACHE`).
+- Draft IndexedDB menyimpan `userId`; hanya draft milik akun yang login yang ditampilkan/dikirim. Draft milik akun lain tidak dibuka walau URL `?draft=` diketahui.
+- Kiriman antrean melewati validasi & otorisasi server yang sama dengan pengiriman online.
+- Risiko tersisa: data draft (termasuk foto) tersimpan tidak terenkripsi di browser perangkat sampai terkirim — sama seperti aplikasi offline umumnya; mitigasi: kunci layar HP.
+
 ## Foto & Storage (ADR-015)
 - **Upload** `POST /api/foto`: wajib login + izin buat sesuai modul (`module` = `LAPORAN_KERJA` / `ORDER_SPARE_PART`, registry `src/lib/photo/modules.ts`); cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
 - **Akses** `GET /api/foto/:id`: tidak ada URL publik. Setiap request dicek: foto milik laporan yang boleh dilihat user dan diunggah pembuat laporan; foto draft hanya pengunggah. Selain itu → 404 (keberadaan tidak terungkap). Header `Cache-Control: private`, `X-Content-Type-Options: nosniff`.
@@ -73,5 +80,7 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 | 2026-10-05 | Sprint 3 | `notFound()` di bawah `loading.tsx` = status 200 (UI tidak ditemukan, tanpa data) | Diterima (ADR-015) |
 | 2026-10-05 | Sprint 3 | Foto yatim (laporan tidak pernah disimpan) menumpuk di storage | Terbuka → Sprint 8 cleanup |
 | 2026-10-05 | Sprint 4 spare part (E2E 21 cek) | Foto tidak bisa dipakai lintas modul/record; Owner & Pengawas lain ditolak | OK |
+| 2026-10-05 | Sprint 7 PWA/offline (uji interaktif) | Antrean akun lain tidak terlihat/terkirim; cache halaman terhapus saat logout; API tidak di-cache | OK |
+| 2026-10-05 | Sprint 7 | Draft offline tersimpan tidak terenkripsi di perangkat | Diterima (dicatat) |
 | 2026-10-05 | Sprint 6 Laporan Data (E2E 24 cek) | Isolasi PIN per sesi, lockout, Pengawas ditolak, query injeksi diabaikan, PIN tidak masuk log | OK |
 | 2026-10-05 | Sprint 5 planning (E2E 26 cek) | Lompat status, batal oleh Pengawas, ubah status planning orang lain, menugaskan Owner — semua ditolak | OK |

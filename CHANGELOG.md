@@ -8,6 +8,10 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Aplikasi bisa dipasang di layar utama HP (ikon PASKAM, mode layar penuh) dengan petunjuk di halaman Akun (Sprint 7).
+- Mode offline: form Laporan Kerja & Spare Part tetap bisa dibuka dan disimpan tanpa sinyal; data dan foto terkirim otomatis saat koneksi kembali, tanpa duplikat (Sprint 7, ADR-019).
+- Banner jumlah data yang menunggu dikirim + tombol "Kirim sekarang", serta status per item (Draft di HP / Menunggu dikirim / Gagal dikirim) (Sprint 7).
+- Halaman "Tidak ada koneksi" saat halaman belum tersimpan di HP (Sprint 7).
 - Laporan Data (khusus Owner): Laporan Kerja, Spare Part, dan Planning dalam satu halaman dengan filter tanggal, unit, Pengawas, status/prioritas; ringkasan total HM, BBM, jumlah spare part, dan status planning (Sprint 6, ADR-018).
 - Planning Job: Owner membuat rencana pekerjaan untuk Pengawas (unit, lokasi, estimasi mulai–selesai) dengan status Direncanakan → Berjalan → Selesai / Dibatalkan; Pengawas menekan "Mulai pekerjaan" dan "Tandai selesai" (Sprint 5, ADR-017).
 - Beranda Pengawas menampilkan "Planning untuk Anda" (Sprint 5).
@@ -57,6 +61,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Pesan validasi bawaan Zod kini berbahasa Indonesia; field yang tidak terkirim menampilkan "Wajib diisi" (Sprint 1).
 
 ### Security
+- Data yang belum terkirim hanya tampil dan dikirim untuk akun pembuatnya; halaman tersimpan dihapus saat keluar (perangkat dipakai bergantian) (Sprint 7).
 - Laporan Data dilindungi PIN tambahan milik Owner: terbuka 15 menit per sesi, bisa dikunci manual, dan terkunci sementara setelah 5 kali salah (Sprint 6, ADR-018).
 - Foto hanya bisa dibuka lewat server setelah cek izin; file palsu ditolak; data lokasi (EXIF) dibuang saat kompresi (Sprint 3, ADR-015).
 - Password & PIN di-hash scrypt; token sesi disimpan sebagai SHA-256 (Sprint 1, ADR-008).

@@ -61,3 +61,4 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 |---|---|---|
 | 2026-10-05 | Implementasi awal Sprint 4 | Claude Code |
 | 2026-10-05 | Tambah jumlah, prioritas, nomor part (ADR-017) | Claude Code |
+| 2026-10-05 | Offline penuh (ADR-019): antrean kirim otomatis | Claude Code |

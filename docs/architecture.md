@@ -41,6 +41,8 @@ prisma/
   schema.prisma          # skema DB (Prisma 7)
   migrations/            # migrasi SQL, di-commit
 prisma.config.ts         # URL DB + lokasi migrasi
+public/sw.js             # service worker (naikkan VERSION bila strategi berubah)
+public/icons/            # ikon PWA (any + maskable + apple-touch)
 src/
   app/                   # route Next.js (App Router)
     globals.css          # design token Tailwind (@theme)
@@ -57,6 +59,8 @@ src/
       pengawas/          # manajemen Pengawas (Owner)
       laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul (+ /baru)
     api/foto/            # POST upload, GET [id] akses terotorisasi
+    manifest.ts          # Web App Manifest
+    offline/             # halaman cadangan offline (statis)
     error.tsx            # error di layout (mis. DB tidak terjangkau)
     global-error.tsx     # error di root layout
     not-found.tsx        # 404
@@ -80,6 +84,7 @@ src/
     laporan-data/        # filters (URL → zod), queries (agregasi per modul), pin (status gerbang)
     records/access.ts    # aturan kepemilikan bersama (canViewOwned / canEditOwned)
     draft-store.ts       # wrapper IndexedDB tanpa dependency
+    sync/                # client UUID, status sync, draft-types, outbox (antrean kirim)
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
     errors/              # AppError, kategori, pesan user, toPublicError
@@ -126,9 +131,20 @@ Detail ──<img src=/api/foto/:id>──► cek izin per request ──► fil
 `/login` → `login()` → cek `rate_limit` → cari user → `verifySecret` (scrypt) → `createSession` (cookie + baris `session`) → `/`.
 Setiap halaman di `(app)/` memanggil `requireUser()`; sesi tidak valid → `/login?sesi=berakhir`.
 
-## Alur Data Offline (PRD §19, §25)
-`DRAFT → PENDING_SYNC → SYNCING → SYNCED`, gagal → `SYNC_FAILED → RETRY`.
-Setiap record membawa UUID client + idempotency key (ADR-004).
+## Alur Data Offline (PRD §19, §25, ADR-019)
+```text
+Form ──Simpan──► validasi zod di HP ──┬─ online & foto lengkap ──► server action ──► Terkirim
+                                      └─ offline / foto tertunda / gagal jaringan
+                                           ▼
+                         IndexedDB draft { userId, sync: queued }
+                                           ▼  (app dibuka · event online · tiap 30 dtk · "Kirim sekarang")
+                         SyncProvider → processOutbox(userId): unggah foto tertunda → server action
+                                           ├─ ok → hapus draft (Terkirim)
+                                           ├─ jaringan/server → tetap queued
+                                           ├─ sesi habis → tetap queued + banner login
+                                           └─ validasi/izin → failed + pesan
+```
+Service worker (`public/sw.js`): `/_next/static` & ikon cache-first; halaman lapangan network-first + cadangan cache; `/offline` cadangan terakhir; API/server action/foto tidak di-cache. Pesan `WARM` (pemanasan cache form) dan `CLEAR_USER_CACHE` (logout).
 
 ## Dependency
 | Package | Alasan | Ditambahkan |

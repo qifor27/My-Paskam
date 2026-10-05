@@ -119,6 +119,10 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 | QuantityInput | `components/ui/quantity-input.tsx` | Tombol −/+ 48 px + input angka di tengah (keypad numeric). |
 | PriorityBadge | `components/priority-badge.tsx` | Prioritas spare part: Rendah (neutral, `SignalLow`), Sedang (info, `SignalMedium`), Tinggi (danger, `SignalHigh`). |
 | PlanningStatusBadge | `components/planning-status-badge.tsx` | Status planning, lihat "Ikon status" di bawah. |
+| SyncBanner | `components/sync-provider.tsx` | Banner antrean: biru "n data menunggu dikirim · Kirim sekarang", "Mengirim data…" (ikon `RotateCw` berputar), merah "n data gagal dikirim", kuning sesi habis. |
+| Badge status draft | `components/local-drafts.tsx` | "Draft di HP" (warning, `HardDrive`), "Menunggu dikirim" (info, `CloudUpload`), "Gagal dikirim" (danger, `TriangleAlert`) + pesan error di bawah judul. |
+| InstallApp | `components/install-app.tsx` | Kartu "Pasang aplikasi di HP" di Akun: tombol (Android) / petunjuk Safari (iPhone); tersembunyi bila sudah terpasang. |
+| Halaman offline | `app/offline/page.tsx` | Brand + kartu ikon `WifiOff` kuning + "Coba lagi". |
 | PhotoGrid | `components/photo-grid.tsx` | Grid 3 kolom, overlay proses/progress %, overlay gagal + "Coba lagi", tanda terunggah, tombol hapus; tombol **Kamera** & **Galeri** terpisah; penghitung "n/6 foto". |
 
 ## 6. Layout
@@ -137,7 +141,7 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 - Tanggal: chip "Hari ini/Kemarin" + input date (maks. hari ini).
 - Error inline hilang begitu field diubah; saat submit gagal, fokus & scroll ke field pertama yang salah.
 - Draft otomatis di HP; teks kecil "Draft tersimpan otomatis di HP" di bawah tombol.
-- Status penyimpanan lokal: `StatusBadge tone="warning"` + ikon HardDrive "Tersimpan di HP".
+- Status penyimpanan lokal: lihat badge status draft (ADR-019); bahasa menjelaskan nasib data, hindari kata teknis "sync".
 
 ### Daftar data
 - Kelompok per tanggal ("Hari ini", "Kemarin", tanggal panjang) dengan judul seksi `text-sm font-semibold text-ink-muted`.
