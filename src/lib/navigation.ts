@@ -10,6 +10,7 @@ export type NavIconName =
   | "planning-job"
   | "laporan-data"
   | "pengawas"
+  | "unit"
   | "akun";
 
 export type TileColor = "blue" | "orange" | "violet" | "green" | "cyan";
@@ -28,8 +29,8 @@ export type NavItem = {
   /** Tampil di grid aksi cepat Beranda. */
   quickAction: boolean;
   group: "main" | "admin" | "account";
-  /** Entri menu "Buat baru" (tombol + oranye). */
-  create?: { href: string; label: string };
+  /** Entri menu "Buat baru" (tombol + oranye). Izin default = izin item. */
+  create?: { href: string; label: string; permission?: Permission };
 };
 
 const BOTH = ["SUPER_ADMIN", "PENGAWAS"] as const;
@@ -57,7 +58,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     bottomNav: BOTH,
     quickAction: true,
     group: "main",
-    create: { href: "/laporan-kerja/baru", label: "Laporan Kerja" },
+    create: { href: "/laporan-kerja/baru", label: "Laporan Kerja", permission: "laporan-kerja:create" },
   },
   {
     href: "/spare-part",
@@ -111,6 +112,18 @@ export const NAV_ITEMS: readonly NavItem[] = [
     create: { href: "/pengawas/baru", label: "Akun Pengawas" },
   },
   {
+    href: "/unit",
+    label: "Unit",
+    shortLabel: "Unit",
+    description: "Tambah unit, ubah nama, aktif/nonaktif",
+    icon: "unit",
+    tile: "blue",
+    permission: "unit:manage",
+    bottomNav: [],
+    quickAction: false,
+    group: "admin",
+  },
+  {
     href: "/akun",
     label: "Akun",
     shortLabel: "Akun",
@@ -132,7 +145,11 @@ export function bottomNavFor(role: Role): NavItem[] {
 }
 
 export function createActionsFor(role: Role) {
-  return navFor(role).flatMap((item) => (item.create ? [{ ...item.create, icon: item.icon, tile: item.tile }] : []));
+  return navFor(role).flatMap((item) =>
+    item.create && (!item.create.permission || can(role, item.create.permission))
+      ? [{ href: item.create.href, label: item.create.label, icon: item.icon, tile: item.tile }]
+      : [],
+  );
 }
 
 /** Item yang aktif untuk sebuah path: "/" hanya cocok persis, lainnya per segmen. */

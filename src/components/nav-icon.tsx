@@ -5,6 +5,7 @@ import {
   FileChartColumn,
   House,
   Package,
+  Truck,
   Users,
   type LucideProps,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const ICONS = {
   "planning-job": CalendarDays,
   "laporan-data": FileChartColumn,
   pengawas: Users,
+  unit: Truck,
   akun: CircleUserRound,
 } satisfies Record<NavIconName, React.ComponentType<LucideProps>>;
 

@@ -8,7 +8,8 @@ import { Card } from "@/components/ui/card";
 import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { greeting } from "@/lib/format";
+import { dayLabel, formatDecimal, greeting } from "@/lib/format";
+import { listLaporan } from "@/lib/laporan-kerja/queries";
 import { navFor } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +22,10 @@ export default async function DashboardPage() {
   const items = navFor(user.role);
   const quick = items.filter((i) => i.quickAction);
   const isOwner = can(user.role, "pengawas:manage");
-  const activePengawas = isOwner ? await db.user.count({ where: { role: "PENGAWAS", isActive: true } }) : 0;
+  const [activePengawas, recent] = await Promise.all([
+    isOwner ? db.user.count({ where: { role: "PENGAWAS", isActive: true } }) : 0,
+    can(user.role, "laporan-kerja:access") ? listLaporan(user, 3) : { items: [], hasMore: false },
+  ]);
 
   return (
     <div className="flex flex-col gap-7">
@@ -108,13 +112,36 @@ export default async function DashboardPage() {
             Lihat semua
           </Link>
         </div>
-        <Card className="flex items-center gap-3 p-4">
-          <ModuleTile icon="laporan-kerja" color="blue" />
-          <div>
-            <p className="font-semibold">Belum ada aktivitas</p>
-            <p className="text-sm text-ink-muted">Laporan kerja yang dibuat akan muncul di sini.</p>
-          </div>
-        </Card>
+        {recent.items.length === 0 ? (
+          <Card className="flex items-center gap-3 p-4">
+            <ModuleTile icon="laporan-kerja" color="blue" />
+            <div>
+              <p className="font-semibold">Belum ada aktivitas</p>
+              <p className="text-sm text-ink-muted">Laporan kerja yang dibuat akan muncul di sini.</p>
+            </div>
+          </Card>
+        ) : (
+          <Card className="divide-y divide-border overflow-hidden">
+            {recent.items.map((r) => (
+              <Link
+                key={r.id}
+                href={`/laporan-kerja/${r.id}`}
+                className="flex items-center gap-3 p-4 hover:bg-canvas focus-visible:bg-canvas focus-visible:outline-none"
+              >
+                <ModuleTile icon="laporan-kerja" color="blue" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-semibold">
+                    {r.unitName} · {formatDecimal(r.hmJam)} jam
+                  </span>
+                  <span className="block truncate text-sm text-ink-muted">
+                    {dayLabel(r.tanggal)} · {isOwner ? r.supervisorName : r.operatorName}
+                  </span>
+                </span>
+                <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
+              </Link>
+            ))}
+          </Card>
+        )}
       </section>
     </div>
   );

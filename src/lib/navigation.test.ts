@@ -13,6 +13,7 @@ describe("navFor", () => {
       "/planning-job",
       "/laporan-data",
       "/pengawas",
+      "/unit",
       "/akun",
     ]);
   });
@@ -33,6 +34,8 @@ describe("createActionsFor", () => {
   it("menu Buat baru mengikuti izin role", () => {
     expect(hrefs(createActionsFor("PENGAWAS"))).toEqual(["/laporan-kerja/baru", "/spare-part/baru", "/planning-job/baru"]);
     expect(hrefs(createActionsFor("SUPER_ADMIN"))).toContain("/pengawas/baru");
+    // ADR-014: laporan kerja dibuat Pengawas, Owner hanya melihat.
+    expect(hrefs(createActionsFor("SUPER_ADMIN"))).not.toContain("/laporan-kerja/baru");
   });
 });
 

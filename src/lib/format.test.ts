@@ -17,3 +17,15 @@ describe("greeting", () => {
     expect(greeting(new Date("2026-10-04T13:00:00Z"))).toBe("Selamat malam"); // 20.00
   });
 });
+
+describe("tanggal tanpa jam", () => {
+  it("todayISO memakai zona aplikasi", async () => {
+    const { todayISO, dayLabel } = await import("./format");
+    // 20.00 UTC tgl 4 = 03.00 WIB tgl 5
+    expect(todayISO(new Date("2026-10-04T20:00:00Z"))).toBe("2026-10-05");
+    const now = new Date("2026-10-05T03:00:00Z");
+    expect(dayLabel("2026-10-05", now)).toBe("Hari ini");
+    expect(dayLabel("2026-10-04", now)).toBe("Kemarin");
+    expect(dayLabel("2026-10-01", now)).toBe("Kamis, 1 Oktober 2026");
+  });
+});

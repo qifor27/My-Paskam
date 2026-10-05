@@ -13,7 +13,14 @@ export type AuditAction =
   | "PENGAWAS_UPDATED"
   | "PENGAWAS_ACTIVATED"
   | "PENGAWAS_DEACTIVATED"
-  | "PENGAWAS_PIN_RESET";
+  | "PENGAWAS_PIN_RESET"
+  | "LAPORAN_CREATED"
+  | "LAPORAN_UPDATED"
+  | "LAPORAN_DELETED"
+  | "UNIT_CREATED"
+  | "UNIT_UPDATED"
+  | "UNIT_ACTIVATED"
+  | "UNIT_DEACTIVATED";
 
 // Audit log tidak boleh membuat aksi utama gagal: jika penulisan gagal,
 // cukup dicatat di log aplikasi.
