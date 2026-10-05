@@ -39,13 +39,15 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  createdBy         User?          @relation("UserCreatedBy", fields: [createdById], references: [id])
-  createdUsers      User[]         @relation("UserCreatedBy")
-  laporanSupervised LaporanKerja[] @relation("LaporanSupervisor")
-  laporanCreated    LaporanKerja[] @relation("LaporanCreatedBy")
-  photosUploaded    Photo[]
-  sessions          Session[]
-  auditLogs         AuditLog[]
+  createdBy           User?            @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers        User[]           @relation("UserCreatedBy")
+  laporanSupervised   LaporanKerja[]   @relation("LaporanSupervisor")
+  laporanCreated      LaporanKerja[]   @relation("LaporanCreatedBy")
+  sparePartSupervised OrderSparePart[] @relation("SparePartSupervisor")
+  sparePartCreated    OrderSparePart[] @relation("SparePartCreatedBy")
+  photosUploaded      Photo[]
+  sessions            Session[]
+  auditLogs           AuditLog[]
 
   @@map("user")
 }
@@ -111,7 +113,8 @@ model Unit {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  laporan LaporanKerja[]
+  laporan    LaporanKerja[]
+  spareParts OrderSparePart[]
 
   @@map("unit")
 }
@@ -125,8 +128,8 @@ model LaporanKerja {
   operatorName String    @map("operator_name")
   /// Total jam kerja (HM), 1 angka desimal.
   hmJam        Decimal   @map("hm_jam") @db.Decimal(4, 1)
-  /// BBM (Solar), nilai 1–6 (ADR-014).
-  bbm          Int       @db.SmallInt
+  /// BBM (Solar) = jumlah, 1 angka desimal (ADR-016).
+  bbm          Decimal   @db.Decimal(6, 1)
   lokasi       String
   deskripsi    String
   /// Pengawas yang login saat membuat laporan (tidak diisi manual).
@@ -146,6 +149,32 @@ model LaporanKerja {
   @@index([tanggal])
   @@index([unitId, tanggal])
   @@map("laporan_kerja")
+}
+
+// Order Spare Part = dokumentasi spare part yang rusak, tanpa status (ADR-016).
+model OrderSparePart {
+  id           String    @id @db.Uuid
+  unitId       String    @map("unit_id") @db.Uuid
+  partName     String    @map("part_name")
+  /// Deskripsi kerusakan.
+  kerusakan    String
+  lokasi       String
+  /// Pengawas yang login saat mencatat (tidak diisi manual).
+  supervisorId String    @map("supervisor_id") @db.Uuid
+  createdById  String    @map("created_by") @db.Uuid
+  updatedById  String?   @map("updated_by") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  unit       Unit @relation(fields: [unitId], references: [id])
+  supervisor User @relation("SparePartSupervisor", fields: [supervisorId], references: [id])
+  createdBy  User @relation("SparePartCreatedBy", fields: [createdById], references: [id])
+
+  @@index([supervisorId, createdAt])
+  @@index([createdAt])
+  @@index([unitId, createdAt])
+  @@map("order_spare_part")
 }
 
 enum PhotoModule {
