@@ -7,12 +7,13 @@ export const PERMISSIONS = {
   // Akses modul (PRD §13). Aturan per-record menyusul di sprint modul.
   "laporan-kerja:access": ["SUPER_ADMIN", "PENGAWAS"],
   // ADR-014: Pengawas membuat laporan (namanya tercatat otomatis), Owner melihat semua.
-  "laporan-kerja:create": ["PENGAWAS"],
+  // ADR-021: Owner juga boleh mencatat (cadangan bila tidak ada Pengawas).
+  "laporan-kerja:create": ["SUPER_ADMIN", "PENGAWAS"],
   "laporan-kerja:view-all": ["SUPER_ADMIN"],
   "unit:manage": ["SUPER_ADMIN"], // ADR-014: unit bisa ditambah
   "spare-part:access": ["SUPER_ADMIN", "PENGAWAS"],
   // ADR-016: dokumentasi spare part rusak; Pengawas mencatat, Owner melihat semua.
-  "spare-part:create": ["PENGAWAS"],
+  "spare-part:create": ["SUPER_ADMIN", "PENGAWAS"],
   "spare-part:view-all": ["SUPER_ADMIN"],
   "planning-job:access": ["SUPER_ADMIN", "PENGAWAS"],
   // ADR-017: Owner membuat & mengelola planning; Pengawas melihat yang ditugaskan.

@@ -20,7 +20,7 @@ export default async function NewLaporanPage({ searchParams }: { searchParams: P
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader title="Buat laporan kerja" description={`Pengawas: ${user.name}`} backHref="/laporan-kerja" />
+      <PageHeader title="Buat laporan kerja" description={`Dicatat oleh: ${user.name}${user.role === "SUPER_ADMIN" ? " (Owner)" : ""}`} backHref="/laporan-kerja" />
       <LaporanForm userId={user.id} mode="create" id={draftId} today={todayISO()} units={units} suggestions={suggestions} />
     </div>
   );

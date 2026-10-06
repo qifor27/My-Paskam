@@ -44,9 +44,10 @@ describe("sparePartSchema (ADR-016)", () => {
 
 describe("akses spare part", () => {
   const record = { supervisorId: "p1", createdById: "p1", deletedAt: null };
-  it("Owner melihat semua tanpa mengubah; Pengawas hanya miliknya", () => {
+  it("Owner melihat semua & mengubah buatannya sendiri; Pengawas hanya miliknya (ADR-021)", () => {
     expect(canViewSparePart({ id: "o1", role: "SUPER_ADMIN" }, record)).toBe(true);
     expect(canEditSparePart({ id: "o1", role: "SUPER_ADMIN" }, record)).toBe(false);
+    expect(canEditSparePart({ id: "o1", role: "SUPER_ADMIN" }, { supervisorId: "o1", createdById: "o1", deletedAt: null })).toBe(true);
     expect(canViewSparePart({ id: "p2", role: "PENGAWAS" }, record)).toBe(false);
     expect(canEditSparePart({ id: "p1", role: "PENGAWAS" }, record)).toBe(true);
   });

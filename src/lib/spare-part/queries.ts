@@ -3,6 +3,7 @@ import "server-only";
 import { can } from "@/lib/auth/permissions";
 import type { CurrentUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
+import { recorderName } from "@/lib/people";
 import { todayISO } from "@/lib/format";
 import { photoCounts } from "@/lib/photo/service";
 
@@ -29,7 +30,7 @@ export async function listSpareParts(user: CurrentUser, limit: number) {
     where: { deletedAt: null, ...(can(user.role, "spare-part:view-all") ? {} : { supervisorId: user.id }) },
     orderBy: { createdAt: "desc" },
     take: limit + 1,
-    include: { unit: { select: { name: true } }, supervisor: { select: { name: true } } },
+    include: { unit: { select: { name: true } }, supervisor: { select: { name: true, role: true } } },
   });
   const page = rows.slice(0, limit);
   const countBy = await photoCounts("ORDER_SPARE_PART", page.map((r) => r.id));
@@ -42,7 +43,7 @@ export async function listSpareParts(user: CurrentUser, limit: number) {
     quantity: r.quantity,
     priority: r.priority,
     lokasi: r.lokasi,
-    supervisorName: r.supervisor.name,
+    supervisorName: recorderName(r.supervisor),
     photoCount: countBy.get(r.id) ?? 0,
   }));
   return { items, hasMore: rows.length > limit };

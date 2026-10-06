@@ -3,6 +3,7 @@ import "server-only";
 import { can } from "@/lib/auth/permissions";
 import type { CurrentUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
+import { recorderName } from "@/lib/people";
 import { dateToISO } from "@/lib/format";
 import { photoCounts } from "@/lib/photo/service";
 
@@ -26,7 +27,7 @@ export async function listLaporan(user: CurrentUser, limit: number) {
     where: { deletedAt: null, ...(can(user.role, "laporan-kerja:view-all") ? {} : { supervisorId: user.id }) },
     orderBy: [{ tanggal: "desc" }, { createdAt: "desc" }],
     take: limit + 1,
-    include: { unit: { select: { name: true } }, supervisor: { select: { name: true } } },
+    include: { unit: { select: { name: true } }, supervisor: { select: { name: true, role: true } } },
   });
   const page = rows.slice(0, limit);
   const countBy = await photoCounts("LAPORAN_KERJA", page.map((r) => r.id));
@@ -39,7 +40,7 @@ export async function listLaporan(user: CurrentUser, limit: number) {
     hmJam: Number(r.hmJam),
     bbm: Number(r.bbm),
     lokasi: r.lokasi,
-    supervisorName: r.supervisor.name,
+    supervisorName: recorderName(r.supervisor),
     photoCount: countBy.get(r.id) ?? 0,
   }));
   return { items, hasMore: rows.length > limit };

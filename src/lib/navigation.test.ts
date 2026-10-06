@@ -34,11 +34,11 @@ describe("createActionsFor", () => {
   it("menu Buat baru mengikuti izin role", () => {
     expect(hrefs(createActionsFor("PENGAWAS"))).toEqual(["/laporan-kerja/baru", "/spare-part/baru"]);
     // ADR-017: planning dibuat Owner.
-    expect(hrefs(createActionsFor("SUPER_ADMIN"))).toEqual(["/planning-job/baru", "/pengawas/baru"]);
+    expect(hrefs(createActionsFor("SUPER_ADMIN"))).toEqual(["/laporan-kerja/baru", "/spare-part/baru", "/planning-job/baru", "/pengawas/baru"]);
     expect(hrefs(createActionsFor("SUPER_ADMIN"))).toContain("/pengawas/baru");
-    // ADR-014: laporan kerja dibuat Pengawas, Owner hanya melihat.
-    expect(hrefs(createActionsFor("SUPER_ADMIN"))).not.toContain("/laporan-kerja/baru");
-    expect(hrefs(createActionsFor("SUPER_ADMIN"))).not.toContain("/spare-part/baru");
+    // ADR-021: Owner juga bisa mencatat laporan & spare part.
+    expect(hrefs(createActionsFor("SUPER_ADMIN"))).toContain("/laporan-kerja/baru");
+    expect(hrefs(createActionsFor("SUPER_ADMIN"))).toContain("/spare-part/baru");
   });
 });
 

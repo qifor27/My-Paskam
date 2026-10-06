@@ -13,6 +13,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
+import { recorderName } from "@/lib/people";
 import { formatDateTime } from "@/lib/format";
 import { recordPhotos } from "@/lib/photo/service";
 import { canEditSparePart, canViewSparePart } from "@/lib/spare-part/access";
@@ -35,7 +36,7 @@ export default async function SparePartDetailPage({
   if (!z.uuid().safeParse(id).success) notFound();
   const record = await db.orderSparePart.findUnique({
     where: { id },
-    include: { unit: { select: { name: true } }, supervisor: { select: { name: true } } },
+    include: { unit: { select: { name: true } }, supervisor: { select: { name: true, role: true } } },
   });
   if (!record || !canViewSparePart(user, record)) notFound();
   const photos = await recordPhotos("ORDER_SPARE_PART", record);
@@ -112,7 +113,7 @@ export default async function SparePartDetailPage({
       <Card className="flex items-center gap-3 p-4">
         <Avatar name={record.supervisor.name} size="sm" />
         <div className="min-w-0 flex-1 text-sm">
-          <p className="font-semibold">{record.supervisor.name}</p>
+          <p className="font-semibold">{recorderName(record.supervisor)}</p>
           <p className="tabular-nums text-ink-muted">
             Dicatat {formatDateTime(record.createdAt)}
             {edited ? ` · diubah ${formatDateTime(record.updatedAt)}` : ""}

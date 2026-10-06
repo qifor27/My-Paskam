@@ -60,10 +60,14 @@ describe("laporanSchema", () => {
 
 describe("akses laporan (ADR-014)", () => {
   const laporan = { supervisorId: "p1", createdById: "p1", deletedAt: null };
-  it("Owner melihat semua, tidak mengubah", () => {
+  it("Owner melihat semua; mengubah hanya laporan buatannya sendiri (ADR-021)", () => {
     const owner = { id: "o1", role: "SUPER_ADMIN" as const };
     expect(canViewLaporan(owner, laporan)).toBe(true);
-    expect(canEditLaporan(owner, laporan)).toBe(false);
+    expect(canEditLaporan(owner, laporan)).toBe(false); // laporan Pengawas
+    const ownLaporan = { supervisorId: "o1", createdById: "o1", deletedAt: null };
+    expect(canEditLaporan(owner, ownLaporan)).toBe(true);
+    // Pengawas tidak bisa mengubah laporan yang dibuat Owner maupun Pengawas lain.
+    expect(canEditLaporan({ id: "p1", role: "PENGAWAS" }, ownLaporan)).toBe(false);
   });
   it("Pengawas hanya melihat & mengubah miliknya", () => {
     expect(canViewLaporan({ id: "p1", role: "PENGAWAS" }, laporan)).toBe(true);
