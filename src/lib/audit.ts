@@ -29,6 +29,7 @@ export type AuditAction =
   | "DATA_PIN_LOCKED"
   | "DATA_UNLOCKED"
   | "DATA_LOCKED"
+  | "DATA_EXPORTED"
   | "UNIT_CREATED"
   | "UNIT_UPDATED"
   | "UNIT_ACTIVATED"

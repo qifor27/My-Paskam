@@ -23,6 +23,7 @@ import { PLANNING_STATUSES, PLANNING_STATUS_META } from "@/lib/planning/status";
 import { PRIORITIES, PRIORITY_META } from "@/lib/spare-part/priority";
 import { cn } from "@/lib/utils";
 
+import { ExportPdfButton } from "./export-button";
 import { LockButton } from "./lock-button";
 import { SetPinForm, UnlockForm } from "./pin-gate";
 
@@ -67,7 +68,14 @@ export default async function LaporanDataPage({ searchParams }: { searchParams: 
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader title="Laporan Data" description={`Terbuka sampai ${formatTime(gate.until)}`} action={<LockButton />} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <PageHeader title="Laporan Data" description={`Terbuka sampai ${formatTime(gate.until)}`} />
+        {/* Tombol di baris sendiri di HP agar judul tidak terpotong. */}
+        <div className="flex items-start gap-2">
+          <LockButton />
+          <ExportPdfButton query={filtersToQuery(f, { hal: undefined })} />
+        </div>
+      </div>
 
       <nav aria-label="Modul" className="grid grid-cols-3 gap-1 rounded-full border border-border bg-surface p-1 shadow-card">
         {MODULE_TABS.map((t) => (
