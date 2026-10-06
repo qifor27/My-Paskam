@@ -29,6 +29,20 @@
 
 ---
 
+## Tambahan — Export PDF, data demo, revisi akses Owner (2026-10-06)
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-06 | US-6.2 | Export PDF (pdf-lib) + tombol di Laporan Data + audit `DATA_EXPORTED` | ADR-020, `features/laporan-data.md`, `security.md`, `design-system.md` |
+| 2026-10-06 | US-X.1 | `scripts/seed-demo.ts` + foto ilustrasi; 168 laporan, 18 spare part, 14 planning | ADR-020, `docs/demo.md`, `architecture.md` |
+| 2026-10-06 | US-X.2 | Owner bisa mencatat; "(Owner)" di tampilan; Owner di filter Laporan Data | ADR-021, `features/laporan-kerja.md`, `features/order-spare-part.md`, `security.md` |
+| 2026-10-06 | — | Temuan visual: judul "Laporan Data" terpotong di HP → tombol pindah ke bawah judul | — |
+| 2026-10-06 | — | **Insiden:** `demo:seed -- --reset` dijalankan tanpa konfirmasi saat database lokal sudah berisi data user → data lokal itu terhapus. Pelajaran: selalu periksa & tanya sebelum perintah destruktif | — |
+| 2026-10-06 | — | Verifikasi: unit test lulus; E2E S1 21 + S2 19 + S3 40 + S4 25 + S5 26 + S6 31 = **162 cek** lulus; PDF dirender & dicek visual (3 modul) | — |
+
+---
+
 ## Sprint 7 — PWA & Offline (2026-10-05)
 
 **Goal:** Aplikasi bisa dipasang dan tetap dipakai tanpa sinyal; data terkirim otomatis tanpa duplikat.

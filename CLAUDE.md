@@ -55,6 +55,11 @@ docker compose up -d          # PostgreSQL lokal (butuh Docker berjalan)
 cp .env.example .env
 npm run db:migrate            # terapkan migrasi + generate Prisma client
 npm run owner:create          # buat akun Owner (tidak ada registrasi publik)
+npm run demo:seed             # data demo (DB kosong); `-- --reset` MENGHAPUS SEMUA data — tanya user dulu
+```
+Data demo & akun demo: `docs/demo.md`.
+
+```bash
 npm run db:generate           # generate client saja (output: src/generated/prisma)
 npm run dev                   # http://localhost:3000, referensi UI di /dev/ui
 npm run check                 # typecheck + lint + test + build — wajib lulus sebelum task selesai

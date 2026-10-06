@@ -56,7 +56,7 @@
 ## Sprint 6 — Laporan Data
 > Dokumen: [laporan-data.md](../features/laporan-data.md) · Aturan: ADR-018
 - [x] US-6.1 Filter tanggal/unit/Pengawas/status/prioritas untuk 3 modul + ringkasan
-- [ ] US-6.2 Export PDF — **ditunda** atas keputusan Owner (ADR-018)
+- [x] US-6.2 Export PDF (2026-10-06, ADR-020)
 - [x] US-6.3 PIN gate
 - [ ] US-6.4 Storage Monitoring (read-only) ⛔ Q20
 
@@ -75,3 +75,7 @@
 - [ ] US-8.4 Photo Cleanup + retention status + re-auth ⛔ Q21
 - [ ] US-8.5 Performance, aksesibilitas, review PWA
 - [ ] US-8.6 Backup & deployment produksi ⛔ Q24
+
+## Tambahan 2026-10-06
+- [x] US-X.1 Data demo untuk presentasi (`npm run demo:seed`, ADR-020, [demo.md](../demo.md))
+- [x] US-X.2 Owner bisa mencatat Laporan Kerja & Spare Part (ADR-021)

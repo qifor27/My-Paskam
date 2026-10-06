@@ -8,6 +8,8 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Export PDF di Laporan Data: unduh laporan sesuai tab & filter (kop, ringkasan, tabel) (ADR-020).
+- Data demo untuk presentasi: `npm run demo:seed` (akun Owner & Pengawas, laporan bergambar, spare part, planning) — lihat `docs/demo.md` (ADR-020).
 - Aplikasi bisa dipasang di layar utama HP (ikon PASKAM, mode layar penuh) dengan petunjuk di halaman Akun (Sprint 7).
 - Mode offline: form Laporan Kerja & Spare Part tetap bisa dibuka dan disimpan tanpa sinyal; data dan foto terkirim otomatis saat koneksi kembali, tanpa duplikat (Sprint 7, ADR-019).
 - Banner jumlah data yang menunggu dikirim + tombol "Kirim sekarang", serta status per item (Draft di HP / Menunggu dikirim / Gagal dikirim) (Sprint 7).
@@ -47,6 +49,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Fondasi offline: client UUID dan status sinkronisasi (Sprint 0, US-0.7, ADR-004).
 
 ### Changed
+- Owner kini juga bisa membuat Laporan Kerja dan Order Spare Part (bila tidak ada Pengawas); data tersebut tampil sebagai "Nama (Owner)" dan hanya bisa diubah oleh Owner sendiri (ADR-021).
 - BBM (Solar) di Laporan Kerja kini diisi sebagai jumlah (angka), bukan pilihan 1–6 (ADR-016).
 - Tombol utama kini biru (oranye menjadi aksen); label tombol memakai huruf biasa ("Simpan", "Coba lagi") (ADR-013).
 - Header biru di HP diganti tampilan terang; tombol Keluar pindah ke halaman Akun.

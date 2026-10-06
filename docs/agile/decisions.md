@@ -199,3 +199,23 @@
   - **Perangkat bersama:** setiap draft menyimpan `userId`; draft hanya ditampilkan/dikirim untuk akun pemiliknya. Logout menghapus cache halaman (berisi data user). Draft tidak dihapus saat logout agar data lapangan tidak hilang.
   - Status tampil dengan bahasa nasib data: "Draft di HP", "Menunggu dikirim", "Mengirim data…", "Gagal dikirim".
 - Konsekuensi: Data antre baru terkirim ketika aplikasi dibuka kembali (iOS tidak mengirim di latar belakang) — dijelaskan di banner. Mengubah strategi cache = naikkan `VERSION` di `sw.js`.
+
+### ADR-020: Export PDF Laporan Data & data demo
+- Tanggal: 2026-10-06
+- Status: ACCEPTED (Owner meminta export PDF dibuat sekarang, membatalkan penundaan di ADR-018)
+- Keputusan:
+  - PDF dibuat di server dengan **pdf-lib** (pure JS, tanpa modul native, font standar Helvetica/WinAnsi) — `src/lib/pdf/report.ts`. A4 lanskap: kop My PASKAM, judul modul, rentang tanggal, filter, pencetak & waktu cetak, kotak ringkasan, tabel (teks dibungkus, header diulang tiap halaman), footer "Halaman x dari y".
+  - Isi per modul sama dengan layar Laporan Data (ringkasan + per unit + detail). **Tanpa foto** untuk saat ini. Maks. 2.000 baris per export (catatan di PDF bila terpotong).
+  - Akses `GET /api/laporan-data/pdf?<filter>`: Owner + PIN Laporan Data sedang terbuka; setiap export dicatat `DATA_EXPORTED`. `Cache-Control: private, no-store`.
+  - **Data demo** lewat `npm run demo:seed` (`scripts/seed-demo.ts`): deterministik, tanggal relatif hari ini, foto ilustrasi di `scripts/demo-assets/`. Menolak jalan di produksi; menolak menimpa database berisi data kecuali `--reset` (menghapus SEMUA data).
+- Konsekuensi: dependency baru `pdf-lib`.
+
+### ADR-021: Owner juga bisa mencatat Laporan Kerja & Order Spare Part (revisi Owner 2026-10-06)
+- Tanggal: 2026-10-06
+- Status: ACCEPTED — merevisi ADR-014 & ADR-016 ("Owner hanya melihat")
+- Konteks: Owner perlu bisa mencatat sendiri bila tidak ada Pengawas di lokasi.
+- Keputusan:
+  - `laporan-kerja:create` dan `spare-part:create` → SUPER_ADMIN & PENGAWAS. Pencatat (`supervisor_id`) = akun yang login, termasuk Owner; tampil "Nama (Owner)".
+  - Owner mengubah/menghapus hanya data **yang ia catat sendiri**; data Pengawas tetap hanya bisa dilihat Owner.
+  - **Pengawas tidak bisa mengubah/menghapus data Pengawas lain maupun data Owner** (dikonfirmasi Owner; tetap seperti sebelumnya, diuji E2E).
+  - Filter Pengawas di Laporan Data ikut menampilkan Owner.

@@ -6,7 +6,9 @@
 ## 1. Tujuan
 Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, dan foto. Owner memantau semua laporan.
 
-## 2. Business Rules (ADR-014)
+## 2. Business Rules
+
+> **Revisi 2026-10-06 (ADR-021):** Owner juga bisa mencatat (cadangan bila tidak ada Pengawas); Owner hanya mengubah/menghapus data yang ia catat sendiri dan tampil sebagai "Nama (Owner)". Pengawas tetap tidak bisa mengubah data Pengawas lain atau Owner. Aturan di bawah yang menyebut "Owner hanya melihat" sudah direvisi. (ADR-014)
 | Aturan | Sumber |
 |---|---|
 | Field: tanggal, unit, operator, HM, BBM (Solar), lokasi, deskripsi, foto | PRD §14 |
@@ -82,6 +84,7 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Owner bisa mencatat & mengubah data miliknya (ADR-021) | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 3 | Claude Code |
 | 2026-10-05 | Offline penuh (ADR-019): validasi di HP, Simpan offline → antrean kirim otomatis; draft per akun | Claude Code |
 | 2026-10-05 | BBM menjadi jumlah (ADR-016); perbaikan race autosave yang menulis ulang draft setelah tersimpan; komponen bersama `FormAlerts`, `DeleteRecord`, `LocalDrafts` | Claude Code |

@@ -7,6 +7,8 @@
 Mendokumentasikan **spare part yang rusak** dari lapangan, lengkap dengan foto, agar Owner tahu apa yang rusak, di unit mana, dan kapan. Ini **bukan** alur pemesanan: tidak ada status order (ADR-016).
 
 ## 2. Business Rules
+
+> **Revisi 2026-10-06 (ADR-021):** Owner juga bisa mencatat (cadangan bila tidak ada Pengawas); Owner hanya mengubah/menghapus data yang ia catat sendiri dan tampil sebagai "Nama (Owner)". Pengawas tetap tidak bisa mengubah data Pengawas lain atau Owner. Aturan di bawah yang menyebut "Owner hanya melihat" sudah direvisi.
 | Aturan | Sumber |
 |---|---|
 | Field: unit, nama spare part, deskripsi kerusakan, lokasi, foto; dicatat oleh & waktu otomatis | PRD §15 |
@@ -59,6 +61,7 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Owner bisa mencatat & mengubah data miliknya (ADR-021) | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 4 | Claude Code |
 | 2026-10-05 | Tambah jumlah, prioritas, nomor part (ADR-017) | Claude Code |
 | 2026-10-05 | Offline penuh (ADR-019): antrean kirim otomatis | Claude Code |

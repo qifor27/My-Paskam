@@ -174,6 +174,9 @@ Prioritas memakai keluarga bar sinyal (`SignalLow/Medium/High`): makin tinggi ma
 - Filter panjang: `<details>` "Filter" yang bisa dilipat, ringkasan filter aktif di baris judul, tombol Reset (secondary) + Terapkan (primary); filter disimpan di URL (form GET).
 - Gerbang PIN: kartu tengah dengan tile ikon `LockKeyhole`/`ShieldCheck` hijau (warna modul Laporan Data).
 
+### Dokumen PDF (ADR-020)
+A4 lanskap, Helvetica: garis aksen biru 28×4 pt + "My PASKAM" biru di kop, judul 18 pt tebal, subjudul/filter abu (`ink-muted`), kotak ringkasan berbingkai tipis, tabel dengan header latar `brand-50` & baris zebra tipis, angka rata kanan, footer "Halaman x dari y". Tanpa warna lain/dekorasi.
+
 ### Filter tab
 Tab status (mis. Aktif / Selesai / Dibatalkan) = pill tersegmentasi (`rounded-full`, item aktif `bg-brand-50 text-brand-700`) berisi label + jumlah `tabular-nums`; berupa link (`?tab=`) agar bisa dibagikan & tombol kembali berfungsi.
 

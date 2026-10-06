@@ -81,7 +81,9 @@ src/
     laporan-kerja/       # schema (+ decimalField), access, queries, draft (IndexedDB)
     spare-part/          # schema, access, queries, draft, priority
     planning/            # status (meta + transisi), schema, access, queries
-    laporan-data/        # filters (URL → zod), queries (agregasi per modul), pin (status gerbang)
+    laporan-data/        # filters (URL → zod), queries (agregasi per modul), pin (status gerbang), export (PDF)
+    pdf/report.ts        # renderer PDF tabel (pdf-lib)
+    people.ts            # recorderName: "Nama (Owner)"
     records/access.ts    # aturan kepemilikan bersama (canViewOwned / canEditOwned)
     draft-store.ts       # wrapper IndexedDB tanpa dependency
     sync/                # client UUID, status sync, draft-types, outbox (antrean kirim)
@@ -95,6 +97,8 @@ docs/                    # dokumentasi (lihat CLAUDE.md)
 
 scripts/
   create-owner.ts        # CLI pembuatan akun Owner (npm run owner:create)
+  seed-demo.ts           # data demo (npm run demo:seed [-- --reset]), lihat docs/demo.md
+  demo-assets/           # foto ilustrasi untuk data demo
 
 Konvensi: test berada di samping kode (`*.test.ts`). Alias import `@/` → `src/`.
 
@@ -160,3 +164,4 @@ Service worker (`public/sw.js`): `/_next/static` & ikon cache-first; halaman lap
 | tsx (dev) | Menjalankan script TypeScript (`scripts/create-owner.ts`) | Sprint 1 |
 
 Sprint 3 tidak menambah dependency: kompresi (canvas), IndexedDB, dan upload (XHR) memakai API browser; storage lokal memakai `node:fs`.
+| pdf-lib | Export PDF Laporan Data di server, pure JS (ADR-020) | 2026-10-06 |

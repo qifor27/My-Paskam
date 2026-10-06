@@ -24,6 +24,7 @@
 - Matriks akses per modul ditulis di setiap `docs/features/<modul>.md`.
 - **Laporan Kerja (ADR-014):** Pengawas hanya melihat & mengubah laporan miliknya (`supervisor_id`/`created_by` = user login, diisi server, tidak dari form); Owner melihat semua, tidak mengubah. Laporan orang lain → halaman "tidak ditemukan" tanpa data (status 200 karena streaming, ADR-015).
 - Izin baru: `laporan-kerja:create` (PENGAWAS), `laporan-kerja:view-all` (SUPER_ADMIN), `unit:manage` (SUPER_ADMIN).
+- **Revisi ADR-021:** `laporan-kerja:create` & `spare-part:create` juga untuk SUPER_ADMIN. Hak ubah/hapus tetap berdasarkan `created_by` = user login, sehingga Owner tidak bisa mengubah data Pengawas dan Pengawas tidak bisa mengubah data Owner/Pengawas lain (diuji E2E).
 - **Order Spare Part (ADR-016):** aturan sama dengan Laporan Kerja; izin `spare-part:create` (PENGAWAS), `spare-part:view-all` (SUPER_ADMIN). Aturan kepemilikan dipusatkan di `src/lib/records/access.ts`.
 - **Planning Job (ADR-017):** `planning-job:create` & `planning-job:view-all` (SUPER_ADMIN). Pengawas hanya melihat planning yang ditugaskan; perubahan status dicek di server dengan tabel transisi per role (Pengawas maju satu langkah, hanya miliknya). Hanya user ber-role PENGAWAS yang bisa ditugaskan.
 
@@ -32,6 +33,9 @@
 - PIN benar → `session.data_unlocked_until` = sekarang + 15 menit; hanya sesi itu yang terbuka. Tombol Kunci menghapusnya.
 - Brute-force: `rate_limit` key `datapin:<userId>` (5 gagal / 15 menit → kunci 15 menit), berlaku juga untuk password saat membuat PIN.
 - Data laporan tidak di-query sebelum gerbang terbuka. Filter dari URL divalidasi zod; nilai tidak valid diabaikan (diuji dengan input injeksi).
+
+## Export PDF (ADR-020)
+- `GET /api/laporan-data/pdf`: wajib login Owner + PIN Laporan Data terbuka untuk sesi itu; filter divalidasi seperti halaman; audit `DATA_EXPORTED` (filter + jumlah); `Cache-Control: private, no-store`; tanpa foto.
 
 ## Offline & perangkat bersama (ADR-019)
 - Service worker tidak meng-cache `/api/*` (foto privat), server action (POST), maupun halaman di luar daftar lapangan.
@@ -65,6 +69,7 @@ Implementasi: `src/lib/logger.ts`. Key dipecah per kata (camelCase/snake_case), 
 | SPARE_PART_CREATED / UPDATED / DELETED (detail: sparePartId, unit, partName, jumlah foto) | Sprint 4 |
 | PLANNING_CREATED / UPDATED / DELETED, PLANNING_STATUS_CHANGED (from→to) | Sprint 5 |
 | DATA_PIN_SET / DATA_PIN_FAILED (step, ip) / DATA_PIN_LOCKED / DATA_UNLOCKED / DATA_LOCKED | Sprint 6 |
+| DATA_EXPORTED (modul, rentang, filter, jumlah) | 2026-10-06 |
 
 Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis audit tidak menggagalkan aksi utama (dicatat di log aplikasi).
 | PHOTO_CLEANUP | Sprint 8 |
