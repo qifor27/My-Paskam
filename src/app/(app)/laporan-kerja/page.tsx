@@ -1,10 +1,11 @@
-import { Camera, ChevronRight, ClipboardList, Fuel, Plus, Timer } from "lucide-react";
+import { Camera, ChevronRight, ClipboardList, Fuel, Timer } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AccessDenied } from "@/components/access-denied";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { UnitShortcutGrid } from "@/components/unit-picker";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,7 +13,7 @@ import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { dayLabel, formatDecimal } from "@/lib/format";
-import { listLaporan, PAGE_SIZE, type LaporanRow } from "@/lib/laporan-kerja/queries";
+import { listLaporan, PAGE_SIZE, selectableUnits, type LaporanRow } from "@/lib/laporan-kerja/queries";
 import { cn } from "@/lib/utils";
 
 import { LocalDrafts } from "@/components/local-drafts";
@@ -31,6 +32,8 @@ export default async function LaporanListPage({
   const { items, hasMore } = await listLaporan(user, pages * PAGE_SIZE);
   const canCreate = can(user.role, "laporan-kerja:create");
   const viewAll = can(user.role, "laporan-kerja:view-all");
+  // Kartu unit langsung di halaman (pengganti tombol Buat, permintaan Owner 2026-10-06).
+  const activeUnits = canCreate ? await selectableUnits() : [];
   const units = canCreate
     ? Object.fromEntries((await db.unit.findMany({ select: { id: true, name: true } })).map((u) => [u.id, u.name]))
     : {};
@@ -44,31 +47,18 @@ export default async function LaporanListPage({
       <PageHeader
         title="Laporan Kerja"
         description={viewAll ? "Semua Pengawas" : "Laporan Anda"}
-        action={
-          canCreate ? (
-            <Link href="/laporan-kerja/baru" className={cn(buttonVariants({ size: "sm" }))}>
-              <Plus aria-hidden /> Buat
-            </Link>
-          ) : undefined
-        }
       />
 
       {antre ? <Alert tone="info">Laporan disimpan di HP dan akan dikirim otomatis saat koneksi tersedia.</Alert> : null}
       {dihapus ? <Alert tone="success">Laporan dihapus.</Alert> : null}
+      {canCreate ? <UnitShortcutGrid units={activeUnits} hrefBase="/laporan-kerja/baru" title="Buat laporan — pilih unit" /> : null}
       {canCreate ? <LocalDrafts kind="laporan-kerja" userId={user.id} units={units} /> : null}
 
       {items.length === 0 ? (
         <EmptyState
           icon={ClipboardList}
           title="Belum ada laporan kerja"
-          description={canCreate ? "Laporan yang Anda buat akan muncul di sini." : "Laporan dari Pengawas akan muncul di sini."}
-          action={
-            canCreate ? (
-              <Link href="/laporan-kerja/baru" className={buttonVariants()}>
-                <Plus aria-hidden /> Buat laporan
-              </Link>
-            ) : undefined
-          }
+          description={canCreate ? "Pilih unit di atas untuk membuat laporan." : "Laporan dari Pengawas akan muncul di sini."}
         />
       ) : (
         [...groups].map(([tanggal, rows]) => (

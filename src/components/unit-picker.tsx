@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeftRight, Truck } from "lucide-react";
+import Link from "next/link";
 
 import { DumpTruckIcon, ExcavatorIcon, TowTruckIcon } from "@/components/unit-icons";
 import { Button } from "@/components/ui/button";
@@ -130,5 +131,37 @@ export function SelectedUnit({
         <ArrowLeftRight aria-hidden /> {unit ? "Ganti" : "Pilih"}
       </Button>
     </div>
+  );
+}
+
+/**
+ * Kartu unit ringkas di halaman daftar Laporan Kerja / Spare Part: tekan unit
+ * → form langsung terbuka untuk unit itu (pengganti tombol "Buat", 2026-10-06).
+ */
+export function UnitShortcutGrid({ units, hrefBase, title }: { units: Unit[]; hrefBase: string; title: string }) {
+  if (units.length === 0) return null;
+  return (
+    <section aria-labelledby="unit-shortcut-title" className="flex flex-col gap-3">
+      <h2 id="unit-shortcut-title" className="text-base font-semibold">
+        {title}
+      </h2>
+      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-6">
+        {units.map((u) => (
+          <li key={u.id}>
+            <Link
+              href={`${hrefBase}?unit=${u.id}`}
+              className={cn(
+                "flex h-full min-h-24 flex-col items-center justify-center gap-2 rounded-[var(--radius-card)] border border-border/70 bg-surface p-2 text-center shadow-card",
+                "transition-[border-color,transform] hover:border-brand-200 active:scale-[0.98] motion-reduce:active:scale-100",
+                "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-600/25",
+              )}
+            >
+              <UnitIconTile name={u.name} />
+              <span className="text-sm font-bold leading-tight tracking-tight">{u.name}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

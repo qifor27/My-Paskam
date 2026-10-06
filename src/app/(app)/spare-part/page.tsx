@@ -1,4 +1,4 @@
-import { Camera, ChevronRight, MapPin, Package, Plus } from "lucide-react";
+import { Camera, ChevronRight, MapPin, Package } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -6,6 +6,7 @@ import { AccessDenied } from "@/components/access-denied";
 import { EmptyState } from "@/components/empty-state";
 import { LocalDrafts } from "@/components/local-drafts";
 import { PageHeader } from "@/components/page-header";
+import { UnitShortcutGrid } from "@/components/unit-picker";
 import { PriorityBadge } from "@/components/priority-badge";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { can } from "@/lib/auth/permissions";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
+import { selectableUnits } from "@/lib/laporan-kerja/queries";
 import { dayLabel, formatTime } from "@/lib/format";
 import { listSpareParts, PAGE_SIZE, type SparePartRow } from "@/lib/spare-part/queries";
 import { cn } from "@/lib/utils";
@@ -27,6 +29,8 @@ export default async function SparePartListPage({ searchParams }: { searchParams
   const { items, hasMore } = await listSpareParts(user, pages * PAGE_SIZE);
   const canCreate = can(user.role, "spare-part:create");
   const viewAll = can(user.role, "spare-part:view-all");
+  // Kartu unit langsung di halaman (pengganti tombol Buat, permintaan Owner 2026-10-06).
+  const activeUnits = canCreate ? await selectableUnits() : [];
   const units = canCreate
     ? Object.fromEntries((await db.unit.findMany({ select: { id: true, name: true } })).map((u) => [u.id, u.name]))
     : {};
@@ -39,31 +43,18 @@ export default async function SparePartListPage({ searchParams }: { searchParams
       <PageHeader
         title="Order Spare Part"
         description={viewAll ? "Dokumentasi spare part rusak · semua Pengawas" : "Dokumentasi spare part rusak"}
-        action={
-          canCreate ? (
-            <Link href="/spare-part/baru" className={cn(buttonVariants({ size: "sm" }))}>
-              <Plus aria-hidden /> Catat
-            </Link>
-          ) : undefined
-        }
       />
 
       {antre ? <Alert tone="info">Catatan disimpan di HP dan akan dikirim otomatis saat koneksi tersedia.</Alert> : null}
       {dihapus ? <Alert tone="success">Catatan dihapus.</Alert> : null}
+      {canCreate ? <UnitShortcutGrid units={activeUnits} hrefBase="/spare-part/baru" title="Catat spare part rusak — pilih unit" /> : null}
       {canCreate ? <LocalDrafts kind="spare-part" userId={user.id} units={units} /> : null}
 
       {items.length === 0 ? (
         <EmptyState
           icon={Package}
           title="Belum ada catatan spare part"
-          description={canCreate ? "Catat spare part yang rusak beserta fotonya." : "Catatan spare part rusak dari Pengawas akan muncul di sini."}
-          action={
-            canCreate ? (
-              <Link href="/spare-part/baru" className={buttonVariants()}>
-                <Plus aria-hidden /> Catat spare part
-              </Link>
-            ) : undefined
-          }
+          description={canCreate ? "Pilih unit di atas untuk mencatat spare part yang rusak." : "Catatan spare part rusak dari Pengawas akan muncul di sini."}
         />
       ) : (
         [...groups].map(([tanggal, rows]) => (
