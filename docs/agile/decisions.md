@@ -219,3 +219,12 @@
   - Owner mengubah/menghapus hanya data **yang ia catat sendiri**; data Pengawas tetap hanya bisa dilihat Owner.
   - **Pengawas tidak bisa mengubah/menghapus data Pengawas lain maupun data Owner** (dikonfirmasi Owner; tetap seperti sebelumnya, diuji E2E).
   - Filter Pengawas di Laporan Data ikut menampilkan Owner.
+
+### ADR-022: Pilih unit dulu sebelum form Laporan Kerja & Order Spare Part (permintaan Owner 2026-10-06)
+- Tanggal: 2026-10-06
+- Status: ACCEPTED
+- Konteks: Owner meminta alur seperti lembar kerja lapangan: tekan Buat → pilih unit (kartu per unit) → baru muncul form.
+- Keputusan:
+  - Saat membuat baru tanpa unit, form menampilkan **pilihan unit** (grid kartu besar, 2/3/4 kolom) lebih dulu; setelah dipilih, form tampil dengan unit terkunci di atas + tombol **Ganti**. Unit ikut di URL (`?draft=…&unit=…`) sehingga tahan muat ulang; semuanya di sisi browser sehingga tetap jalan offline (halaman dari cache).
+  - Ikon unit: **ikon kustom bergaya Lucide** (grid 24, garis 2, ujung membulat) — excavator, dump truck, mobil derek — karena Lucide tidak menyediakannya. Jenis ditentukan dari nama unit (`src/lib/unit-visual.ts`, asumsi PASKAM = excavator); unit lain memakai `Truck`.
+  - Daftar kartu mengikuti master data Unit (aktif), sehingga unit ke-7 cukup ditambahkan Owner di menu Unit.

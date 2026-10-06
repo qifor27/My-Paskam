@@ -79,3 +79,4 @@
 ## Tambahan 2026-10-06
 - [x] US-X.1 Data demo untuk presentasi (`npm run demo:seed`, ADR-020, [demo.md](../demo.md))
 - [x] US-X.2 Owner bisa mencatat Laporan Kerja & Spare Part (ADR-021)
+- [x] US-X.3 Pilih unit dulu (kartu ber-ikon) sebelum form Laporan Kerja & Spare Part (ADR-022)

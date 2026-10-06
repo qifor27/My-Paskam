@@ -25,7 +25,8 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 
 ## 3. Alur User
 1. Tombol "+" → "Laporan Kerja" (atau "Buat" di daftar / "Buat laporan" di Beranda) → `/laporan-kerja/baru?draft=<uuid>`.
-2. Isi: tanggal (chip Hari ini/Kemarin + date), unit (chip), operator & lokasi (saran), deskripsi, HM (keypad desimal, sufiks "jam"), BBM (keypad desimal, jumlah), foto (Kamera / Galeri).
+2. **Pilih unit dulu** (kartu besar ber-ikon, ADR-022) → form tampil dengan unit terkunci + tombol Ganti.
+3. Isi: tanggal (chip Hari ini/Kemarin + date), unit (chip), operator & lokasi (saran), deskripsi, HM (keypad desimal, sufiks "jam"), BBM (keypad desimal, jumlah), foto (Kamera / Galeri).
 3. Foto langsung dikompres & diunggah per foto (progress, Coba lagi, hapus). Tombol simpan menunggu semua foto selesai.
 4. Isian & foto yang belum terunggah **tersimpan otomatis di HP** (IndexedDB) setiap ±0,6 dtk.
 5. Simpan → detail laporan dengan pesan sukses; draft di HP dihapus.
@@ -84,6 +85,7 @@ Pengawas mencatat pekerjaan unit dari HP di lapangan, lengkap dengan HM, BBM, da
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Alur pilih unit dulu + ikon unit (ADR-022) | Claude Code |
 | 2026-10-06 | Owner bisa mencatat & mengubah data miliknya (ADR-021) | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 3 | Claude Code |
 | 2026-10-05 | Offline penuh (ADR-019): validasi di HP, Simpan offline → antrean kirim otomatis; draft per akun | Claude Code |

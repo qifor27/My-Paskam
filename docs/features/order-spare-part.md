@@ -22,7 +22,7 @@ Mendokumentasikan **spare part yang rusak** dari lapangan, lengkap dengan foto, 
 | Nomor part opsional | ADR-017 (*tafsiran*) |
 
 ## 3. Alur User
-Tombol "+" → "Order Spare Part" (atau "Catat" di daftar) → pilih unit (chip) → nama spare part (saran dari riwayat) → nomor part (opsional) → jumlah (tombol −/+) → prioritas (chip) → deskripsi kerusakan → lokasi (saran) → foto (Kamera/Galeri) → Simpan → detail. Draft otomatis di HP; gagal kirim → "Belum terkirim".
+Tombol "+" → "Order Spare Part" (atau "Catat" di daftar) → **pilih unit dulu** (kartu ber-ikon, ADR-022) → form → nama spare part (saran dari riwayat) → nomor part (opsional) → jumlah (tombol −/+) → prioritas (chip) → deskripsi kerusakan → lokasi (saran) → foto (Kamera/Galeri) → Simpan → detail. Draft otomatis di HP; gagal kirim → "Belum terkirim".
 
 ## 4. Data
 `order_spare_part` (tanpa kolom status), `photo` (module `ORDER_SPARE_PART`). Detail: `docs/database.md`.
@@ -61,6 +61,7 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Alur pilih unit dulu + ikon unit (ADR-022) | Claude Code |
 | 2026-10-06 | Owner bisa mencatat & mengubah data miliknya (ADR-021) | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 4 | Claude Code |
 | 2026-10-05 | Tambah jumlah, prioritas, nomor part (ADR-017) | Claude Code |
