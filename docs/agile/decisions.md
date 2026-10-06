@@ -229,3 +229,15 @@
   - Ikon unit: **ikon kustom bergaya Lucide** (grid 24, garis 2, ujung membulat) — excavator, dump truck, mobil derek — karena Lucide tidak menyediakannya. Jenis ditentukan dari nama unit (`src/lib/unit-visual.ts`, asumsi PASKAM = excavator); unit lain memakai `Truck`.
   - Daftar kartu mengikuti master data Unit (aktif), sehingga unit ke-7 cukup ditambahkan Owner di menu Unit.
   - **Revisi (Owner, 2026-10-06):** kartu unit tampil **langsung di halaman daftar** Laporan Kerja & Order Spare Part (grid ringkas 3/4/6 kolom) dan **tombol Buat/Catat dihapus**. Menekan kartu membuka form dengan unit terisi (`/…/baru?unit=…`). Layar pilih unit di dalam form tetap dipakai untuk jalur tombol "+" dan tombol Ganti.
+
+### ADR-023: Kolom Laporan Data mengikuti lembar Excel Owner
+- Tanggal: 2026-10-06
+- Status: ACCEPTED
+- Konteks: Owner membandingkan Laporan Data dengan lembar Excel acuan dan menemukan ketidaksesuaian (urutan kolom, tanggal tanpa hari, dokumentasi tidak tampil, deskripsi pekerjaan planning tidak tampil).
+- Keputusan:
+  - **Laporan Kerja:** Pengawas · Hari, tanggal · Operator · BBM · Jam/HM · Lokasi · *Unit* · Dokumentasi. (Excel menulis "hari tanggal" dan "tngl/hari" — dianggap satu kolom; menunggu konfirmasi.)
+  - **Order Spare Part:** Nama unit · Spare part · Lokasi · Dokumentasi · *Jumlah · Prioritas · No. part · Dicatat · Pengawas*.
+  - **Planning Job:** Nama pengawas · Nama job · Lokasi job · Pekerjaan · Estimasi mulai · *Estimasi selesai · Status · Unit*.
+  - Kolom bercetak miring = tambahan yang sebelumnya diminta Owner (ADR-016/017), diletakkan **setelah** kolom Excel agar tidak hilang.
+  - **Dokumentasi** di web = foto mini (maks. 3, klik untuk perbesar); di PDF = jumlah foto ("2 foto"). Menyisipkan foto ke PDF butuh thumbnail kecil di server agar ukuran file wajar — ditunda sampai diminta.
+  - Halaman Laporan Data memakai area konten lebar (`max-w-6xl`); tabel di desktop, kartu label/nilai berurutan sama di HP.

@@ -13,6 +13,7 @@ Owner memantau data operasional dari semua Pengawas: berapa laporan, total jam k
 | Filter: tanggal (dari–sampai), unit, Pengawas; + status (Planning) / prioritas (Spare Part) | PRD §17 |
 | Hanya Owner | ADR-010, ADR-018 (Owner) |
 | Export PDF sesuai filter aktif (tanpa foto, maks. 2.000 baris) | ADR-020 (Owner, 2026-10-06) |
+| Kolom & urutan tabel detail = lembar Excel Owner; kolom tambahan setelahnya; Dokumentasi = foto mini (web) / jumlah foto (PDF) | ADR-023 |
 | Filter Pengawas juga memuat Owner (data yang dicatat Owner) | ADR-021 |
 | PIN gate wajib | ADR-018 (Owner) |
 | PIN = 6 digit, milik akun Owner, dibuat/diganti dengan password; terbuka 15 menit per sesi; 5× salah → kunci 15 menit | ADR-018 (*tafsiran*) |
@@ -67,5 +68,6 @@ Hanya SUPER_ADMIN (`laporan-data:access`). Data **tidak di-query** sebelum PIN t
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Kolom mengikuti Excel Owner, foto Dokumentasi, deskripsi Pekerjaan, tanggal dengan hari, layout lebar (ADR-023) | Claude Code |
 | 2026-10-06 | Export PDF (ADR-020); tombol pindah ke bawah judul di HP; Owner di filter (ADR-021). E2E S6 = 31 cek | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 6 | Claude Code |
