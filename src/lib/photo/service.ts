@@ -90,6 +90,23 @@ export async function photoCounts(module: PhotoModule, recordIds: string[]) {
   return new Map(counts.map((c) => [c.recordId, c._count]));
 }
 
+/** Id foto (urut) per record untuk tampilan dokumentasi, maks. `limit` per record. */
+export async function photoIdsByRecord(module: PhotoModule, recordIds: string[], limit = 3) {
+  const rows = await db.photo.findMany({
+    where: { module, recordId: { in: recordIds }, deletedAt: null },
+    orderBy: [{ sortOrder: "asc" }, { uploadedAt: "asc" }],
+    select: { id: true, recordId: true },
+  });
+  const map = new Map<string, string[]>();
+  for (const r of rows) {
+    if (!r.recordId) continue;
+    const list = map.get(r.recordId) ?? [];
+    if (list.length < limit) list.push(r.id);
+    map.set(r.recordId, list);
+  }
+  return map;
+}
+
 /** Pastikan semua id foto sudah terunggah oleh user untuk record ini. */
 export async function assertPhotosUploaded(module: PhotoModule, userId: string, recordId: string, photoIds: string[]) {
   const found = await db.photo.count({

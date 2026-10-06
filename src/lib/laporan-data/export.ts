@@ -26,6 +26,9 @@ async function filterLabels(f: DataFilters) {
   ];
 }
 
+/** Dokumentasi di PDF = jumlah foto (foto ada di aplikasi, lihat ADR-023). */
+const photoLabel = (n: number) => (n === 0 ? "-" : `${n} foto`);
+
 const truncatedNote = (shown: number, more: boolean) =>
   more ? `Menampilkan ${shown.toLocaleString("id-ID")} data pertama. Persempit filter untuk data lengkap.` : undefined;
 
@@ -61,17 +64,27 @@ export async function buildLaporanDataPdf(user: CurrentUser, f: DataFilters) {
         kind: "table",
         title: "Detail laporan",
         note: truncatedNote(r.rows.length, r.hasMore),
+        // Urutan & nama kolom = lembar Excel Owner (2026-10-06); Unit = kolom tambahan.
         columns: [
-          { header: "Tanggal", width: 1.6 },
-          { header: "Unit", width: 1.4 },
-          { header: "Pengawas", width: 2 },
-          { header: "Operator", width: 2 },
-          { header: "HM", width: 0.9, align: "right" },
+          { header: "Pengawas", width: 1.9 },
+          { header: "Hari, tanggal", width: 2.1 },
+          { header: "Operator", width: 1.9 },
           { header: "BBM", width: 0.9, align: "right" },
-          { header: "Lokasi", width: 2.4 },
-          { header: "Foto", width: 0.7, align: "right" },
+          { header: "Jam/HM", width: 0.9, align: "right" },
+          { header: "Lokasi", width: 2 },
+          { header: "Unit", width: 1.2 },
+          { header: "Dokumentasi", width: 1.2 },
         ],
-        rows: r.rows.map((x) => [formatISODate(x.tanggal), x.unit, x.pengawas, x.operator, formatDecimal(x.hm), formatDecimal(x.bbm), x.lokasi, String(x.photos)]),
+        rows: r.rows.map((x) => [
+          x.pengawas,
+          formatISODate(x.tanggal, "day"),
+          x.operator,
+          formatDecimal(x.bbm),
+          formatDecimal(x.hm),
+          x.lokasi,
+          x.unit,
+          photoLabel(x.photos),
+        ]),
       },
     ];
   } else if (f.modul === "spare-part") {
@@ -91,24 +104,26 @@ export async function buildLaporanDataPdf(user: CurrentUser, f: DataFilters) {
         title: "Detail spare part rusak",
         note: truncatedNote(r.rows.length, r.hasMore),
         columns: [
-          { header: "Dicatat", width: 1.8 },
-          { header: "Unit", width: 1.3 },
-          { header: "Spare part", width: 2.4 },
-          { header: "No. part", width: 1.6 },
-          { header: "Jml", width: 0.7, align: "right" },
-          { header: "Prioritas", width: 1.1 },
-          { header: "Pengawas", width: 1.8 },
-          { header: "Lokasi", width: 1.8 },
+          { header: "Nama unit", width: 1.2 },
+          { header: "Spare part", width: 2.2 },
+          { header: "Lokasi", width: 1.7 },
+          { header: "Dokumentasi", width: 1.1 },
+          { header: "Jml", width: 0.6, align: "right" },
+          { header: "Prioritas", width: 1 },
+          { header: "No. part", width: 1.5 },
+          { header: "Dicatat", width: 2.1 },
+          { header: "Pengawas", width: 1.7 },
         ],
         rows: r.rows.map((x) => [
-          `${formatISODate(x.tanggal)} ${formatTime(x.createdAt)}`,
           x.unit,
           x.partName,
-          x.partNumber ?? "-",
+          x.lokasi,
+          photoLabel(x.photos),
           String(x.quantity),
           PRIORITY_META[x.priority].label,
+          x.partNumber ?? "-",
+          `${formatISODate(x.tanggal, "day")} ${formatTime(x.createdAt)}`,
           x.pengawas,
-          x.lokasi,
         ]),
       },
     ];
@@ -128,20 +143,24 @@ export async function buildLaporanDataPdf(user: CurrentUser, f: DataFilters) {
         title: "Detail planning",
         note: truncatedNote(r.rows.length, r.hasMore),
         columns: [
-          { header: "Pekerjaan", width: 3 },
-          { header: "Unit", width: 1.3 },
-          { header: "Pengawas", width: 1.8 },
-          { header: "Estimasi", width: 2.4 },
-          { header: "Status", width: 1.3 },
-          { header: "Lokasi", width: 1.8 },
+          { header: "Nama pengawas", width: 1.6 },
+          { header: "Nama job", width: 2.1 },
+          { header: "Lokasi job", width: 1.5 },
+          { header: "Pekerjaan", width: 2.5 },
+          { header: "Estimasi mulai", width: 1.8 },
+          { header: "Estimasi selesai", width: 1.8 },
+          { header: "Status", width: 1.5 },
+          { header: "Unit", width: 1 },
         ],
         rows: r.rows.map((x) => [
-          x.nama,
-          x.unit,
           x.pengawas,
-          x.mulai === x.selesai ? formatISODate(x.mulai) : `${formatISODate(x.mulai)} – ${formatISODate(x.selesai)}`,
-          PLANNING_STATUS_META[x.status].label,
+          x.nama,
           x.lokasi,
+          x.deskripsi,
+          formatISODate(x.mulai),
+          formatISODate(x.selesai),
+          PLANNING_STATUS_META[x.status].label,
+          x.unit,
         ]),
       },
     ];

@@ -4,6 +4,7 @@ import { BottomNav, SideNav } from "@/components/app-nav";
 import { Avatar } from "@/components/avatar";
 import { BrandMark, Wordmark } from "@/components/brand";
 import { CreateSheet } from "@/components/create-sheet";
+import { MainContainer } from "@/components/main-container";
 import { NetworkBanner } from "@/components/network-status";
 import { SyncBanner, SyncProvider } from "@/components/sync-provider";
 import { can } from "@/lib/auth/permissions";
@@ -43,7 +44,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <NetworkBanner />
         <SyncBanner />
         {/* pb: ruang untuk bottom navigation + tombol + di mobile. */}
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-32 pt-5 md:px-8 md:pb-10 md:pt-8">{children}</main>
+        <MainContainer>{children}</MainContainer>
       </div>
 
       <BottomNav items={bottomNavFor(user.role)} createActions={createActions} />

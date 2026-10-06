@@ -4,7 +4,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { recorderName } from "@/lib/people";
 import { dateToISO, shiftISO, todayISO, zonedDayStart } from "@/lib/format";
-import { photoCounts } from "@/lib/photo/service";
+import { photoCounts, photoIdsByRecord } from "@/lib/photo/service";
 import type { PlanningStatus } from "@/lib/planning/status";
 import type { Priority } from "@/lib/spare-part/priority";
 
@@ -35,7 +35,10 @@ export async function reportLaporanKerja(f: DataFilters, opts: { limit?: number 
     db.laporanKerja.groupBy({ by: ["unitId"], where, _count: true, _sum: { hmJam: true, bbm: true } }),
   ]);
   const page = rows.slice(0, limit);
-  const photos = await photoCounts("LAPORAN_KERJA", page.map((r) => r.id));
+  const [photos, photoIds] = await Promise.all([
+    photoCounts("LAPORAN_KERJA", page.map((r) => r.id)),
+    photoIdsByRecord("LAPORAN_KERJA", page.map((r) => r.id)),
+  ]);
   const unitNames = await unitNameMap(perUnit.map((u) => u.unitId));
   return {
     summary: { count: agg._count, hm: Number(agg._sum.hmJam ?? 0), bbm: Number(agg._sum.bbm ?? 0) },
@@ -52,6 +55,7 @@ export async function reportLaporanKerja(f: DataFilters, opts: { limit?: number 
       bbm: Number(r.bbm),
       lokasi: r.lokasi,
       photos: photos.get(r.id) ?? 0,
+      photoIds: photoIds.get(r.id) ?? [],
     })),
     hasMore: rows.length > limit,
   };
@@ -78,7 +82,10 @@ export async function reportSparePart(f: DataFilters, opts: { limit?: number } =
     db.orderSparePart.groupBy({ by: ["priority"], where, _count: true }),
   ]);
   const page = rows.slice(0, limit);
-  const photos = await photoCounts("ORDER_SPARE_PART", page.map((r) => r.id));
+  const [photos, photoIds] = await Promise.all([
+    photoCounts("ORDER_SPARE_PART", page.map((r) => r.id)),
+    photoIdsByRecord("ORDER_SPARE_PART", page.map((r) => r.id)),
+  ]);
   return {
     summary: {
       count: agg._count,
@@ -97,6 +104,7 @@ export async function reportSparePart(f: DataFilters, opts: { limit?: number } =
       priority: r.priority,
       lokasi: r.lokasi,
       photos: photos.get(r.id) ?? 0,
+      photoIds: photoIds.get(r.id) ?? [],
     })),
     hasMore: rows.length > limit,
   };
@@ -134,6 +142,7 @@ export async function reportPlanning(f: DataFilters, opts: { limit?: number } = 
       selesai: dateToISO(r.estimasiSelesai),
       status: r.status,
       lokasi: r.lokasi,
+      deskripsi: r.deskripsi,
     })),
     hasMore: rows.length > limit,
   };

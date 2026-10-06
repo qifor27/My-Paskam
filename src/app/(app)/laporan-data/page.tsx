@@ -8,6 +8,7 @@ import { NavIcon } from "@/components/nav-icon";
 import { PageHeader } from "@/components/page-header";
 import { PlanningStatusBadge } from "@/components/planning-status-badge";
 import { PriorityBadge } from "@/components/priority-badge";
+import { PhotoThumbs, ReportTable } from "@/components/report-table";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -264,55 +265,21 @@ async function KerjaReport({ f }: { f: DataFilters }) {
       </section>
       <section className="flex flex-col gap-3">
         <h2 className="text-base font-semibold">Detail laporan</h2>
-        <Card className="overflow-hidden p-0">
-          <table className="hidden w-full text-sm tabular-nums md:table">
-            <thead className="border-b border-border">
-              <tr>
-                <th className={th}>Tanggal</th>
-                <th className={th}>Unit</th>
-                <th className={th}>Pengawas</th>
-                <th className={th}>Operator</th>
-                <th className={cn(th, "text-right")}>HM</th>
-                <th className={cn(th, "text-right")}>BBM</th>
-                <th className={th}>Lokasi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {r.rows.map((x) => (
-                <tr key={x.id} className="hover:bg-canvas">
-                  <td className={td}>
-                    <Link href={`/laporan-kerja/${x.id}`} className="font-medium text-brand-700 hover:underline">
-                      {formatISODate(x.tanggal)}
-                    </Link>
-                  </td>
-                  <td className={td}>{x.unit}</td>
-                  <td className={td}>{x.pengawas}</td>
-                  <td className={td}>{x.operator}</td>
-                  <td className={cn(td, "text-right")}>{formatDecimal(x.hm)}</td>
-                  <td className={cn(td, "text-right")}>{formatDecimal(x.bbm)}</td>
-                  <td className={td}>{x.lokasi}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <ul className="divide-y divide-border md:hidden">
-            {r.rows.map((x) => (
-              <li key={x.id}>
-                <Link href={`/laporan-kerja/${x.id}`} className="flex items-center gap-3 p-4 hover:bg-canvas">
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold">
-                      {x.unit} · {formatDecimal(x.hm)} jam · BBM {formatDecimal(x.bbm)}
-                    </span>
-                    <span className="block truncate text-sm tabular-nums text-ink-muted">
-                      {formatISODate(x.tanggal)} · {x.pengawas} · {x.operator}
-                    </span>
-                  </span>
-                  <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <ReportTable
+          rows={r.rows}
+          href={(x) => `/laporan-kerja/${x.id}`}
+          columns={[
+            // Urutan & nama kolom = lembar Excel Owner (2026-10-06); Unit = kolom tambahan.
+            { header: "Pengawas", cell: (x) => x.pengawas },
+            { header: "Hari, tanggal", cell: (x) => <span className="whitespace-nowrap">{formatISODate(x.tanggal, "day")}</span> },
+            { header: "Operator", cell: (x) => x.operator },
+            { header: "BBM", cell: (x) => formatDecimal(x.bbm), align: "right" },
+            { header: "Jam/HM", cell: (x) => formatDecimal(x.hm), align: "right" },
+            { header: "Lokasi", cell: (x) => x.lokasi },
+            { header: "Unit", cell: (x) => x.unit },
+            { header: "Dokumentasi", cell: (x) => <PhotoThumbs ids={x.photoIds} total={x.photos} alt={`Foto ${x.unit}`} /> },
+          ]}
+        />
       </section>
       <LoadMore f={f} hasMore={r.hasMore} />
     </>
@@ -338,25 +305,22 @@ async function SparePartReport({ f }: { f: DataFilters }) {
           </span>
         ))}
       </Card>
-      <Card className="divide-y divide-border overflow-hidden p-0">
-        {r.rows.map((x) => (
-          <Link key={x.id} href={`/spare-part/${x.id}`} className="flex items-center gap-3 p-4 hover:bg-canvas">
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center justify-between gap-2">
-                <span className="truncate font-semibold">
-                  {x.partName} <span className="font-normal tabular-nums text-ink-muted">×{x.quantity}</span>
-                </span>
-                <PriorityBadge priority={x.priority} />
-              </span>
-              <span className="block truncate text-sm tabular-nums text-ink-muted">
-                {formatISODate(x.tanggal)} {formatTime(x.createdAt)} · {x.unit} · {x.pengawas}
-                {x.partNumber ? ` · ${x.partNumber}` : ""}
-              </span>
-            </span>
-            <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
-          </Link>
-        ))}
-      </Card>
+      <ReportTable
+        rows={r.rows}
+        href={(x) => `/spare-part/${x.id}`}
+        columns={[
+          // Urutan & nama kolom = lembar Excel Owner; sisanya kolom tambahan (ADR-017).
+          { header: "Nama unit", cell: (x) => x.unit },
+          { header: "Spare part", cell: (x) => x.partName },
+          { header: "Lokasi", cell: (x) => x.lokasi },
+          { header: "Dokumentasi", cell: (x) => <PhotoThumbs ids={x.photoIds} total={x.photos} alt={`Foto ${x.partName}`} /> },
+          { header: "Jumlah", cell: (x) => x.quantity, align: "right" },
+          { header: "Prioritas", cell: (x) => <PriorityBadge priority={x.priority} /> },
+          { header: "No. part", cell: (x) => x.partNumber ?? "-" },
+          { header: "Dicatat", cell: (x) => <span className="whitespace-nowrap">{formatISODate(x.tanggal, "day")} {formatTime(x.createdAt)}</span> },
+          { header: "Pengawas", cell: (x) => x.pengawas },
+        ]}
+      />
       <LoadMore f={f} hasMore={r.hasMore} />
     </>
   );
@@ -376,23 +340,21 @@ async function PlanningReport({ f }: { f: DataFilters }) {
           </span>
         ))}
       </Card>
-      <Card className="divide-y divide-border overflow-hidden p-0">
-        {r.rows.map((x) => (
-          <Link key={x.id} href={`/planning-job/${x.id}`} className="flex items-center gap-3 p-4 hover:bg-canvas">
-            <span className="min-w-0 flex-1">
-              <span className="flex items-start justify-between gap-2">
-                <span className="font-semibold">{x.nama}</span>
-                <PlanningStatusBadge status={x.status} />
-              </span>
-              <span className="block truncate text-sm tabular-nums text-ink-muted">
-                {formatISODate(x.mulai)}
-                {x.selesai !== x.mulai ? ` – ${formatISODate(x.selesai)}` : ""} · {x.unit} · {x.pengawas}
-              </span>
-            </span>
-            <ChevronRight className="size-5 shrink-0 text-ink-muted" aria-hidden />
-          </Link>
-        ))}
-      </Card>
+      <ReportTable
+        rows={r.rows}
+        href={(x) => `/planning-job/${x.id}`}
+        columns={[
+          // Urutan & nama kolom = lembar Excel Owner; sisanya kolom tambahan (ADR-017).
+          { header: "Nama pengawas", cell: (x) => x.pengawas },
+          { header: "Nama job", cell: (x) => <span className="font-semibold">{x.nama}</span> },
+          { header: "Lokasi job", cell: (x) => x.lokasi },
+          { header: "Pekerjaan", cell: (x) => <span className="whitespace-pre-line">{x.deskripsi}</span>, wide: true },
+          { header: "Estimasi mulai", cell: (x) => <span className="whitespace-nowrap">{formatISODate(x.mulai)}</span> },
+          { header: "Estimasi selesai", cell: (x) => <span className="whitespace-nowrap">{formatISODate(x.selesai)}</span> },
+          { header: "Status", cell: (x) => <PlanningStatusBadge status={x.status} /> },
+          { header: "Unit", cell: (x) => x.unit },
+        ]}
+      />
       <LoadMore f={f} hasMore={r.hasMore} />
     </>
   );

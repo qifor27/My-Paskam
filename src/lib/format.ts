@@ -52,10 +52,12 @@ export function dateToISO(date: Date): string {
 
 const dateOnly = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "UTC" });
 const dateLong = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const dateDay = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
 /** "5 Okt 2026" dari YYYY-MM-DD. */
-export function formatISODate(iso: string, style: "medium" | "long" = "medium"): string {
-  return (style === "long" ? dateLong : dateOnly).format(new Date(`${iso}T00:00:00Z`));
+export function formatISODate(iso: string, style: "medium" | "long" | "day" = "medium"): string {
+  const f = style === "long" ? dateLong : style === "day" ? dateDay : dateOnly;
+  return f.format(new Date(`${iso}T00:00:00Z`));
 }
 
 /** Label grup daftar: "Hari ini", "Kemarin", atau tanggal panjang. */

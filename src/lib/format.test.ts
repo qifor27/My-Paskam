@@ -37,3 +37,10 @@ describe("zonedDayStart", () => {
     expect(monthStartISO("2026-10-05")).toBe("2026-10-01");
   });
 });
+
+describe("formatISODate day", () => {
+  it("hari, tanggal (kolom Excel)", async () => {
+    const { formatISODate } = await import("./format");
+    expect(formatISODate("2026-10-06", "day")).toBe("Selasa, 6 Okt 2026");
+  });
+});
