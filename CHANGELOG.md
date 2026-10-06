@@ -49,7 +49,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Fondasi offline: client UUID dan status sinkronisasi (Sprint 0, US-0.7, ADR-004).
 
 ### Changed
-- Membuat Laporan Kerja atau Order Spare Part kini dimulai dengan memilih unit lewat kartu ber-ikon (excavator, dump truck, derek); unit bisa diganti dari form (ADR-022).
+- Halaman Laporan Kerja dan Order Spare Part kini langsung menampilkan kartu unit ber-ikon (excavator, dump truck, derek); tekan unit untuk membuka form dengan unit terisi. Tombol "Buat"/"Catat" dihapus; unit tetap bisa diganti dari form (ADR-022).
 - Owner kini juga bisa membuat Laporan Kerja dan Order Spare Part (bila tidak ada Pengawas); data tersebut tampil sebagai "Nama (Owner)" dan hanya bisa diubah oleh Owner sendiri (ADR-021).
 - BBM (Solar) di Laporan Kerja kini diisi sebagai jumlah (angka), bukan pilihan 1–6 (ADR-016).
 - Tombol utama kini biru (oranye menjadi aksen); label tombol memakai huruf biasa ("Simpan", "Coba lagi") (ADR-013).

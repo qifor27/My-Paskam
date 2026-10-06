@@ -39,6 +39,7 @@
 | 2026-10-06 | US-X.2 | Owner bisa mencatat; "(Owner)" di tampilan; Owner di filter Laporan Data | ADR-021, `features/laporan-kerja.md`, `features/order-spare-part.md`, `security.md` |
 | 2026-10-06 | — | Temuan visual: judul "Laporan Data" terpotong di HP → tombol pindah ke bawah judul | — |
 | 2026-10-06 | — | **Insiden:** `demo:seed -- --reset` dijalankan tanpa konfirmasi saat database lokal sudah berisi data user → data lokal itu terhapus. Pelajaran: selalu periksa & tanya sebelum perintah destruktif | — |
+| 2026-10-06 | US-X.3 | Revisi Owner: kartu unit langsung di halaman daftar, tombol Buat/Catat dihapus; diuji interaktif (kartu tampil, tekan → form dengan unit terisi) | ADR-022 |
 | 2026-10-06 | US-X.3 | Pilih unit dulu + ikon unit kustom gaya Lucide; diuji interaktif (pilih, muat ulang, ganti, simpan; spare part) di HP & desktop | ADR-022, `design-system.md`, fitur |
 | 2026-10-06 | — | Verifikasi: unit test lulus; E2E S1 21 + S2 19 + S3 40 + S4 25 + S5 26 + S6 31 = **162 cek** lulus; PDF dirender & dicek visual (3 modul) | — |
 

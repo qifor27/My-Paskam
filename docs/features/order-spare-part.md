@@ -61,6 +61,7 @@ Sama dengan Laporan Kerja (`FormAlerts`, validasi inline yang hilang saat diperb
 ## 10. Riwayat Perubahan
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-10-06 | Kartu unit langsung di halaman daftar, tombol Buat/Catat dihapus (ADR-022 revisi) | Claude Code |
 | 2026-10-06 | Alur pilih unit dulu + ikon unit (ADR-022) | Claude Code |
 | 2026-10-06 | Owner bisa mencatat & mengubah data miliknya (ADR-021) | Claude Code |
 | 2026-10-05 | Implementasi awal Sprint 4 | Claude Code |

@@ -123,6 +123,7 @@ Jarak antar seksi halaman `gap-6`/`gap-7`; padding kartu `p-4`/`p-5`. **Satu lev
 | Badge status draft | `components/local-drafts.tsx` | "Draft di HP" (warning, `HardDrive`), "Menunggu dikirim" (info, `CloudUpload`), "Gagal dikirim" (danger, `TriangleAlert`) + pesan error di bawah judul. |
 | InstallApp | `components/install-app.tsx` | Kartu "Pasang aplikasi di HP" di Akun: tombol (Android) / petunjuk Safari (iPhone); tersembunyi bila sudah terpasang. |
 | Halaman offline | `app/offline/page.tsx` | Brand + kartu ikon `WifiOff` kuning + "Coba lagi". |
+| UnitShortcutGrid | `components/unit-picker.tsx` | Kartu unit ringkas di halaman daftar (min. 96 px, `grid-cols-3 sm:4 lg:6`, judul "Buat laporan — pilih unit"), menggantikan tombol Buat (ADR-022). |
 | UnitPicker / SelectedUnit / UnitIconTile | `components/unit-picker.tsx` | Langkah 1 form lapangan: grid kartu unit (min. 128 px, `grid-cols-2 sm:3 lg:4`), tile ikon 72 px; di form: kartu unit terpilih + tombol ghost "Ganti" (ADR-022). |
 | Ikon unit | `components/unit-icons.tsx` | `ExcavatorIcon`, `DumpTruckIcon`, `TowTruckIcon` — gaya Lucide (24 grid, stroke 2, round). Warna tile: excavator biru, dump oranye, derek ungu, lainnya cyan (`src/lib/unit-visual.ts`). |
 | PhotoGrid | `components/photo-grid.tsx` | Grid 3 kolom, overlay proses/progress %, overlay gagal + "Coba lagi", tanda terunggah, tombol hapus; tombol **Kamera** & **Galeri** terpisah; penghitung "n/6 foto". |
