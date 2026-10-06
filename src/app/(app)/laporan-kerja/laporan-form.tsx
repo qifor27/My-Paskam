@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { FormAlerts } from "@/components/form-alerts";
 import { PhotoGrid } from "@/components/photo-grid";
+import { SelectedUnit, UnitPicker } from "@/components/unit-picker";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChoiceChips } from "@/components/ui/choice-chips";
@@ -64,9 +65,14 @@ export function LaporanForm(props: Props) {
     // Halaman form bisa berasal dari cache offline (tanpa ?draft= di props server),
     // jadi id draft dibaca dari URL di browser. URL diperbarui dengan replaceState
     // (bukan router.replace) agar tidak memicu navigasi yang gagal saat offline.
-    const fromUrl = props.mode === "create" ? new URLSearchParams(window.location.search).get("draft") : null;
+    const search = new URLSearchParams(window.location.search);
+    const fromUrl = props.mode === "create" ? search.get("draft") : null;
+    // Unit yang sudah dipilih (langkah pilih unit) ikut di URL agar tahan muat ulang.
+    const unitFromUrl = props.mode === "create" ? search.get("unit") : null;
+    const presetUnit = unitFromUrl && props.units.some((u) => u.id === unitFromUrl) ? unitFromUrl : "";
     const id = props.id ?? (fromUrl && /^[0-9a-f-]{36}$/i.test(fromUrl) ? fromUrl : createClientId());
-    if (props.mode === "create" && fromUrl !== id) window.history.replaceState(window.history.state, "", `/laporan-kerja/baru?draft=${id}`);
+    if (props.mode === "create" && fromUrl !== id)
+      window.history.replaceState(window.history.state, "", `/laporan-kerja/baru?draft=${id}${presetUnit ? `&unit=${presetUnit}` : ""}`);
 
     const fromServer: PhotoItem[] = (props.initialPhotos ?? []).map((p) => ({
       ...p,
@@ -85,7 +91,7 @@ export function LaporanForm(props: Props) {
         if (found && !draft && props.mode === "create") {
           const fresh = createClientId();
           window.history.replaceState(window.history.state, "", `/laporan-kerja/baru?draft=${fresh}`);
-          setState({ status: "ready", id: fresh, fields: props.initialFields ?? EMPTY(props.today), photos: [], restored: false });
+          setState({ status: "ready", id: fresh, fields: props.initialFields ?? { ...EMPTY(props.today), unitId: presetUnit }, photos: [], restored: false });
           return;
         }
         if (draft) {
@@ -100,7 +106,7 @@ export function LaporanForm(props: Props) {
           }));
           setState({ status: "ready", id, fields: draft.fields, photos, restored: true });
         } else {
-          setState({ status: "ready", id, fields: props.initialFields ?? EMPTY(props.today), photos: fromServer, restored: false });
+          setState({ status: "ready", id, fields: props.initialFields ?? { ...EMPTY(props.today), unitId: presetUnit }, photos: fromServer, restored: false });
         }
       });
     return () => {
@@ -144,6 +150,8 @@ function LaporanFormInner({
 }) {
   const router = useRouter();
   const [fields, setFields] = useState(initial);
+  // Buat baru tanpa unit → tampilkan pilihan unit dulu (permintaan Owner 2026-10-06).
+  const [picking, setPicking] = useState(mode === "create" && !initial.unitId);
   const [dirty, setDirty] = useState(restored);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<PublicError | null>(null);
@@ -273,8 +281,31 @@ function LaporanFormInner({
     });
   }
 
-  const unitOptions = units.map((u) => ({ value: u.id, label: u.name }));
   const yesterday = shiftISO(today, -1);
+
+  function chooseUnit(unitId: string) {
+    const changed = Boolean(fields.unitId) && fields.unitId !== unitId;
+    setFields((f) => ({ ...f, unitId }));
+    // Pilihan unit pertama belum dianggap isian (tidak membuat draft kosong).
+    if (changed) setDirty(true);
+    clearFieldError("unitId");
+    setPicking(false);
+    if (mode === "create") window.history.replaceState(window.history.state, "", `/laporan-kerja/baru?draft=${id}&unit=${unitId}`);
+    window.scrollTo({ top: 0 });
+  }
+
+  if (picking) {
+    return (
+      <UnitPicker
+        units={units}
+        title="Pilih unit"
+        description="Laporan kerja ini untuk unit mana?"
+        selectedId={fields.unitId}
+        onSelect={chooseUnit}
+        onCancel={fields.unitId ? () => setPicking(false) : undefined}
+      />
+    );
+  }
 
   return (
     <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-4">
@@ -282,6 +313,11 @@ function LaporanFormInner({
 
       <Card className="flex flex-col gap-5 p-5">
         <h2 className="text-base font-semibold">Pekerjaan</h2>
+        <Field id="unitId" label="Unit" error={fieldErrors.unitId}>
+          {(p) => (
+            <SelectedUnit buttonId={p.id} unit={units.find((u) => u.id === fields.unitId)} onChange={() => setPicking(true)} invalid={p["aria-invalid"]} />
+          )}
+        </Field>
         <Field id="tanggal" label="Tanggal" error={fieldErrors.tanggal}>
           {(p) => (
             <div className="flex flex-col gap-2">
@@ -300,19 +336,6 @@ function LaporanFormInner({
           )}
         </Field>
 
-        <Field id="unitId" label="Unit" error={fieldErrors.unitId}>
-          {(p) => (
-            <ChoiceChips
-              name="unitId"
-              labelledBy={p.id}
-              describedBy={p["aria-describedby"]}
-              invalid={p["aria-invalid"]}
-              options={unitOptions}
-              value={fields.unitId}
-              onChange={(v) => set("unitId", v)}
-            />
-          )}
-        </Field>
 
         <Field id="operatorName" label="Operator" error={fieldErrors.operatorName}>
           {(p) => (
