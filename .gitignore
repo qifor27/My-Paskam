@@ -12,3 +12,7 @@ src/generated/
 
 # Foto hasil upload (driver local)
 /storage/
+
+# file env lokal berisi rahasia produksi (jangan di-commit)
+/env
+/env.*
