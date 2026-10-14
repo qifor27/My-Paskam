@@ -160,14 +160,16 @@ Per informasi 2025: Supabase Free ±500 MB database, ±1 GB storage, proyek **di
 - [ ] Bucket `paskam` **privat**.
 - [ ] Secret key hanya di Environment Variables Vercel; tidak ada di repo (`git grep sb_secret` kosong).
 - [ ] Password Owner kuat; akun & PIN demo diganti/dihapus di produksi.
-- [ ] Repo GitHub **private**.
+- [ ] Repo GitHub **private** (GitHub → Settings → General → Danger Zone → Change visibility). Bila tetap publik: password & PIN akun demo di `docs/demo.md` bisa dibaca siapa saja — **jangan** isi data demo di database produksi.
 - [ ] Bila secret key bocor: Supabase → API Keys → buat baru & cabut yang lama → perbarui di Vercel → redeploy.
 
 ## 11. Masalah umum
 
 | Gejala | Penyebab & solusi |
 |---|---|
-| Build gagal di `prisma generate` | `DATABASE_URL` belum diisi di Vercel. |
+| Log build: `Running build in Washington, D.C. (iad1)` / commit lama | Commit terbaru belum di-push — `git push`, lalu cek hash commit di log Vercel sama dengan `git log -1`. Region `sin1` hanya berlaku bila `vercel.json` sudah ikut ter-push. |
+| `npm warn install-scripts … not yet covered by allowScripts` | Hanya peringatan, aman. Build tidak bergantung pada install script (esbuild, prisma, @prisma/engines, unrs-resolver); client Prisma dibuat oleh `npm run build`. |
+| Build gagal di `prisma generate` / `Cannot find module '@/generated/prisma'` | Commit lama (sebelum ADR-024) — push versi terbaru. `DATABASE_URL` tidak dibutuhkan saat build, tetapi wajib saat aplikasi berjalan. |
 | Halaman "Halaman gagal dimuat" | Database tidak terjangkau: cek `DATABASE_URL` (port 6543, password), proyek Supabase tidak sedang dijeda. |
 | Simpan foto gagal / foto tidak tampil | `STORAGE_DRIVER` bukan `supabase`, nama bucket salah, atau secret key salah. Lihat Vercel Logs (`Supabase Storage … gagal (status)`). |
 | `npm run db:deploy` timeout | Pakai Session pooler (5432) untuk `DIRECT_URL`, bukan Transaction pooler. |

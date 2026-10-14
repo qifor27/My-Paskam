@@ -62,6 +62,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - `prd.md` dipindah ke `docs/PRD.md` (US-0.8).
 
 ### Fixed
+- Build di Vercel tidak lagi gagal saat `DATABASE_URL` belum tersedia di tahap build atau install script npm tidak dijalankan (ADR-024).
 - Laporan/catatan yang baru tersimpan tidak lagi muncul kembali di "Belum terkirim" bila tombol Simpan ditekan tepat setelah foto selesai diunggah (Sprint 4).
 - Waktu "terakhir masuk" kini selalu ditampilkan dalam zona waktu aplikasi, bukan zona waktu server (Sprint 2).
 - Error saat database tidak terjangkau kini tampil dengan desain aplikasi, bukan halaman darurat polos (Sprint 2).
