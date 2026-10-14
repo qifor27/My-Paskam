@@ -3,10 +3,12 @@
 //
 //   npm run demo:seed            # hanya jika database masih kosong
 //   npm run demo:seed -- --reset # HAPUS semua data lalu isi ulang (development)
+//   ... -- --reset --confirm-remote  # wajib bila DATABASE_URL bukan lokal (mis. Supabase)
+// Foto ditulis lewat driver storage aktif (STORAGE_DRIVER=local|supabase).
 //
 // Tidak boleh dijalankan di produksi.
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { readFile, rm } from "node:fs/promises";
 import path from "node:path";
 
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -14,6 +16,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { hashSecret } from "../src/lib/auth/password";
 import { shiftISO, todayISO, zonedDayStart } from "../src/lib/format";
+import { driverFromEnv } from "../src/lib/storage/drivers";
 
 try {
   process.loadEnvFile();
@@ -25,6 +28,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const RESET = process.argv.includes("--reset");
+// Pengaman tambahan: reset database yang BUKAN lokal (mis. Supabase) wajib konfirmasi eksplisit.
+const CONFIRM_REMOTE = process.argv.includes("--confirm-remote");
 const STORAGE_DIR = path.resolve(process.env.STORAGE_DIR ?? "storage");
 const ASSETS = path.resolve("scripts/demo-assets");
 
@@ -107,7 +112,13 @@ const PLANNING_JOBS = [
 ];
 
 async function main() {
-  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  const isLocalDb = /@(localhost|127\.0\.0\.1|db)(:\d+)?\//.test(dbUrl);
+  if (RESET && !isLocalDb && !CONFIRM_REMOTE) {
+    throw new Error("DATABASE_URL bukan database lokal. --reset akan MENGHAPUS SEMUA data di sana. Tambahkan --confirm-remote bila benar-benar yakin.");
+  }
+  const store = driverFromEnv(process.env, STORAGE_DIR);
+  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: dbUrl }) });
   try {
     const existing = await db.user.count();
     if (existing > 0 && !RESET) {
@@ -115,6 +126,8 @@ async function main() {
     }
     if (RESET) {
       console.log("Menghapus data lama…");
+      const oldPhotos = await db.photo.findMany({ select: { storagePath: true } });
+      await store.deleteMany(oldPhotos.map((p) => p.storagePath)).catch((e: unknown) => console.warn("Sebagian foto lama tidak terhapus:", e));
       await db.$transaction([
         db.photo.deleteMany(),
         db.laporanKerja.deleteMany(),
@@ -127,7 +140,7 @@ async function main() {
         db.unit.deleteMany({ where: { sortOrder: { gt: 6 } } }),
       ]);
       await db.unit.updateMany({ data: { isActive: true } });
-      await rm(path.join(STORAGE_DIR, "photos"), { recursive: true, force: true });
+      if ((process.env.STORAGE_DRIVER ?? "local") === "local") await rm(path.join(STORAGE_DIR, "photos"), { recursive: true, force: true });
     }
 
     const units = await db.unit.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
@@ -174,8 +187,7 @@ async function main() {
         const id = randomUUID();
         const bytes = photoBytes.get(name)!;
         const key = `photos/${dir}/${recordId}/${id}.jpg`;
-        await mkdir(path.dirname(path.join(STORAGE_DIR, key)), { recursive: true });
-        await writeFile(path.join(STORAGE_DIR, key), bytes);
+        await store.put(key, bytes, "image/jpeg");
         await db.photo.create({
           data: {
             id,
