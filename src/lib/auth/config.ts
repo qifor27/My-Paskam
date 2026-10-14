@@ -3,7 +3,8 @@
 export const AUTH_CONFIG = {
   /** SEMENTARA (Q17): PIN Pengawas berupa angka dengan panjang tetap. */
   pinLength: 6,
-  passwordMinLength: 10,
+  /** Keputusan Owner (ADR-025): minimal 8 karakter. */
+  passwordMinLength: 8,
   rateLimit: {
     windowMinutes: 15,
     /** SEMENTARA (Q17): gagal per kode/email sebelum dikunci. */

@@ -51,6 +51,7 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 - Fondasi offline: client UUID dan status sinkronisasi (Sprint 0, US-0.7, ADR-004).
 
 ### Changed
+- Password Owner kini minimal 8 karakter (sebelumnya 10) (ADR-025).
 - Laporan Data (layar & PDF) kini memakai kolom dan urutan sesuai lembar Excel: Laporan Kerja (Pengawas, Hari tanggal, Operator, BBM, Jam/HM, Lokasi, Dokumentasi), Spare Part (Nama unit, Spare part, Lokasi, Dokumentasi), Planning (Nama pengawas, Nama job, Lokasi job, Pekerjaan, Estimasi mulai); foto dokumentasi tampil sebagai gambar mini (ADR-023).
 - Halaman Laporan Kerja dan Order Spare Part kini langsung menampilkan kartu unit ber-ikon (excavator, dump truck, derek); tekan unit untuk membuka form dengan unit terisi. Tombol "Buat"/"Catat" dihapus; unit tetap bisa diganti dari form (ADR-022).
 - Owner kini juga bisa membuat Laporan Kerja dan Order Spare Part (bila tidak ada Pengawas); data tersebut tampil sebagai "Nama (Owner)" dan hanya bisa diubah oleh Owner sendiri (ADR-021).

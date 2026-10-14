@@ -253,3 +253,9 @@
   - Script data demo memakai driver yang sama; `--reset` ke database non-lokal wajib `--confirm-remote`.
 - Revisi 2026-10-15: proyek Supabase Owner dibuat di **Seoul** (`ap-northeast-2`), bukan Singapura → region fungsi Vercel diubah ke **`icn1`** (Seoul) agar aplikasi & database di region yang sama (atas persetujuan Owner).
 - Konsekuensi: Panduan langkah demi langkah di `docs/deploy.md`. Belum diuji ke akun Vercel/Supabase sungguhan (driver diuji dengan unit test fetch tiruan). Error monitoring masih terbuka.
+
+### ADR-025: Password Owner minimal 8 karakter
+- Tanggal: 2026-10-15
+- Status: ACCEPTED (permintaan Owner)
+- Keputusan: Panjang minimal password Owner diturunkan dari 10 ke **8 karakter** (`AUTH_CONFIG.passwordMinLength`). Berlaku saat membuat akun Owner (`npm run owner:create`); login tidak memeriksa panjang.
+- Konsekuensi: Password lebih pendek lebih mudah ditebak; mitigasi tetap: hash scrypt (ADR-008), penguncian setelah 5× salah (ADR-009), sesi Owner 12 jam. Disarankan tetap memakai kombinasi huruf, angka, dan simbol.

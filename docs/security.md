@@ -6,7 +6,7 @@
 ## Autentikasi
 | Role | Metode | Kebijakan |
 |---|---|---|
-| Owner (`SUPER_ADMIN`) | Email/username + password (min. 10 karakter) | scrypt (ADR-008), rate limit, siap 2FA |
+| Owner (`SUPER_ADMIN`) | Email/username + password (min. 8 karakter, ADR-025) | scrypt (ADR-008), rate limit, siap 2FA |
 | Pengawas | Kode Pengawas + PIN | PIN di-hash scrypt; 6 digit SEMENTARA (ADR-007); akun dibuat Owner, tanpa registrasi publik |
 
 - Owner pertama dibuat lewat `npm run owner:create` (CLI di server), bukan lewat web.
