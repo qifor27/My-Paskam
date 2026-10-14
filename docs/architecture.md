@@ -31,7 +31,7 @@
 | DB | PostgreSQL + Prisma | Ditetapkan PRD |
 | Storage foto | Supabase Storage (bucket privat, REST) — lokal: folder `storage/` | ADR-024 |
 | Auth | Custom session | ADR-002 (PROPOSED) |
-| Hosting | Vercel (`sin1`) + Supabase (Singapura) — panduan `docs/deploy.md` | ADR-024 |
+| Hosting | Vercel (`icn1` Seoul) + Supabase (Seoul `ap-northeast-2`) — panduan `docs/deploy.md` | ADR-024 |
 | Monitoring | Belum (log Vercel saja) | Terbuka (US-8.3) |
 
 ## Struktur Folder
@@ -41,7 +41,7 @@ prisma/
   schema.prisma          # skema DB (Prisma 7)
   migrations/            # migrasi SQL, di-commit
 prisma.config.ts         # URL DB (DIRECT_URL untuk migrasi bila ada) + lokasi migrasi
-vercel.json              # region fungsi Vercel (sin1)
+vercel.json              # region fungsi Vercel (icn1, sama dengan region database)
 public/sw.js             # service worker (naikkan VERSION bila strategi berubah)
 public/icons/            # ikon PWA (any + maskable + apple-touch)
 src/

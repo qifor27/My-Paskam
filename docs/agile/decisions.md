@@ -251,4 +251,5 @@
   - Driver `supabase` di `src/lib/storage/drivers.ts` memakai REST API Storage dengan secret/service key **hanya di server** (tanpa SDK, tanpa dependency baru). Browser tetap mengambil foto lewat `/api/foto/:id`.
   - `npm run build` = `prisma generate && next build` (client Prisma tidak di-commit). Migrasi produksi dijalankan manual: `npm run db:deploy`.
   - Script data demo memakai driver yang sama; `--reset` ke database non-lokal wajib `--confirm-remote`.
+- Revisi 2026-10-15: proyek Supabase Owner dibuat di **Seoul** (`ap-northeast-2`), bukan Singapura → region fungsi Vercel diubah ke **`icn1`** (Seoul) agar aplikasi & database di region yang sama (atas persetujuan Owner).
 - Konsekuensi: Panduan langkah demi langkah di `docs/deploy.md`. Belum diuji ke akun Vercel/Supabase sungguhan (driver diuji dengan unit test fetch tiruan). Error monitoring masih terbuka.

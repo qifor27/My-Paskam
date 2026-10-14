@@ -7,7 +7,7 @@
 ## Gambaran
 
 ```text
-HP / laptop ──HTTPS──► Vercel (Next.js, region Singapura sin1)
+HP / laptop ──HTTPS──► Vercel (Next.js, region Seoul icn1)
                           │ DATABASE_URL (pooler transaksi :6543)
                           ├────────► Supabase PostgreSQL
                           │ SUPABASE_SERVICE_ROLE_KEY (server saja)
@@ -37,7 +37,8 @@ Setelah push, workflow CI (`.github/workflows/ci.yml`) akan berjalan pertama kal
 ## 2. Buat proyek Supabase
 
 1. supabase.com → **New project**.
-2. Nama: `my-paskam`. **Region: Southeast Asia (Singapore)** (dekat dengan pengguna & region Vercel `sin1`).
+2. Nama: `my-paskam`. **Region:** proyek PASKAM memakai **Northeast Asia (Seoul)** `ap-northeast-2`.
+   > Region fungsi Vercel di `vercel.json` **harus sama** dengan region database (Seoul → `icn1`, Singapore → `sin1`). Bila berbeda, setiap query bolak-balik antar negara dan halaman melambat.
 3. Buat **database password** yang kuat dan **simpan** (dibutuhkan di connection string).
 
 ### 2a. Ambil connection string
@@ -71,7 +72,7 @@ Tidak perlu membuat policy RLS: aplikasi mengakses bucket dari server memakai se
 Jalankan di terminal (nilai hanya hidup di sesi terminal itu, tidak tersimpan ke repo):
 
 ```bash
-export DIRECT_URL="postgresql://postgres.<ref>:<password>@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+export DIRECT_URL="postgresql://postgres.<ref>:<password>@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres"
 export DATABASE_URL="$DIRECT_URL"
 
 npm run db:deploy        # membuat semua tabel + 6 unit awal (PASKAM 1–4, DUMP, TOWING)
@@ -112,7 +113,7 @@ npm run demo:seed        # hanya jalan bila database masih kosong
 
 `DIRECT_URL` **tidak perlu** di Vercel (migrasi dijalankan dari komputer admin).
 
-4. **Deploy**. Region fungsi sudah diset Singapura (`sin1`) lewat `vercel.json`.
+4. **Deploy**. Region fungsi sudah diset Seoul (`icn1`) lewat `vercel.json`, sama dengan database.
 
 ## 5. Cek setelah deploy (wajib)
 
@@ -167,7 +168,7 @@ Per informasi 2025: Supabase Free ±500 MB database, ±1 GB storage, proyek **di
 
 | Gejala | Penyebab & solusi |
 |---|---|
-| Log build: `Running build in Washington, D.C. (iad1)` / commit lama | Commit terbaru belum di-push — `git push`, lalu cek hash commit di log Vercel sama dengan `git log -1`. Region `sin1` hanya berlaku bila `vercel.json` sudah ikut ter-push. |
+| Log build: `Running build in Washington, D.C. (iad1)` / commit lama | Commit terbaru belum di-push — `git push`, lalu cek hash commit di log Vercel sama dengan `git log -1`. Region `icn1` hanya berlaku bila `vercel.json` sudah ikut ter-push. |
 | `npm warn install-scripts … not yet covered by allowScripts` | Hanya peringatan, aman. Build tidak bergantung pada install script (esbuild, prisma, @prisma/engines, unrs-resolver); client Prisma dibuat oleh `npm run build`. |
 | Build gagal di `prisma generate` / `Cannot find module '@/generated/prisma'` | Commit lama (sebelum ADR-024) — push versi terbaru. `DATABASE_URL` tidak dibutuhkan saat build, tetapi wajib saat aplikasi berjalan. |
 | Halaman "Halaman gagal dimuat" | Database tidak terjangkau: cek `DATABASE_URL` (port 6543, password), proyek Supabase tidak sedang dijeda. |

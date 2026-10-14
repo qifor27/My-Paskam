@@ -39,6 +39,7 @@
 | 2026-10-14 | — | Temuan: skrip E2E/Puppeteer di folder sementara sesi sudah terhapus → perlu suite E2E di repo | `docs/audit-2026-10-14.md` |
 | 2026-10-14 | — | Verifikasi: 65 unit test, build lulus; smoke test baca-saja (login, foto via driver lokal, daftar) lulus | — |
 | 2026-10-15 | US-8.6 | Deploy pertama Owner gagal: Vercel membangun commit lama (2 commit deploy belum di-push). `prisma.config.ts` tidak lagi mewajibkan URL saat `prisma generate`; diuji di clone bersih dengan `npm ci --ignore-scripts` tanpa env DB → build lulus | `docs/deploy.md` (masalah umum), CHANGELOG |
+| 2026-10-15 | US-8.6 | Database Supabase Owner di Seoul (`ap-northeast-2`) → region Vercel `sin1` → `icn1` (revisi ADR-024) | `vercel.json`, `docs/deploy.md`, `architecture.md`, ADR-024 |
 
 ---
 
