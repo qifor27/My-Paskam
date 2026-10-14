@@ -48,7 +48,7 @@
 - **Upload** `POST /api/foto`: wajib login + izin buat sesuai modul (`module` = `LAPORAN_KERJA` / `ORDER_SPARE_PART`, registry `src/lib/photo/modules.ts`); cek Origin; Content-Length & ukuran file ≤ 2 MB; tipe dari **magic bytes** (hanya JPEG/WebP — SVG/HTML/PDF yang mengaku gambar ditolak); foto tidak bisa ditempel ke laporan milik orang lain; id foto idempoten.
 - **Akses** `GET /api/foto/:id`: tidak ada URL publik. Setiap request dicek: foto milik laporan yang boleh dilihat user dan diunggah pembuat laporan; foto draft hanya pengunggah. Selain itu → 404 (keberadaan tidak terungkap). Header `Cache-Control: private`, `X-Content-Type-Options: nosniff`.
 - **Privasi**: kompresi di HP membuang EXIF (lokasi GPS, model HP).
-- **Storage key** dibuat server dari UUID dan divalidasi regex (anti path traversal). Driver `local` hanya untuk development; produksi memakai bucket privat (Supabase, menyusul Q23).
+- **Storage key** dibuat server dari UUID dan divalidasi regex (anti path traversal) di kedua driver. Driver `local` hanya untuk development; produksi memakai **Supabase Storage bucket privat** (ADR-024). Secret/service key hanya di env server (`SUPABASE_SERVICE_ROLE_KEY`, tanpa prefix `NEXT_PUBLIC_`); browser tidak pernah mendapat URL Supabase.
 - Laporan terhapus (soft delete) → foto ikut tidak bisa diakses.
 - Cleanup hanya Owner + konfirmasi + re-authentication, dan dicatat di audit log (Sprint 8).
 
@@ -79,7 +79,7 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 |---|---|---|---|
 | 2026-10-03 | Sprint 1 auth & manajemen Pengawas (review mandiri + E2E) | Pesan Zod bawaan berbahasa Inggris bocor saat field tidak terkirim | Diperbaiki (locale `id` + "Wajib diisi") |
 | 2026-10-03 | Sprint 1 | Tidak ada password/PIN di audit_log maupun log server (diverifikasi dengan pencarian) | OK |
-| 2026-10-03 | Sprint 1 | Kepercayaan `x-forwarded-for` bergantung pada hosting | Terbuka, tinjau saat Q23 |
+| 2026-10-03 | Sprint 1 | Kepercayaan `x-forwarded-for` bergantung pada hosting | Hosting = Vercel (ADR-024): header diisi edge Vercel; verifikasi di log setelah deploy |
 | 2026-10-05 | Sprint 3 laporan & foto (review mandiri + E2E 32 cek) | Path storage dinamis membuat Turbopack men-trace seluruh proyek (foto bisa ikut ter-deploy) | Diperbaiki (`turbopackIgnore`) |
 | 2026-10-05 | Sprint 3 | File palsu, foto lintas Pengawas, edit laporan orang lain, Owner membuat laporan — semua ditolak | OK |
 | 2026-10-05 | Sprint 3 | `notFound()` di bawah `loading.tsx` = status 200 (UI tidak ditemukan, tanpa data) | Diterima (ADR-015) |
@@ -89,3 +89,4 @@ Implementasi: `src/lib/audit.ts`. Detail melewati `redact()`; kegagalan menulis 
 | 2026-10-05 | Sprint 7 | Draft offline tersimpan tidak terenkripsi di perangkat | Diterima (dicatat) |
 | 2026-10-05 | Sprint 6 Laporan Data (E2E 24 cek) | Isolasi PIN per sesi, lockout, Pengawas ditolak, query injeksi diabaikan, PIN tidak masuk log | OK |
 | 2026-10-05 | Sprint 5 planning (E2E 26 cek) | Lompat status, batal oleh Pengawas, ubah status planning orang lain, menugaskan Owner — semua ditolak | OK |
+| 2026-10-14 | Audit sprint + persiapan deploy | Driver Supabase: key tervalidasi (anti traversal), secret hanya server; seed demo menolak `--reset` ke DB non-lokal tanpa `--confirm-remote` | OK |

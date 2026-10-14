@@ -56,6 +56,7 @@ cp .env.example .env
 npm run db:migrate            # terapkan migrasi + generate Prisma client
 npm run owner:create          # buat akun Owner (tidak ada registrasi publik)
 npm run demo:seed             # data demo (DB kosong); `-- --reset` MENGHAPUS SEMUA data — tanya user dulu
+npm run db:deploy             # terapkan migrasi ke produksi (pakai DIRECT_URL Supabase), lihat docs/deploy.md
 ```
 Data demo & akun demo: `docs/demo.md`.
 
@@ -71,6 +72,6 @@ Pola mutasi: server action di `actions.ts` per route, dibungkus `runAction` + `r
 Menu & izin halaman: tambah modul di `src/lib/navigation.ts` + permission di `src/lib/auth/permissions.ts`. Format tanggal hanya lewat `src/lib/format.ts`.
 Modul data lapangan baru: ikuti langkah "Menambah modul data lapangan baru" di `docs/architecture.md` (registry foto `src/lib/photo/modules.ts`, akses `src/lib/records/access.ts`).
 Offline: `public/sw.js` (naikkan `VERSION` bila strategi cache berubah; jangan pernah cache `/api/*`), antrean kirim `src/lib/sync/outbox.ts` + `SyncProvider`; draft wajib menyimpan `userId`.
-Foto: upload lewat `POST /api/foto`, akses lewat `GET /api/foto/:id`, file via `storage()` (`src/lib/storage`, driver local → folder `storage/`). Draft offline: IndexedDB lewat `src/lib/draft-store.ts`. Hapus data bisnis = soft delete (`deleted_at`).
+Foto: upload lewat `POST /api/foto`, akses lewat `GET /api/foto/:id`, file via `storage()` (`src/lib/storage`; `STORAGE_DRIVER=local` → folder `storage/`, `supabase` → bucket privat). Deploy: `docs/deploy.md` (ADR-024). Draft offline: IndexedDB lewat `src/lib/draft-store.ts`. Hapus data bisnis = soft delete (`deleted_at`).
 Parameter auth sementara (PIN, lockout, durasi sesi) hanya di `src/lib/auth/config.ts`.
 Catatan Prisma 7: URL DB ada di `prisma.config.ts`, bukan di `schema.prisma`; import client dari `@/generated/prisma/client`, dan akses DB hanya lewat `src/lib/db.ts` (server-only).

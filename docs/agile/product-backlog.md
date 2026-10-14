@@ -74,7 +74,7 @@
 - [ ] US-8.3 Error monitoring ⛔ Q23
 - [ ] US-8.4 Photo Cleanup + retention status + re-auth ⛔ Q21
 - [ ] US-8.5 Performance, aksesibilitas, review PWA
-- [ ] US-8.6 Backup & deployment produksi ⛔ Q24
+- [ ] US-8.6 Backup & deployment produksi — 🟡 deploy disiapkan (ADR-024, `docs/deploy.md`, driver Supabase); backup menunggu Q24; belum dideploy sungguhan
 
 ## Tambahan 2026-10-06
 - [x] US-X.1 Data demo untuk presentasi (`npm run demo:seed`, ADR-020, [demo.md](../demo.md))

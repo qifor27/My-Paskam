@@ -29,10 +29,10 @@
 |---|---|---|
 | Frontend | Next.js, TypeScript, Tailwind, shadcn/ui, Lucide | Ditetapkan PRD |
 | DB | PostgreSQL + Prisma | Ditetapkan PRD |
-| Storage foto | Supabase Storage | Ditetapkan PRD §12 storage |
+| Storage foto | Supabase Storage (bucket privat, REST) — lokal: folder `storage/` | ADR-024 |
 | Auth | Custom session | ADR-002 (PROPOSED) |
-| Hosting | ? | Q23 |
-| Monitoring | ? | Q23 |
+| Hosting | Vercel (`sin1`) + Supabase (Singapura) — panduan `docs/deploy.md` | ADR-024 |
+| Monitoring | Belum (log Vercel saja) | Terbuka (US-8.3) |
 
 ## Struktur Folder
 
@@ -40,7 +40,8 @@
 prisma/
   schema.prisma          # skema DB (Prisma 7)
   migrations/            # migrasi SQL, di-commit
-prisma.config.ts         # URL DB + lokasi migrasi
+prisma.config.ts         # URL DB (DIRECT_URL untuk migrasi bila ada) + lokasi migrasi
+vercel.json              # region fungsi Vercel (sin1)
 public/sw.js             # service worker (naikkan VERSION bila strategi berubah)
 public/icons/            # ikon PWA (any + maskable + apple-touch)
 src/
@@ -57,7 +58,6 @@ src/
       loading.tsx        # skeleton saat halaman dimuat
       error.tsx          # error di dalam halaman (navigasi tetap tampil)
       pengawas/          # manajemen Pengawas (Owner)
-      laporan-kerja/ spare-part/ planning-job/ laporan-data/   # placeholder modul (+ /baru)
     api/foto/            # POST upload, GET [id] akses terotorisasi
     manifest.ts          # Web App Manifest
     offline/             # halaman cadangan offline (statis)
@@ -76,7 +76,7 @@ src/
     navigation.ts        # daftar menu + filter per role (satu sumber untuk nav & dashboard)
     format.ts            # format tanggal (zona aplikasi), todayISO, dayLabel, desimal
     route.ts             # handleRoute (route handler → PublicError JSON), cek Origin
-    storage/             # StorageDriver (local; Supabase menyusul)
+    storage/             # drivers.ts (local | supabase REST, tanpa server-only) + index.ts storage() server-only
     photo/               # rules, compress (client), service (server), modules (registry per modul)
     laporan-kerja/       # schema (+ decimalField), access, queries, draft (IndexedDB)
     spare-part/          # schema, access, queries, draft, priority
@@ -90,7 +90,6 @@ src/
     db.ts                # Prisma client (server-only)
     logger.ts            # log JSON + redaksi credential
     errors/              # AppError, kategori, pesan user, toPublicError
-    sync/                # client UUID, status sinkronisasi
   generated/prisma/      # hasil prisma generate (di-gitignore)
 docs/                    # dokumentasi (lihat CLAUDE.md)
 ```

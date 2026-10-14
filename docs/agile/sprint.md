@@ -29,6 +29,18 @@
 
 ---
 
+## Audit & persiapan deploy (2026-10-14)
+
+### Log
+| Tanggal | Story | Perubahan | Dokumen diperbarui |
+|---|---|---|---|
+| 2026-10-14 | — | Audit Sprint 0–8 vs PRD & backlog | `docs/audit-2026-10-14.md` |
+| 2026-10-14 | US-8.6 | Driver Supabase Storage (REST, 6 unit test), `DIRECT_URL` untuk migrasi, pool kecil, build `prisma generate && next build`, `db:deploy`, `vercel.json` (sin1), seed demo lewat driver + pengaman `--confirm-remote` | ADR-024, `docs/deploy.md`, `architecture.md`, `security.md` |
+| 2026-10-14 | — | Temuan: skrip E2E/Puppeteer di folder sementara sesi sudah terhapus → perlu suite E2E di repo | `docs/audit-2026-10-14.md` |
+| 2026-10-14 | — | Verifikasi: 65 unit test, build lulus; smoke test baca-saja (login, foto via driver lokal, daftar) lulus | — |
+
+---
+
 ## Tambahan — Export PDF, data demo, revisi akses Owner (2026-10-06)
 
 ### Log

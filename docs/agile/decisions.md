@@ -241,3 +241,14 @@
   - Kolom bercetak miring = tambahan yang sebelumnya diminta Owner (ADR-016/017), diletakkan **setelah** kolom Excel agar tidak hilang.
   - **Dokumentasi** di web = foto mini (maks. 3, klik untuk perbesar); di PDF = jumlah foto ("2 foto"). Menyisipkan foto ke PDF butuh thumbnail kecil di server agar ukuran file wajar — ditunda sampai diminta.
   - Halaman Laporan Data memakai area konten lebar (`max-w-6xl`); tabel di desktop, kartu label/nilai berurutan sama di HP.
+
+### ADR-024: Hosting Vercel + Supabase
+- Tanggal: 2026-10-14
+- Status: ACCEPTED (Owner meminta panduan deploy Vercel + Supabase — menjawab Q23 hosting)
+- Keputusan:
+  - Aplikasi di **Vercel** (region `sin1` Singapura, `vercel.json`); database **Supabase PostgreSQL** region Singapura; foto di **Supabase Storage** bucket privat `paskam`.
+  - Runtime memakai **pooler transaksi** (port 6543) via `DATABASE_URL` dengan pool kecil per instance (`DATABASE_POOL_MAX`, default 5); migrasi & script admin memakai **session pooler/direct** via `DIRECT_URL` (`prisma.config.ts`).
+  - Driver `supabase` di `src/lib/storage/drivers.ts` memakai REST API Storage dengan secret/service key **hanya di server** (tanpa SDK, tanpa dependency baru). Browser tetap mengambil foto lewat `/api/foto/:id`.
+  - `npm run build` = `prisma generate && next build` (client Prisma tidak di-commit). Migrasi produksi dijalankan manual: `npm run db:deploy`.
+  - Script data demo memakai driver yang sama; `--reset` ke database non-lokal wajib `--confirm-remote`.
+- Konsekuensi: Panduan langkah demi langkah di `docs/deploy.md`. Belum diuji ke akun Vercel/Supabase sungguhan (driver diuji dengan unit test fetch tiruan). Error monitoring masih terbuka.

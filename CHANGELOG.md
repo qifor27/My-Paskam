@@ -8,6 +8,8 @@ Setiap entri menyebut sprint dan story/ADR terkait, contoh: `- Login Pengawas de
 ## [Unreleased]
 
 ### Added
+- Dukungan produksi Vercel + Supabase: foto tersimpan di Supabase Storage (bucket privat), koneksi database lewat pooler, panduan langkah demi langkah di `docs/deploy.md` (ADR-024).
+- Laporan audit Sprint 0–8 terhadap PRD (`docs/audit-2026-10-14.md`).
 - Export PDF di Laporan Data: unduh laporan sesuai tab & filter (kop, ringkasan, tabel) (ADR-020).
 - Data demo untuk presentasi: `npm run demo:seed` (akun Owner & Pengawas, laporan bergambar, spare part, planning) — lihat `docs/demo.md` (ADR-020).
 - Aplikasi bisa dipasang di layar utama HP (ikon PASKAM, mode layar penuh) dengan petunjuk di halaman Akun (Sprint 7).
